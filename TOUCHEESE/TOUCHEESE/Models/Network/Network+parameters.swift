@@ -16,8 +16,8 @@ extension Network {
         case .conceptRequestType:
             return nil
         case .tempStudioRequest(
-            let concept,
-            let isHighRating,
+            _,
+            _,
             let regionArray,
             let price,
             let page
