@@ -12,33 +12,35 @@ final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data
     private var selectedConcept: StudioConcept = .liveliness
-    @Published var conceptStudios: [Studio] = []
+    @Published var studios: [Studio] = []
     
     @Published var isFilteringByPrice: Bool = false
-    @Published var isFilteringByArea: Bool = false
-    @Published var isFilteringByRating: Bool = false
+    @Published var isFilteringByRegion: Bool = false
+    @Published private(set) var isFilteringByRating: Bool = false
     
-    @Published var selectedPrice: StudioPrice = .all {
+    @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
     private var selectedAreas: Set<StudioRegion> = [] {
-        didSet { isFilteringByArea = !selectedAreas.isEmpty }
+        didSet { isFilteringByRegion = !selectedAreas.isEmpty }
     }
-    @Published var tempSelectedAreas: Set<StudioRegion> = []
+    @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
     
     // MARK: - Intput
     func resetFilters() {
         isFilteringByPrice = false
-        isFilteringByArea = false
+        isFilteringByRegion = false
         isFilteringByRating = false
         
         selectedPrice = .all
         selectedAreas = []
+        Task { await fetchStudios() }
     }
     
     func applyAreaOptions() {
         selectedAreas = tempSelectedAreas
+        Task { await fetchStudios() }
     }
     
     func resetTempAreaOptions() {
@@ -47,27 +49,22 @@ final class StudioListViewModel: ObservableObject {
     
     
     // MARK: - Output
-    @MainActor
-    func fetchFilteredStudiosBy(concept: StudioConcept) async {
-        self.conceptStudios = await getFilterStudiosBy(concept: concept)
-    }
     
     
     // MARK: - Logic
     func selectStudioConcept(_ concept: StudioConcept) {
         self.selectedConcept = concept
-        Task { await fetchFilteredStudiosBy(concept: concept) }
+        Task { await fetchStudios() }
     }
     
-    /// 서버로부터 concept으로 필터된 스튜디오 목록을 받는다.
-    private func getFilterStudiosBy(concept: StudioConcept) async -> [Studio] {
-        do {
-            let filteredStudios = try await NetworkManager.shared.requestConceptStudio(concept: concept)
-            return filteredStudios
-        } catch {
-            print(error.localizedDescription)
-            return []
-        }
+    func selectStudioPriceFilter(_ price: StudioPrice) {
+        self.selectedPrice = price
+        Task { await fetchStudios() }
+    }
+    
+    func toggleStudioRatingFilter() {
+        self.isFilteringByRating.toggle()
+        Task { await fetchStudios() }
     }
     
     func toggleAreaOption(_ option: StudioRegion) {
@@ -80,6 +77,25 @@ final class StudioListViewModel: ObservableObject {
     
     func loadAreaOptions() {
         tempSelectedAreas = selectedAreas
+    }
+    
+    @MainActor
+    func fetchStudios() async {
+        let concept = selectedConcept
+        let isHighRating = isFilteringByRating
+        let regionArray = selectedAreas.map { $0 }
+        let price = selectedPrice
+        
+        do {
+            studios = try await NetworkManager.shared.getStudioDatas(
+                concept: concept,
+                isHighRating: isHighRating,
+                regionArray: regionArray,
+                price: price
+            )
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
 }
