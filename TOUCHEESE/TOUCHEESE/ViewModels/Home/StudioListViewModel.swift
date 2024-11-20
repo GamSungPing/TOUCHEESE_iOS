@@ -12,7 +12,7 @@ final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data
     private var selectedConcept: StudioConcept = .liveliness
-    @Published var studios: [Studio] = []
+    @Published private(set) var studios: [Studio] = []
     
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false

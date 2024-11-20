@@ -49,10 +49,6 @@ struct HomeResultView: View {
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
-            print(studioListViewModel.studios)
-        }
-        .onDisappear {
-            studioListViewModel.resetFilters()
         }
     }
     
