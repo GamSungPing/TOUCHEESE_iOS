@@ -82,7 +82,7 @@ class NetworkManager {
     /// - Parameter regionArray: 지역 필터 (배열에 해당하는 Region 타입을 담아서 사용)
     /// - Parameter isLowpricing: 가격 필터 (True == 낮은 가격순, False == 높은 가격순, Nil == 적용 X)
     /// - Parameter page: 페이지(페이징 처리에 사용, 서버 자체적으로 Nil일 때 기본값 1 적용)
-    func fetchStudioDatas(
+    func getStudioDatas(
         concept: StudioConcept,
         isHighRating: Bool? = nil,
         regionArray: [StudioRegion]? = nil,

@@ -23,7 +23,7 @@ struct HomeResultView: View {
             ZStack(alignment: .top) {
                 ScrollView {
                     LazyVStack(spacing: 20) {
-                        ForEach(studioListViewModel.conceptStudios) { studio in
+                        ForEach(studioListViewModel.studios) { studio in
                             StudioRow(studio: studio)
                         }
                     }
@@ -45,7 +45,7 @@ struct HomeResultView: View {
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
-            print(studioListViewModel.conceptStudios)
+            print(studioListViewModel.studios)
         }
         .onDisappear {
             studioListViewModel.resetFilters()
@@ -68,7 +68,7 @@ struct HomeResultView: View {
             } label: {
                 FilterButtonView(
                     filter: .area,
-                    isFiltering: studioListViewModel.isFilteringByArea
+                    isFiltering: studioListViewModel.isFilteringByRegion
                 )
             }
             
