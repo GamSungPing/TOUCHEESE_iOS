@@ -19,7 +19,7 @@ extension Network {
             let isHighRating,
             let regionArray,
             let price,
-            let page
+            _
         ):
             // 컨셉 경로 추가
             var path = "/concept/\(concept.rawValue)"

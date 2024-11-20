@@ -28,8 +28,16 @@ struct Studio: Codable, Identifiable {
     let rating: Double
     let profileImageString: String
     let portfolioImageStrings: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case profilePrice
+        case rating
+        case profileImageString = "profileURL"
+        case portfolioImageStrings = "portfolioUrls"
+    }
 }
-
 
 extension Studio {
     static let sample = Studio(
