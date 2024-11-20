@@ -18,13 +18,13 @@ final class StudioListViewModel: ObservableObject {
     @Published var isFilteringByRegion: Bool = false
     @Published var isFilteringByRating: Bool = false
     
-    @Published var selectedPrice: StudioPrice = .all {
+    @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
     private var selectedAreas: Set<StudioRegion> = [] {
         didSet { isFilteringByRegion = !selectedAreas.isEmpty }
     }
-    @Published var tempSelectedAreas: Set<StudioRegion> = []
+    @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
     
     // MARK: - Intput
@@ -35,10 +35,12 @@ final class StudioListViewModel: ObservableObject {
         
         selectedPrice = .all
         selectedAreas = []
+        Task { await fetchStudios() }
     }
     
     func applyAreaOptions() {
         selectedAreas = tempSelectedAreas
+        Task { await fetchStudios() }
     }
     
     func resetTempAreaOptions() {
@@ -55,6 +57,11 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
+    func selectStudioPriceFilter(_ price: StudioPrice) {
+        self.selectedPrice = price
+        Task { await fetchStudios() }
+    }
+    
     func toggleAreaOption(_ option: StudioRegion) {
         if tempSelectedAreas.contains(option) {
             tempSelectedAreas.remove(option)
@@ -67,6 +74,7 @@ final class StudioListViewModel: ObservableObject {
         tempSelectedAreas = selectedAreas
     }
     
+    @MainActor
     func fetchStudios() async {
         let concept = selectedConcept
         let isHighRating = isFilteringByRating

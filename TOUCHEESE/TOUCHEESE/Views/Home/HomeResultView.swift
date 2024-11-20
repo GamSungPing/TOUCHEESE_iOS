@@ -161,7 +161,7 @@ struct HomeResultView: View {
             if let area = option as? StudioRegion {
                 studioListViewModel.toggleAreaOption(area)
             } else if let price = option as? StudioPrice {
-                studioListViewModel.selectedPrice = price
+                studioListViewModel.selectStudioPriceFilter(price)
                 isShowingPriceFilterOptionView = false
             }
         } label: {
