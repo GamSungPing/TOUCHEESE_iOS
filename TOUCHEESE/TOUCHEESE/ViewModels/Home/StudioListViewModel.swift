@@ -16,7 +16,7 @@ final class StudioListViewModel: ObservableObject {
     
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
-    @Published var isFilteringByRating: Bool = false
+    @Published private(set) var isFilteringByRating: Bool = false
     
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
@@ -62,6 +62,11 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
+    func toggleStudioRatingFilter() {
+        self.isFilteringByRating.toggle()
+        Task { await fetchStudios() }
+    }
+    
     func toggleAreaOption(_ option: StudioRegion) {
         if tempSelectedAreas.contains(option) {
             tempSelectedAreas.remove(option)
@@ -92,4 +97,5 @@ final class StudioListViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
+    
 }

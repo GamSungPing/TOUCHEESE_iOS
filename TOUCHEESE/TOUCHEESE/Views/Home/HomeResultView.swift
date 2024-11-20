@@ -73,7 +73,7 @@ struct HomeResultView: View {
             }
             
             Button {
-                studioListViewModel.isFilteringByRating.toggle()
+                studioListViewModel.toggleStudioRatingFilter()
                 
                 isShowingPriceFilterOptionView = false
                 isShowingAreaFilterOptionView = false
