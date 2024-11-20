@@ -36,7 +36,12 @@ extension Network {
             
             // 가격 경로 추가
             if let price {
-                path += "/low-pricing"
+                switch price {
+                case .all:
+                    break
+                case .lessThan100_000won, .lessThan200_000won, .moreThan200_000won:
+                    path += "/low-pricing"
+                }
             }
             
             return path
