@@ -8,27 +8,27 @@
 import Foundation
 
 enum StudioConcept: Int {
+    /// 플래쉬 터진 느낌
+    case flashIdol = 1
     /// 생동감 있는 실물 느낌
-    case liveliness = 1
-    /// 플래쉬/아이돌 느낌
-    case flashIdol
-    /// 흑백/블루 배우 느낌
+    case liveliness
+    /// 블랙/블루 배우 느낌
     case blackBlueActor
     /// 내추럴 화보 느낌
     case naturalPictorial
-    /// 선명하고 인형같은 느낌
-    case clarityDoll
-    /// 수채화 그림체
+    /// 수채화 그림체 느낌
     case waterColor
+    /// 화려한 느낌
+    case gorgeous
     
     var title: String {
         switch self {
+        case .flashIdol: "플래쉬 터진"
         case .liveliness: "생동감 있는 실물"
-        case .flashIdol: "플래쉬/아이돌"
-        case .blackBlueActor: "흑백/블루 배우"
+        case .blackBlueActor: "블랙/블루 배우"
         case .naturalPictorial: "내추럴 화보"
-        case .clarityDoll: "선명하고 인형같은"
         case .waterColor: "수채화 그림체"
+        case .gorgeous: "화려한"
         }
     }
 }
