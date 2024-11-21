@@ -29,6 +29,11 @@ struct HomeResultView: View {
                             ForEach(studioListViewModel.studios) { studio in
                                 StudioRow(studio: studio)
                             }
+                            
+                            Color.clear
+                                .onAppear {
+                                    studioListViewModel.loadMoreStudios()
+                                }
                         }
                     }
                     .scrollIndicators(.never)
@@ -50,6 +55,9 @@ struct HomeResultView: View {
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.isStudioLoading = true
+        }
+        .onDisappear {
+            studioListViewModel.resetFilters()
         }
     }
     
