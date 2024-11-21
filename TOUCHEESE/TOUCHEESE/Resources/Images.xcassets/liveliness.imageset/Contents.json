@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "liveliness.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
