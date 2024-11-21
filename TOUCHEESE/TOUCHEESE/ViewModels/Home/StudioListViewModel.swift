@@ -126,7 +126,7 @@ final class StudioListViewModel: ObservableObject {
         let isHighRating = isFilteringByRating
         let regionArray = selectedAreas.map { $0 }
         let price = selectedPrice
-        let page = page
+        page = 1
         
         do {
             studios = try await NetworkManager.shared.getStudioDatas(
