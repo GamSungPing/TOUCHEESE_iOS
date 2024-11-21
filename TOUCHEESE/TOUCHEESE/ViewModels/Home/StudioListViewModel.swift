@@ -26,7 +26,9 @@ final class StudioListViewModel: ObservableObject {
     }
     @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
-    @Published var isStudioLoading: Bool = true
+    @Published private(set) var isStudioLoading: Bool = true
+    
+    private var page: Int = 1
     
     
     // MARK: - Intput
@@ -56,7 +58,10 @@ final class StudioListViewModel: ObservableObject {
     // MARK: - Logic
     func selectStudioConcept(_ concept: StudioConcept) {
         self.selectedConcept = concept
-        Task { await fetchStudios() }
+        Task {
+            page = 1
+            await fetchStudios()
+        }
     }
     
     func selectStudioPriceFilter(_ price: StudioPrice) {
@@ -81,25 +86,65 @@ final class StudioListViewModel: ObservableObject {
         tempSelectedAreas = selectedAreas
     }
     
+    func completeLoding() {
+        isStudioLoading = true
+    }
+    
+    @MainActor
+    func loadMoreStudios() {
+        if !isStudioLoading {
+            page += 1
+            
+            let concept = selectedConcept
+            let isHighRating = isFilteringByRating
+            let regionArray = selectedAreas.map { $0 }
+            let price = selectedPrice
+            let page = page
+            
+            Task {
+                do {
+                    isStudioLoading = true
+                    studios.append(contentsOf: try await NetworkManager.shared.getStudioDatas(
+                        concept: concept,
+                        isHighRating: isHighRating,
+                        regionArray: regionArray,
+                        price: price,
+                        page: page
+                    ))
+                    
+                    isStudioLoading = false
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
     @MainActor
     func fetchStudios() async {
         let concept = selectedConcept
         let isHighRating = isFilteringByRating
         let regionArray = selectedAreas.map { $0 }
         let price = selectedPrice
+        let page = page
         
         do {
             studios = try await NetworkManager.shared.getStudioDatas(
                 concept: concept,
                 isHighRating: isHighRating,
                 regionArray: regionArray,
-                price: price
+                price: price,
+                page: page
             )
             
             isStudioLoading = false
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func resetStudios() {
+        studios = []
     }
     
 }
