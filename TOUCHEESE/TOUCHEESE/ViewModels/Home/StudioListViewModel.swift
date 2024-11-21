@@ -26,6 +26,8 @@ final class StudioListViewModel: ObservableObject {
     }
     @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
+    @Published var isStudioLoading: Bool = true
+    
     
     // MARK: - Intput
     func resetFilters() {
@@ -93,6 +95,8 @@ final class StudioListViewModel: ObservableObject {
                 regionArray: regionArray,
                 price: price
             )
+            
+            isStudioLoading = false
         } catch {
             print(error.localizedDescription)
         }

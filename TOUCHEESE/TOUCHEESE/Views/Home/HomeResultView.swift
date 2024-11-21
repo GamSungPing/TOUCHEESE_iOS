@@ -21,7 +21,7 @@ struct HomeResultView: View {
                 .padding(.horizontal)
             
             ZStack(alignment: .top) {
-                if studioListViewModel.studios.isEmpty {
+                if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
                     studioEmptyView
                 } else {
                     ScrollView {
@@ -49,6 +49,7 @@ struct HomeResultView: View {
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
+            studioListViewModel.isStudioLoading = true
         }
     }
     
