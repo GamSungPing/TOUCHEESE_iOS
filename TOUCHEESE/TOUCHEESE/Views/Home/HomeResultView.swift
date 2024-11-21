@@ -69,6 +69,9 @@ struct HomeResultView: View {
             
             tabbarManager.isHidden = false
         }
+        .onDisappear {
+            studioListViewModel.resetFilters()
+        }
     }
     
     private var studioEmptyView: some View {
