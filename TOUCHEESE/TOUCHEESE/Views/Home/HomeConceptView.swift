@@ -13,7 +13,7 @@ struct HomeConceptView: View {
         ConceptCard(imageString: "flashIdol", concept: .flashIdol),
         ConceptCard(imageString: "blackBlueActor", concept: .blackBlueActor),
         ConceptCard(imageString: "naturalPictorial", concept: .naturalPictorial),
-        ConceptCard(imageString: "clarityDoll", concept: .clarityDoll),
+        ConceptCard(imageString: "clarityDoll", concept: .gorgeous),
         ConceptCard(imageString: "waterColor", concept: .waterColor)
     ]
     private let columns = [
