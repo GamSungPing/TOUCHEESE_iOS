@@ -54,7 +54,7 @@ struct HomeResultView: View {
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
-            studioListViewModel.isStudioLoading = true
+            studioListViewModel.completeLoding()
         }
         .onDisappear {
             studioListViewModel.resetFilters()

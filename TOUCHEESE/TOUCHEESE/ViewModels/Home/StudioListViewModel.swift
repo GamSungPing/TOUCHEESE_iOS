@@ -26,7 +26,7 @@ final class StudioListViewModel: ObservableObject {
     }
     @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
-    @Published var isStudioLoading: Bool = true
+    @Published private(set) var isStudioLoading: Bool = true
     
     private var page: Int = 1
     
@@ -84,6 +84,10 @@ final class StudioListViewModel: ObservableObject {
     
     func loadAreaOptions() {
         tempSelectedAreas = selectedAreas
+    }
+    
+    func completeLoding() {
+        isStudioLoading = true
     }
     
     @MainActor
