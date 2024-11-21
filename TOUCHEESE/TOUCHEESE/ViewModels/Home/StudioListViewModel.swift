@@ -12,7 +12,7 @@ final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data
     private var selectedConcept: StudioConcept = .liveliness
-    @Published var studios: [Studio] = []
+    @Published private(set) var studios: [Studio] = []
     
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
@@ -25,6 +25,8 @@ final class StudioListViewModel: ObservableObject {
         didSet { isFilteringByRegion = !selectedAreas.isEmpty }
     }
     @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
+    
+    @Published var isStudioLoading: Bool = true
     
     
     // MARK: - Intput
@@ -93,6 +95,8 @@ final class StudioListViewModel: ObservableObject {
                 regionArray: regionArray,
                 price: price
             )
+            
+            isStudioLoading = false
         } catch {
             print(error.localizedDescription)
         }

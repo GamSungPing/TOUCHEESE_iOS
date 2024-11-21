@@ -21,15 +21,19 @@ struct HomeResultView: View {
                 .padding(.horizontal)
             
             ZStack(alignment: .top) {
-                ScrollView {
-                    LazyVStack(spacing: 20) {
-                        ForEach(studioListViewModel.studios) { studio in
-                            StudioRow(studio: studio)
+                if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
+                    studioEmptyView
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 20) {
+                            ForEach(studioListViewModel.studios) { studio in
+                                StudioRow(studio: studio)
+                            }
                         }
                     }
+                    .scrollIndicators(.never)
+                    .padding(.vertical, 5)
                 }
-                .scrollIndicators(.never)
-                .padding(.vertical, 5)
                 
                 if isShowingPriceFilterOptionView {
                     filterOptionView(.price)
@@ -45,11 +49,35 @@ struct HomeResultView: View {
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
-            print(studioListViewModel.studios)
+            studioListViewModel.isStudioLoading = true
         }
-        .onDisappear {
-            studioListViewModel.resetFilters()
+    }
+    
+    private var studioEmptyView: some View {
+        VStack {
+            Spacer()
+            
+            Image(systemName: "tray")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100)
+                .foregroundStyle(Color.gray)
+            
+            Text("해당하는 스튜디오가 없습니다.")
+                .foregroundStyle(Color.gray)
+                .padding(.top, 30)
+            
+            Button {
+                studioListViewModel.resetFilters()
+            } label: {
+                Text("필터 초기화 하기")
+                    .foregroundStyle(Color.black)
+            }
+            .buttonStyle(.bordered)
+            
+            Spacer()
         }
+        .padding()
     }
     
     private var filtersView: some View {

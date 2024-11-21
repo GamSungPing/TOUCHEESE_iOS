@@ -15,6 +15,7 @@ struct ToucheeseTabView: View {
             NavigationStack {
                 HomeConceptView()
             }
+            .tint(Color.black)
             .tabItem {
                 Image(systemName: "house")
                 Text("홈")
