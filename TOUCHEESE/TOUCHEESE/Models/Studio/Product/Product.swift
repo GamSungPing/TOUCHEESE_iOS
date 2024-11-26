@@ -7,7 +7,7 @@
 
 
 struct Product: Identifiable {
-    let id: String
+    let id: Int
     let name: String
     let description: String
     let imageString: String
@@ -25,7 +25,7 @@ struct ProductDetail {
 
 
 struct ProductOption: Identifiable {
-    let id: String
+    let id: Int
     let name: String
     let price: Int
 }

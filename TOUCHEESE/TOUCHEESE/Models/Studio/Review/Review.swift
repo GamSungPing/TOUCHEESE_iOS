@@ -7,7 +7,7 @@
 
 
 struct Review: Identifiable {
-    let id: String
+    let id: Int
     let imageString: String
 }
 
@@ -24,7 +24,7 @@ struct ReviewDetail {
 }
 
 struct Reply: Identifiable {
-    let id: String
+    let id: Int
     let studioName: String
     let dateString: String
     let content: String
