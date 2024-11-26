@@ -10,11 +10,7 @@ import Foundation
 extension Network {
     func getPath() -> String {
         switch self {
-        case .testRequestType:
-            return "/posts"
-        case .conceptRequestType(let concept):
-            return "\(concept.rawValue)"
-        case .tempStudioRequest(
+        case .studioRequest(
             let concept,
             let isHighRating,
             let regionArray,

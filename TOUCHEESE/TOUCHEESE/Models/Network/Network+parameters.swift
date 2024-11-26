@@ -11,11 +11,7 @@ import Alamofire
 extension Network {
     func getParameters() -> Parameters? {
         switch self {
-        case .testRequestType:
-            return nil
-        case .conceptRequestType:
-            return nil
-        case .tempStudioRequest(
+        case .studioRequest(
             _,
             _,
             let regionArray,

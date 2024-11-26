@@ -9,9 +9,7 @@ import Foundation
 import Alamofire
 
 enum Network {
-    case testRequestType
-    case conceptRequestType(concept: StudioConcept)
-    case tempStudioRequest(
+    case studioRequest(
         concept: StudioConcept,
         isHighRating: Bool?,
         regionArray: [StudioRegion]?,

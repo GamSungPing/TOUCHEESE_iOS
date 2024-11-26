@@ -12,11 +12,7 @@ extension Network {
         let server_url = Bundle.main.serverURL
         
         switch self {
-        case .testRequestType:
-            return "https://jsonplaceholder.typicode.com"
-        case .conceptRequestType:
-            return "\(server_url)/api/v1/studio/concept/"
-        case .tempStudioRequest:
+        case .studioRequest:
             return "\(server_url)/api/v1/studio"
         }
     }

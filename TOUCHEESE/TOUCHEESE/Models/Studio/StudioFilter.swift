@@ -16,7 +16,7 @@ enum StudioFilter {
         switch self {
         case .area: "지역별"
         case .price: "가격순"
-        case .rating: "평점순"
+        case .rating: "평점 높은순"
         }
     }
     
