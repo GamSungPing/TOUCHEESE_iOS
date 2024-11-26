@@ -39,6 +39,18 @@ struct Studio: Codable, Identifiable {
     }
 }
 
+struct StudioDetail {
+    let detailImageStrings: [String]
+    
+    let reviewCount: Int
+    let businessHours: String
+    let address: String
+    
+    let notice: String?
+    let products: [Product]
+    var reviews: [Review]?
+}
+
 extension Studio {
     static let sample = Studio(
         id: 1,

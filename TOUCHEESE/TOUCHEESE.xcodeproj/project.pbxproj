@@ -20,6 +20,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Resources/Secrets.xcconfig,
 			);
 			target = 3BFBE8842CE47261000C30B7 /* TOUCHEESE */;
 		};
@@ -100,7 +101,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					3BFBE8842CE47261000C30B7 = {
 						CreatedOnToolsVersion = 16.0;
