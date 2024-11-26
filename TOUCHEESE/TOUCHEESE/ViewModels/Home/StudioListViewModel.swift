@@ -21,8 +21,8 @@ final class StudioListViewModel: ObservableObject {
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
-    private var selectedAreas: Set<StudioRegion> = [] {
-        didSet { isFilteringByRegion = !selectedAreas.isEmpty }
+    private var selectedAreas: Set<StudioRegion> = [.all] {
+        didSet { isFilteringByRegion = selectedAreas != [.all] }
     }
     @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
     
@@ -38,7 +38,7 @@ final class StudioListViewModel: ObservableObject {
         isFilteringByRating = false
         
         selectedPrice = .all
-        selectedAreas = []
+        selectedAreas = [.all]
         Task { await fetchStudios() }
     }
     
@@ -48,7 +48,7 @@ final class StudioListViewModel: ObservableObject {
     }
     
     func resetTempAreaOptions() {
-        tempSelectedAreas = []
+        tempSelectedAreas = [.all]
     }
     
     
@@ -74,11 +74,18 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
-    func toggleAreaOption(_ option: StudioRegion) {
-        if tempSelectedAreas.contains(option) {
-            tempSelectedAreas.remove(option)
+    func toggleAreaFilterOption(_ option: StudioRegion) {
+        if option != .all {
+            tempSelectedAreas.remove(.all)
+            
+            if tempSelectedAreas.contains(option) {
+                tempSelectedAreas.remove(option)
+            } else {
+                tempSelectedAreas.insert(option)
+            }
         } else {
-            tempSelectedAreas.insert(option)
+            tempSelectedAreas = []
+            tempSelectedAreas.insert(.all)
         }
     }
     
@@ -124,7 +131,9 @@ final class StudioListViewModel: ObservableObject {
     func fetchStudios() async {
         let concept = selectedConcept
         let isHighRating = isFilteringByRating
-        let regionArray = selectedAreas.map { $0 }
+        var regionArray: [StudioRegion] {
+            selectedAreas == [.all] ? [] : Array(selectedAreas)
+        }
         let price = selectedPrice
         page = 1
         

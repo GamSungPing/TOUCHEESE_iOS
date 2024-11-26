@@ -195,7 +195,7 @@ struct HomeResultView: View {
     private func filterButton<T: OptionType>(for option: T, isSelected: Bool) -> some View {
         Button {
             if let area = option as? StudioRegion {
-                studioListViewModel.toggleAreaOption(area)
+                studioListViewModel.toggleAreaFilterOption(area)
             } else if let price = option as? StudioPrice {
                 studioListViewModel.selectStudioPriceFilter(price)
                 isShowingPriceFilterOptionView = false
