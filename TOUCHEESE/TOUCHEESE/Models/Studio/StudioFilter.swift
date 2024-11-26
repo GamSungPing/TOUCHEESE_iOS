@@ -8,13 +8,13 @@
 import Foundation
 
 enum StudioFilter {
-    case area
+    case region
     case price
     case rating
     
     var title: String {
         switch self {
-        case .area: "지역별"
+        case .region: "지역별"
         case .price: "가격순"
         case .rating: "평점 높은순"
         }
@@ -22,7 +22,7 @@ enum StudioFilter {
     
     var options: [any OptionType] {
         switch self {
-        case .area: StudioRegion.allCases
+        case .region: StudioRegion.allCases
         case .price: StudioPrice.allCases
         case .rating: []
         }
