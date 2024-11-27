@@ -11,7 +11,13 @@ import SwiftUI
 final class StudioListViewModel: ObservableObject {
     
     // MARK: - Data
-    private var selectedConcept: StudioConcept = .liveliness
+    private var selectedConcept: StudioConcept = .liveliness {
+        didSet {
+            if oldValue != selectedConcept {
+                resetStudios()
+            }
+        }
+    }
     @Published private(set) var studios: [Studio] = []
     
     @Published var isFilteringByPrice: Bool = false
@@ -158,7 +164,7 @@ final class StudioListViewModel: ObservableObject {
         }
     }
     
-    func resetStudios() {
+    private func resetStudios() {
         studios = []
     }
     
