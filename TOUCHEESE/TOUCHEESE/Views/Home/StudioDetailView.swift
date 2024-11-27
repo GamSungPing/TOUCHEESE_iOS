@@ -13,7 +13,49 @@ struct StudioDetailView: View {
     var body: some View {
         let studio = viewModel.studio
         
-        Text("\(studio.name)")
+        VStack {
+            Text("\(studio.name)")
+        }
+        .toolbarRole(.editor)
+        .toolbar {
+            leadingToolbarContent(for: studio)
+            trailingToolbarContent
+        }
+    }
+    
+    private func leadingToolbarContent(
+        for studio: Studio
+    ) -> some ToolbarContent {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            HStack {
+                ProfileImageView(
+                    imageURL: studio.profileImageURL,
+                    size: 40
+                )
+                
+                Text("\(studio.name)")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+            }
+        }
+    }
+    
+    private var trailingToolbarContent: some ToolbarContent {
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            HStack {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "bookmark")
+                }
+            }
+        }
     }
 }
 

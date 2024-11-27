@@ -19,7 +19,10 @@ struct StudioRow: View {
     var body: some View {
         VStack {
             HStack {
-                profileImage
+                ProfileImageView(
+                    imageURL: studio.profileImageURL,
+                    size: 45
+                )
                 
                 VStack(alignment: .leading) {
                     Text("\(studio.name)")
@@ -43,22 +46,6 @@ struct StudioRow: View {
             
             portfolioImagesScrollView(portfolioImageURLs)
         }
-    }
-    
-    private var profileImage: some View {
-        KFImage(studio.profileImageURL)
-            .placeholder { _ in
-                ProgressView()
-            }
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 45, height: 45)
-            .foregroundStyle(Color.black)
-            .clipShape(.circle)
-            .overlay {
-                Circle()
-                    .stroke(Color.gray, lineWidth: 1)
-            }
     }
     
     private var bookmarkButton: some View {
