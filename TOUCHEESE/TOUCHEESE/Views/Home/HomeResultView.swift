@@ -27,13 +27,20 @@ struct HomeResultView: View {
                     ScrollView {
                         LazyVStack(spacing: 20) {
                             ForEach(studioListViewModel.studios) { studio in
-                                StudioRow(studio: studio)
+                                NavigationLink(value: studio) {
+                                    StudioRow(studio: studio)
+                                }
                             }
                             
                             Color.clear
                                 .onAppear {
                                     studioListViewModel.loadMoreStudios()
                                 }
+                        }
+                        .navigationDestination(for: Studio.self) { studio in
+                            StudioDetailView(
+                                viewModel: StudioDetailViewModel(studio: studio)
+                            )
                         }
                     }
                     .scrollIndicators(.never)

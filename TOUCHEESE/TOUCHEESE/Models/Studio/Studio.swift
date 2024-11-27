@@ -21,7 +21,7 @@ struct DataClass: Codable {
 }
 
 // MARK: - Content
-struct Studio: Codable, Identifiable {
+struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profilePrice: Int
