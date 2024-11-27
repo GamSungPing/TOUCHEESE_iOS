@@ -23,7 +23,7 @@ extension Network {
             if let regionArray {
                 params["regionIds"] = regionArray.map { $0.rawValue }
             }
-                        
+            
             if let price {
                 switch price {
                 case .all:

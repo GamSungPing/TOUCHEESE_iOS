@@ -16,7 +16,7 @@ struct FilterButtonView: View {
             Text(filter.title)
             
             switch filter {
-            case .area, .price:
+            case .region, .price:
                 Image(systemName: "chevron.down")
             case .rating:
                 EmptyView()
@@ -40,8 +40,8 @@ struct FilterButtonView: View {
         }
         
         HStack {
-            FilterButtonView(filter: .area, isFiltering: false)
-            FilterButtonView(filter: .area, isFiltering: true)
+            FilterButtonView(filter: .region, isFiltering: false)
+            FilterButtonView(filter: .region, isFiltering: true)
         }
         
         HStack {

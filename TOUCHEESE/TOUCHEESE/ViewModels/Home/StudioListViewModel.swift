@@ -17,14 +17,17 @@ final class StudioListViewModel: ObservableObject {
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
     @Published private(set) var isFilteringByRating: Bool = false
+    var isShowingResetButton: Bool {
+        return isFilteringByPrice || isFilteringByRegion || isFilteringByRating
+    }
     
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
-    private var selectedAreas: Set<StudioRegion> = [] {
-        didSet { isFilteringByRegion = !selectedAreas.isEmpty }
+    private var selectedRegions: Set<StudioRegion> = [.all] {
+        didSet { isFilteringByRegion = selectedRegions != [.all] }
     }
-    @Published private(set) var tempSelectedAreas: Set<StudioRegion> = []
+    @Published private(set) var tempSelectedRegions: Set<StudioRegion> = []
     
     @Published private(set) var isStudioLoading: Bool = true
     
@@ -38,17 +41,17 @@ final class StudioListViewModel: ObservableObject {
         isFilteringByRating = false
         
         selectedPrice = .all
-        selectedAreas = []
+        selectedRegions = [.all]
         Task { await fetchStudios() }
     }
     
-    func applyAreaOptions() {
-        selectedAreas = tempSelectedAreas
+    func applyRegionOptions() {
+        selectedRegions = tempSelectedRegions
         Task { await fetchStudios() }
     }
     
-    func resetTempAreaOptions() {
-        tempSelectedAreas = []
+    func resetTempRegionOptions() {
+        tempSelectedRegions = [.all]
     }
     
     
@@ -74,16 +77,26 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
-    func toggleAreaOption(_ option: StudioRegion) {
-        if tempSelectedAreas.contains(option) {
-            tempSelectedAreas.remove(option)
+    func toggleRegionFilterOption(_ option: StudioRegion) {
+        if option != .all {
+            tempSelectedRegions.remove(.all)
+            
+            if tempSelectedRegions.contains(option) {
+                tempSelectedRegions.remove(option)
+                if tempSelectedRegions.isEmpty {
+                    tempSelectedRegions.insert(.all)
+                }
+            } else {
+                tempSelectedRegions.insert(option)
+            }
         } else {
-            tempSelectedAreas.insert(option)
+            tempSelectedRegions = []
+            tempSelectedRegions.insert(.all)
         }
     }
     
-    func loadAreaOptions() {
-        tempSelectedAreas = selectedAreas
+    func loadRegionOptions() {
+        tempSelectedRegions = selectedRegions
     }
     
     func completeLoding() {
@@ -97,7 +110,7 @@ final class StudioListViewModel: ObservableObject {
             
             let concept = selectedConcept
             let isHighRating = isFilteringByRating
-            let regionArray = selectedAreas.map { $0 }
+            let regionArray = selectedRegions.map { $0 }
             let price = selectedPrice
             let page = page
             
@@ -124,7 +137,9 @@ final class StudioListViewModel: ObservableObject {
     func fetchStudios() async {
         let concept = selectedConcept
         let isHighRating = isFilteringByRating
-        let regionArray = selectedAreas.map { $0 }
+        var regionArray: [StudioRegion] {
+            selectedRegions == [.all] ? [] : Array(selectedRegions)
+        }
         let price = selectedPrice
         page = 1
         

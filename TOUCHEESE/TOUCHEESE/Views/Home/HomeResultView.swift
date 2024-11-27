@@ -13,7 +13,7 @@ struct HomeResultView: View {
     let concept: StudioConcept
     
     @State private var isShowingPriceFilterOptionView: Bool = false
-    @State private var isShowingAreaFilterOptionView: Bool = false
+    @State private var isShowingRegionFilterOptionView: Bool = false
     
     var body: some View {
         VStack {
@@ -44,8 +44,8 @@ struct HomeResultView: View {
                     filterOptionView(.price)
                 }
                 
-                if isShowingAreaFilterOptionView {
-                    filterOptionView(.area)
+                if isShowingRegionFilterOptionView {
+                    filterOptionView(.region)
                 }
             }
         }
@@ -55,9 +55,6 @@ struct HomeResultView: View {
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
-        }
-        .onDisappear {
-            studioListViewModel.resetFilters()
         }
     }
     
@@ -100,10 +97,10 @@ struct HomeResultView: View {
             }
             
             Button {
-                toggleFilter(&isShowingAreaFilterOptionView)
+                toggleFilter(&isShowingRegionFilterOptionView)
             } label: {
                 FilterButtonView(
-                    filter: .area,
+                    filter: .region,
                     isFiltering: studioListViewModel.isFilteringByRegion
                 )
             }
@@ -112,7 +109,7 @@ struct HomeResultView: View {
                 studioListViewModel.toggleStudioRatingFilter()
                 
                 isShowingPriceFilterOptionView = false
-                isShowingAreaFilterOptionView = false
+                isShowingRegionFilterOptionView = false
             } label: {
                 FilterButtonView(
                     filter: .rating,
@@ -122,14 +119,19 @@ struct HomeResultView: View {
             
             Spacer()
             
-            Button {
-                isShowingAreaFilterOptionView = false
-                isShowingPriceFilterOptionView = false
-                
-                studioListViewModel.resetFilters()
-            } label: {
-                Image(systemName: "arrow.clockwise")
-                    .foregroundStyle(Color.black)
+            if studioListViewModel.isShowingResetButton {
+                Button {
+                    isShowingRegionFilterOptionView = false
+                    isShowingPriceFilterOptionView = false
+                    
+                    studioListViewModel.resetFilters()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                        .foregroundStyle(Color.black)
+                }
             }
         }
     }
@@ -142,12 +144,12 @@ struct HomeResultView: View {
         )
         
         VStack {
-            LazyVGrid(columns: columns) {
+            LazyVGrid(columns: columns, spacing: 15) {
                 ForEach(filter.options, id: \.id) { option in
-                    if let area = option as? StudioRegion {
+                    if let region = option as? StudioRegion {
                         filterButton(
-                            for: area,
-                            isSelected: studioListViewModel.tempSelectedAreas.contains(area)
+                            for: region,
+                            isSelected: studioListViewModel.tempSelectedRegions.contains(region)
                         )
                     } else if let price = option as? StudioPrice {
                         filterButton(
@@ -158,23 +160,15 @@ struct HomeResultView: View {
                 }
             }
             
-            if filter == .area {
-                HStack(spacing: 100) {
-                    Button {
-                        studioListViewModel.resetTempAreaOptions()
-                    } label: {
-                        Text("초기화")
-                            .foregroundStyle(Color.black)
-                    }
-                    
-                    Button {
-                        studioListViewModel.applyAreaOptions()
-                        isShowingAreaFilterOptionView = false
-                    } label: {
-                        Text("적용하기")
-                            .foregroundStyle(Color.black)
-                    }
+            if filter == .region {
+                Button {
+                    studioListViewModel.applyRegionOptions()
+                    isShowingRegionFilterOptionView = false
+                } label: {
+                    Text("적용하기")
+                        .foregroundStyle(Color.black)
                 }
+                .padding(.top, 5)
             }
         }
         .padding()
@@ -185,17 +179,14 @@ struct HomeResultView: View {
                 .shadow(radius: 5, x: 2, y: 5)
         }
         .onAppear {
-            studioListViewModel.loadAreaOptions()
-        }
-        .onDisappear {
-            studioListViewModel.resetTempAreaOptions()
+            studioListViewModel.loadRegionOptions()
         }
     }
     
     private func filterButton<T: OptionType>(for option: T, isSelected: Bool) -> some View {
         Button {
-            if let area = option as? StudioRegion {
-                studioListViewModel.toggleAreaOption(area)
+            if let region = option as? StudioRegion {
+                studioListViewModel.toggleRegionFilterOption(region)
             } else if let price = option as? StudioPrice {
                 studioListViewModel.selectStudioPriceFilter(price)
                 isShowingPriceFilterOptionView = false
@@ -222,7 +213,7 @@ struct HomeResultView: View {
     private func toggleFilter(_ filter: inout Bool) {
         if !filter {
             isShowingPriceFilterOptionView = false
-            isShowingAreaFilterOptionView = false
+            isShowingRegionFilterOptionView = false
         }
         
         filter.toggle()
