@@ -80,6 +80,9 @@ final class StudioListViewModel: ObservableObject {
             
             if tempSelectedRegions.contains(option) {
                 tempSelectedRegions.remove(option)
+                if tempSelectedRegions.isEmpty {
+                    tempSelectedRegions.insert(.all)
+                }
             } else {
                 tempSelectedRegions.insert(option)
             }

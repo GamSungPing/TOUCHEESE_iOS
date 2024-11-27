@@ -56,9 +56,6 @@ struct HomeResultView: View {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
         }
-        .onDisappear {
-            studioListViewModel.resetFilters()
-        }
     }
     
     private var studioEmptyView: some View {
@@ -178,9 +175,6 @@ struct HomeResultView: View {
         }
         .onAppear {
             studioListViewModel.loadRegionOptions()
-        }
-        .onDisappear {
-            studioListViewModel.resetTempRegionOptions()
         }
     }
     
