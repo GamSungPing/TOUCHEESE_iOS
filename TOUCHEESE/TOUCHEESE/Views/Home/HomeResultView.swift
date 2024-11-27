@@ -142,7 +142,7 @@ struct HomeResultView: View {
         )
         
         VStack {
-            LazyVGrid(columns: columns) {
+            LazyVGrid(columns: columns, spacing: 15) {
                 ForEach(filter.options, id: \.id) { option in
                     if let region = option as? StudioRegion {
                         filterButton(
@@ -159,22 +159,14 @@ struct HomeResultView: View {
             }
             
             if filter == .region {
-                HStack(spacing: 100) {
-                    Button {
-                        studioListViewModel.resetTempRegionOptions()
-                    } label: {
-                        Text("초기화")
-                            .foregroundStyle(Color.black)
-                    }
-                    
-                    Button {
-                        studioListViewModel.applyRegionOptions()
-                        isShowingRegionFilterOptionView = false
-                    } label: {
-                        Text("적용하기")
-                            .foregroundStyle(Color.black)
-                    }
+                Button {
+                    studioListViewModel.applyRegionOptions()
+                    isShowingRegionFilterOptionView = false
+                } label: {
+                    Text("적용하기")
+                        .foregroundStyle(Color.black)
                 }
+                .padding(.top, 5)
             }
         }
         .padding()
