@@ -17,6 +17,9 @@ final class StudioListViewModel: ObservableObject {
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
     @Published private(set) var isFilteringByRating: Bool = false
+    var isShowingResetButton: Bool {
+        return isFilteringByPrice || isFilteringByRegion || isFilteringByRating
+    }
     
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }

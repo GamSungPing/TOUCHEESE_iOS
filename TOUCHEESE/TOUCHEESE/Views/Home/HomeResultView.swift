@@ -119,14 +119,19 @@ struct HomeResultView: View {
             
             Spacer()
             
-            Button {
-                isShowingRegionFilterOptionView = false
-                isShowingPriceFilterOptionView = false
-                
-                studioListViewModel.resetFilters()
-            } label: {
-                Image(systemName: "arrow.clockwise")
-                    .foregroundStyle(Color.black)
+            if studioListViewModel.isShowingResetButton {
+                Button {
+                    isShowingRegionFilterOptionView = false
+                    isShowingPriceFilterOptionView = false
+                    
+                    studioListViewModel.resetFilters()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                        .foregroundStyle(Color.black)
+                }
             }
         }
     }
