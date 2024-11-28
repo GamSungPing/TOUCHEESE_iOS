@@ -15,12 +15,19 @@ struct StudioDetailView: View {
         let studioDetail = viewModel.studioDetail
         
         ScrollView(.vertical) {
-            LazyVStack {
+            LazyVStack(alignment: .leading, spacing: 15) {
                 ImageCarouselView(
                     imageURLs: studioDetail.detailImageURLs,
                     height: 250
                 )
-                Text("\(studio.name)")
+                
+                // Studio 설명
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("\(studio.formattedRating)", systemImage: "star")
+                    Label("\(studioDetail.businessHours)", systemImage: "clock")
+                    Label("\(studioDetail.address)", systemImage: "mappin.and.ellipse")
+                }
+                .padding(.horizontal)
             }
         }
         .toolbarRole(.editor)

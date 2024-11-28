@@ -15,4 +15,5 @@ final class StudioDetailViewModel: ObservableObject {
     init(studio: Studio) {
         self.studio = studio
     }
+    
 }
