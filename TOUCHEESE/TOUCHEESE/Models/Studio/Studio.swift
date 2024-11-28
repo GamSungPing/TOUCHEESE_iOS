@@ -14,11 +14,13 @@ struct StudioData: Codable {
     let data: DataClass
 }
 
+
 // MARK: - DataClass
 struct DataClass: Codable {
     let totalElementsCount, pageElementsCount, totalPagesCount, pageNumber: Int
     let content: [Studio]
 }
+
 
 // MARK: - Content
 struct Studio: Codable, Identifiable, Hashable {
@@ -39,6 +41,7 @@ struct Studio: Codable, Identifiable, Hashable {
     }
 }
 
+
 struct StudioDetail {
     let detailImageStrings: [String]
     
@@ -50,6 +53,7 @@ struct StudioDetail {
     let products: [Product]
     var reviews: [Review]?
 }
+
 
 extension Studio {
     static let sample = Studio(
@@ -72,6 +76,39 @@ extension Studio {
     var portfolioImageURLs: [URL] {
         portfolioImageStrings.map { string in
             URL(string: string ) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+        }
+    }
+}
+
+
+extension StudioDetail {
+    static let sample = StudioDetail(
+        detailImageStrings: [
+            "https://i.imgur.com/Uw5nNHQ.png",
+            "https://i.imgur.com/Uw5nNHQ.png",
+            "https://i.imgur.com/Uw5nNHQ.png"
+        ],
+        reviewCount: 2_234,
+        businessHours: "월~금 10:10~19:00 / 매주 월요일 휴무",
+        address: "서울특별시 서초구 강남대로 11-11",
+        notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
+        products: [
+            Product.sample1,
+            Product.sample1,
+            Product.sample1
+        ],
+        reviews: [
+            Review.sample,
+            Review.sample,
+            Review.sample,
+            Review.sample,
+            Review.sample
+        ]
+    )
+    
+    var detailImageURLs: [URL] {
+        detailImageStrings.map { imageString in
+            URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
         }
     }
 }
