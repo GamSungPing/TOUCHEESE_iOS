@@ -12,9 +12,16 @@ struct StudioDetailView: View {
     
     var body: some View {
         let studio = viewModel.studio
+        let studioDetail = viewModel.studioDetail
         
-        VStack {
-            Text("\(studio.name)")
+        ScrollView(.vertical) {
+            LazyVStack {
+                ImageCarouselView(
+                    imageURLs: studioDetail.detailImageURLs,
+                    height: 250
+                )
+                Text("\(studio.name)")
+            }
         }
         .toolbarRole(.editor)
         .toolbar {
