@@ -10,6 +10,7 @@ import SwiftUI
 struct StudioDetailView: View {
     @StateObject var viewModel: StudioDetailViewModel
     
+    @Environment(\.isPresented) var isPresented
     @State private var selectedSegmentedControlIndex = 0
     
     var body: some View {
@@ -42,6 +43,7 @@ struct StudioDetailView: View {
                 
                 CustomSegmentedControl(selectedIndex: $selectedSegmentedControlIndex)
                 
+                // 가격 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
                     productListView
                 } else {
@@ -50,6 +52,7 @@ struct StudioDetailView: View {
             }
         }
         .toolbarRole(.editor)
+        .toolbar(isPresented ? .hidden : .visible, for: .tabBar)
         .toolbar {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
