@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct StudioDetailView: View {
     @StateObject var viewModel: StudioDetailViewModel
@@ -155,13 +156,63 @@ fileprivate struct ProductListView: View {
     @State private var isExpanded = false
     
     var body: some View {
-        LazyVStack {
+        LazyVStack(alignment: .leading, spacing: 15) {
             if let notice = studioDetail.notice {
                 NoticeView(notice: notice, isExpanded: $isExpanded)
             }
-            Text("안녕하세요")
+            
+            Text("촬영 상품")
+                .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
+            
+            ForEach(studioDetail.products, id: \.self) { product in
+                HStack(spacing: 15) {
+                    KFImage(product.imageURL)
+                        .placeholder { _ in
+                            ProgressView()
+                        }
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 120)
+                        .overlay {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .border(Color.black, width: 1)
+                        }
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(product.name)
+                            .fontWeight(.semibold)
+                        
+                        Text(product.description)
+                            .font(.system(size: 14))
+                            .multilineTextAlignment(.leading)
+                        
+                        Text("리뷰 \(product.reviewCount)개")
+                            .font(Font.caption)
+                            .foregroundStyle(Color.gray)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Text("\(product.price)원")
+                                .font(.system(size: 18, weight: .bold))
+                        }
+                    }
+                }
+                .onTapGesture {
+                    print("\(product.name)")
+                }
+            }
+            
+            Color.clear
+                .frame(height: 30)
         }
+        .padding(.horizontal)
         .animation(.easeInOut, value: isExpanded)
+        .onAppear {
+            
+            print(studioDetail.products.count)
+        }
     }
 }
 
@@ -176,14 +227,13 @@ fileprivate struct NoticeView: View {
             
             if let notice {
                 Text("\(notice)")
-                    .frame(width: CGFloat.screenWidth - 100)
+                    .frame(maxWidth: .infinity)
                     .lineLimit(isExpanded ? nil : 2)
                     .multilineTextAlignment(.leading)
             }
             
             Button {
                 isExpanded.toggle()
-                print("토글 되는 중~")
             } label: {
                 Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
             }
