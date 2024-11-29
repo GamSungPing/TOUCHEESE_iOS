@@ -45,10 +45,11 @@ struct ImageCarouselView: View {
                 Text("\(currentIndex + 1) / \(imageURLs.count)")
                     .foregroundStyle(Color.white)
                     .font(.caption)
-                    .padding(8)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
                     .background {
                         RoundedRectangle(cornerRadius: 15)
-                            .foregroundStyle(Color.gray)
+                            .foregroundStyle(Color.black.opacity(0.5))
                     }
                     .padding()
             }
