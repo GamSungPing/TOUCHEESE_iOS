@@ -94,8 +94,8 @@ extension StudioDetail {
         notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
         products: [
             Product.sample1,
-            Product.sample1,
-            Product.sample1
+            Product.sample2,
+            Product.sample3
         ],
         reviews: [
             Review.sample,
