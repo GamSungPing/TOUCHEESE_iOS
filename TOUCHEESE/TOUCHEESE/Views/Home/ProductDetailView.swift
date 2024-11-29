@@ -9,11 +9,6 @@ import SwiftUI
 import Kingfisher
 
 struct ProductDetailView: View {
-    // 임시 프로덕트
-    let product: Product = Product.sample1
-    // 임시 프로덕트 디테일
-    let productDetail: ProductDetail = ProductDetail.sample1
-    
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
@@ -34,15 +29,15 @@ struct ProductDetailView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
                         // 상단 상품 이미지 및 설명
-                        infoView(product: product)
+                        infoView(product: productDetailViewModel.product)
                             .padding(.bottom, 6)
                         
                         // 리뷰로 이동하는 버튼
-                        reviewButtonView(reviewCount: product.reviewCount)
+                        reviewButtonView(reviewCount: productDetailViewModel.product.reviewCount)
                             .padding(.bottom, 10)
                         
                         // 가격 정보
-                        priceView(productPrice: product.price)
+                        priceView(productPrice: productDetailViewModel.product.price)
                             .padding(.bottom, 6)
                         
                         // 구분선
@@ -50,7 +45,7 @@ struct ProductDetailView: View {
                             .padding(.bottom, 10)
                         
                         // 기준 인원 뷰
-                        baseGuestCountView(baseGuestCount: productDetail.baseGuestCount!)
+                        baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
                             .padding(.bottom, 6)
                         
                         // 구분선
@@ -66,7 +61,7 @@ struct ProductDetailView: View {
                             .padding(.bottom, 10)
                         
                         // 상품 옵션 설정 뷰
-                        productOptionView(productDetail: productDetail)
+                        productOptionView(productDetail: productDetailViewModel.productDetail)
                             .padding(.bottom, 12)
                         
                         // 구분선
