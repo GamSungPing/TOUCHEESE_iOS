@@ -77,7 +77,7 @@ struct ProductDetailView: View {
                                 
                                 Spacer()
                             }
-                         
+                            
                             Button {
                                 
                             } label: {
@@ -90,9 +90,6 @@ struct ProductDetailView: View {
                                             .foregroundStyle(.black)
                                     }
                             }
-                        
-                            
-                            
                         }
                     }
                 }
@@ -137,7 +134,6 @@ struct ProductDetailView: View {
             .padding(.horizontal, 26)
     }
     
-
     @ViewBuilder
     private func infoView(product: Product) -> some View {
         // 이미지 넓이 값
@@ -243,7 +239,7 @@ struct ProductDetailView: View {
         }
     }
     
-    struct optionItemView: View {
+    private struct optionItemView: View {
         @State var isSelected: Bool = false
         let productOption: ProductOption
         
@@ -263,7 +259,6 @@ struct ProductDetailView: View {
                         )
                 }
                 .padding(.trailing, 22)
-                
                 
                 Text("\(productOption.name)")
                 
@@ -286,7 +281,7 @@ struct ProductDetailView: View {
                     
                     Spacer()
                 }
-            
+                
                 ForEach(productDetail.productOptions) { option in
                     optionItemView(productOption: option)
                 }
