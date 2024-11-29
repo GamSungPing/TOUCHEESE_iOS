@@ -17,7 +17,7 @@ struct StudioData: Codable {
 
 // MARK: - DataClass
 struct DataClass: Codable {
-    let totalElementsCount, pageElementsCount, totalPagesCount, pageNumber: Int
+    let totalPagesCount, pageNumber: Int
     let content: [Studio]
 }
 
