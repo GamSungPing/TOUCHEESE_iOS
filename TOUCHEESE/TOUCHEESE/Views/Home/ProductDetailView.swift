@@ -39,7 +39,7 @@ struct ProductDetailView: View {
                         //                            .padding(.bottom, 10)
                         
                         // 가격 정보
-                        priceView(productPrice: product.price)
+                        priceView(productPrice: productDetailViewModel.product.price)
                             .padding(.bottom, 6)
                         
                         // 구분선
@@ -567,6 +567,69 @@ fileprivate struct CustomCalendar: View {
         }
         .onAppear {
             displayMonth = productDetailViewModel.selectedDate
+        }
+    }
+    
+    private var reservationView: some View {
+        VStack {
+            HStack {
+                Text("촬영날짜")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.leading, 30)
+                
+                Spacer()
+            }
+            
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 12)
+                    .padding(.horizontal, 20)
+                    .frame(width: .infinity, height: 60)
+                    .foregroundStyle(Color.tcLightgray)
+                    .overlay {
+                        Text("예약하실 날짜를 선택해주세요")
+                            .foregroundStyle(.black)
+                    }
+            }
+        }
+    }
+    
+    private struct bottomView: View {
+        // 임시 뷰모델
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+        
+        var body: some View {
+            HStack(spacing: 12) {
+                Button {
+                    
+                } label: {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: 80, height: 40)
+                        .foregroundStyle(Color.tcYellow)
+                        .overlay {
+                            Image(systemName: "cart")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30)
+                                .foregroundStyle(Color.black)
+                        }
+                }
+                
+                Button {
+                    
+                } label: {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: .infinity, height: 40)
+                        .foregroundStyle(Color.tcYellow)
+                        .overlay {
+                            Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
+                                .foregroundStyle(.black)
+                        }
+                }
+            }
+            .padding(.horizontal, 30)
         }
     }
 }
