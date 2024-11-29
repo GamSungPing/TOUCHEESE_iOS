@@ -17,7 +17,7 @@ struct ImageCarouselView: View {
     
     init(
         imageURLs: [URL],
-        width: CGFloat = UIScreen.main.bounds.width,
+        width: CGFloat = CGFloat.screenWidth,
         height: CGFloat = .infinity
     ) {
         self.imageURLs = imageURLs

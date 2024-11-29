@@ -45,7 +45,7 @@ struct StudioDetailView: View {
                 
                 // 가격 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
-                    productListView
+                    ProductListView(studioDetail: studioDetail)
                 } else {
                     reviewGridView
                 }
@@ -94,10 +94,6 @@ struct StudioDetailView: View {
         }
     }
     
-    private var productListView: some View {
-        Text("상품 리스트 표시")
-    }
-    
     private var reviewGridView: some View {
         Text("리뷰 그리드 표시")
     }
@@ -112,15 +108,21 @@ fileprivate struct CustomSegmentedControl: View {
         HStack(spacing: 0) {
             ForEach(options.indices, id:\.self) { index in
                 ZStack {
-                    RoundedCornersShape(corners: [.topLeft, .topRight], radius: 20)
-                        .fill(.tcLightyellow)
+                    RoundedCornersShape(
+                        corners: [.topLeft, .topRight],
+                        radius: 20
+                    )
+                    .fill(.tcLightyellow)
                     
-                    RoundedCornersShape(corners: [.topLeft, .topRight], radius: 20)
-                        .fill(.tcYellow)
-                        .opacity(selectedIndex == index ? 1 : 0.01)
-                        .onTapGesture {
-                            selectedIndex = index
-                        }
+                    RoundedCornersShape(
+                        corners: [.topLeft, .topRight],
+                        radius: 20
+                    )
+                    .fill(.tcYellow)
+                    .opacity(selectedIndex == index ? 1 : 0.01)
+                    .onTapGesture {
+                        selectedIndex = index
+                    }
                 }
                 .overlay {
                     Text(options[index])
@@ -144,6 +146,54 @@ fileprivate struct RoundedCornersShape: Shape {
         )
         
         return Path(path.cgPath)
+    }
+}
+
+
+fileprivate struct ProductListView: View {
+    let studioDetail: StudioDetail
+    @State private var isExpanded = false
+    
+    var body: some View {
+        LazyVStack {
+            if let notice = studioDetail.notice {
+                NoticeView(notice: notice, isExpanded: $isExpanded)
+            }
+            Text("안녕하세요")
+        }
+        .animation(.easeInOut, value: isExpanded)
+    }
+}
+
+
+fileprivate struct NoticeView: View {
+    let notice: String?
+    @Binding var isExpanded: Bool
+    
+    var body: some View {
+        HStack(alignment: .top) {
+            Image(systemName: "megaphone.fill")
+            
+            if let notice {
+                Text("\(notice)")
+                    .frame(width: CGFloat.screenWidth - 100)
+                    .lineLimit(isExpanded ? nil : 2)
+                    .multilineTextAlignment(.leading)
+            }
+            
+            Button {
+                isExpanded.toggle()
+                print("토글 되는 중~")
+            } label: {
+                Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+            }
+        }
+        .padding()
+        .background {
+            RoundedRectangle(cornerRadius: 15)
+                .fill(.tcLightgray)
+        }
+        .padding(.top, -5)
     }
 }
 
