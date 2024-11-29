@@ -156,7 +156,7 @@ fileprivate struct ProductListView: View {
     @State private var isExpanded = false
     
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading, spacing: 15) {
             if let notice = studioDetail.notice {
                 NoticeView(notice: notice, isExpanded: $isExpanded)
             }
@@ -209,10 +209,6 @@ fileprivate struct ProductListView: View {
         }
         .padding(.horizontal)
         .animation(.easeInOut, value: isExpanded)
-        .onAppear {
-            
-            print(studioDetail.products.count)
-        }
     }
 }
 
