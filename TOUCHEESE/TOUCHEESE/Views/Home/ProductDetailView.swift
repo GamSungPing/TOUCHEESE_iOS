@@ -67,7 +67,7 @@ struct ProductDetailView: View {
                         reservationView
                     }
                 }
-                bottomView
+                bottomView()
             }
         }
     }
@@ -153,7 +153,7 @@ struct ProductDetailView: View {
         
         var body: some View {
             HStack {
-                Text("추가 인원")
+                Text("추가 인원 (\(productDetailViewModel.getAddPeoplePrice()))")
                 
                 Spacer()
                 
@@ -183,14 +183,16 @@ struct ProductDetailView: View {
     }
     
     private struct optionItemView: View {
+        // 임시 뷰모델
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
         @State var isSelected: Bool = false
         let productOption: ProductOption
         
         var body: some View {
             HStack {
                 Button {
-                    print("뷰모델에서 처리합시다잉")
                     isSelected.toggle()
+                    productDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
                 } label: {
                     Circle()
                         .frame(width: 25)
@@ -258,36 +260,41 @@ struct ProductDetailView: View {
         }
     }
     
-    private var bottomView: some View {
-        HStack(spacing: 12) {
-            Button {
+    private struct bottomView: View {
+        // 임시 뷰모델
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+        
+        var body: some View {
+            HStack(spacing: 12) {
+                Button {
+                    
+                } label: {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: 80, height: 40)
+                        .foregroundStyle(Color.tcYellow)
+                        .overlay {
+                            Image(systemName: "cart")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30)
+                                .foregroundStyle(Color.black)
+                        }
+                }
                 
-            } label: {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 80, height: 40)
-                    .foregroundStyle(Color.tcYellow)
-                    .overlay {
-                        Image(systemName: "cart")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30)
-                            .foregroundStyle(Color.black)
-                    }
+                Button {
+                    
+                } label: {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: .infinity, height: 40)
+                        .foregroundStyle(Color.tcYellow)
+                        .overlay {
+                            Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
+                                .foregroundStyle(.black)
+                        }
+                }
             }
-            
-            Button {
-                
-            } label: {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: .infinity, height: 40)
-                    .foregroundStyle(Color.tcYellow)
-                    .overlay {
-                        Text("선택 상품 주문")
-                            .foregroundStyle(.black)
-                    }
-            }
+            .padding(.horizontal, 30)
         }
-        .padding(.horizontal, 30)
     }
 }
 
