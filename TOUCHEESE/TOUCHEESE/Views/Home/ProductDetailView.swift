@@ -9,8 +9,13 @@ import SwiftUI
 import Kingfisher
 
 struct ProductDetailView: View {
+    // 임시 프로덕트
     let product: Product = Product.sample1
+    // 임시 프로덕트 디테일
     let productDetail: ProductDetail = ProductDetail.sample1
+    
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
     // 이미지 넓이 값
     let imageWidth: CGFloat = 150
@@ -53,7 +58,7 @@ struct ProductDetailView: View {
                             .padding(.bottom, 10)
                         
                         // 단체 인원 뷰
-                        AddPeopleView(addPeopleCount: $addPeopleCount)
+                        AddPeopleView()
                             .padding(.bottom, 6)
                         
                         // 구분선
@@ -141,7 +146,6 @@ struct ProductDetailView: View {
         // 이미지 넓이 - 높이 비율
         let imageScale: CGFloat = 1.5
         
-        
         VStack {
             Image(systemName: "house.fill")
                 .resizable()
@@ -204,7 +208,8 @@ struct ProductDetailView: View {
     }
     
     private struct AddPeopleView: View {
-        @Binding var addPeopleCount: Int
+        // 임시 뷰모델
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
         
         var body: some View {
             HStack {
@@ -213,19 +218,17 @@ struct ProductDetailView: View {
                 Spacer()
                 
                 Button {
-                    if addPeopleCount > 0 {
-                        addPeopleCount -= 1
-                    }
+                    productDetailViewModel.decreaseAddPeopleCount()
                 } label: {
                     Image(systemName: "minus.square.fill")
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(Color.black, Color.gray)
                 }
                 
-                Text("\(addPeopleCount) 명")
+                Text("\(productDetailViewModel.addPeopleCount) 명")
                 
                 Button {
-                    addPeopleCount += 1
+                    productDetailViewModel.increaseAddPeopleCount()
                 } label: {
                     Image(systemName: "plus.square.fill")
                         .symbolRenderingMode(.palette)
@@ -292,4 +295,5 @@ struct ProductDetailView: View {
 
 #Preview {
     ProductDetailView()
+        .environmentObject(TempProductDetailViewModel())
 }
