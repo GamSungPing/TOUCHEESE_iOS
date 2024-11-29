@@ -12,11 +12,6 @@ struct ProductDetailView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
-    // 이미지 넓이 값
-    let imageWidth: CGFloat = 150
-    // 이미지 넓이 - 높이 비율
-    let imageScale: CGFloat = 1.5
-    
     // 추가 인원
     @State var addPeopleCount: Int = 0
     
@@ -68,61 +63,11 @@ struct ProductDetailView: View {
                         myDivider
                             .padding(.bottom, 10)
                         
-                        VStack {
-                            HStack {
-                                Text("촬영날짜")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                    .padding(.leading, 30)
-                                
-                                Spacer()
-                            }
-                            
-                            Button {
-                                
-                            } label: {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .padding(.horizontal, 20)
-                                    .frame(width: .infinity, height: 60)
-                                    .foregroundStyle(Color.tcLightgray)
-                                    .overlay {
-                                        Text("예약하실 날짜를 선택해주세요")
-                                            .foregroundStyle(.black)
-                                    }
-                            }
-                        }
+                        // 촬영 날짜 예약 뷰
+                        reservationView
                     }
                 }
-                
-                HStack(spacing: 12) {
-                    Button {
-                        
-                    } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .frame(width: 80, height: 40)
-                            .foregroundStyle(Color.tcYellow)
-                            .overlay {
-                                Image(systemName: "cart")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30)
-                                    .foregroundStyle(Color.black)
-                            }
-                    }
-                    
-                    Button {
-                        
-                    } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .frame(width: .infinity, height: 40)
-                            .foregroundStyle(Color.tcYellow)
-                            .overlay {
-                                Text("선택 상품 주문")
-                                    .foregroundStyle(.black)
-                            }
-                    }
-                }
-                .padding(.horizontal, 30)
+                bottomView
             }
         }
     }
@@ -285,6 +230,64 @@ struct ProductDetailView: View {
                 }
             }
         }
+    }
+    
+    private var reservationView: some View {
+        VStack {
+            HStack {
+                Text("촬영날짜")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.leading, 30)
+                
+                Spacer()
+            }
+            
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 12)
+                    .padding(.horizontal, 20)
+                    .frame(width: .infinity, height: 60)
+                    .foregroundStyle(Color.tcLightgray)
+                    .overlay {
+                        Text("예약하실 날짜를 선택해주세요")
+                            .foregroundStyle(.black)
+                    }
+            }
+        }
+    }
+    
+    private var bottomView: some View {
+        HStack(spacing: 12) {
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(width: 80, height: 40)
+                    .foregroundStyle(Color.tcYellow)
+                    .overlay {
+                        Image(systemName: "cart")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30)
+                            .foregroundStyle(Color.black)
+                    }
+            }
+            
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(width: .infinity, height: 40)
+                    .foregroundStyle(Color.tcYellow)
+                    .overlay {
+                        Text("선택 상품 주문")
+                            .foregroundStyle(.black)
+                    }
+            }
+        }
+        .padding(.horizontal, 30)
     }
 }
 
