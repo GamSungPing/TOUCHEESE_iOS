@@ -34,13 +34,6 @@ final class TempProductDetailViewModel: ObservableObject {
     
     // 영업 시간 배열
     @Published private(set) var businessHour: [String] = []
-        
-    // 영업 시간 그리드 설정
-    @Published private(set) var businessHourColums: [GridItem] = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
     
     // 예약한 날짜
     @Published private(set) var reservationDate: Date?
