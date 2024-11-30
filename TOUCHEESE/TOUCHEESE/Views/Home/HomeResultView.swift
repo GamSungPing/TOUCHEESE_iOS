@@ -19,6 +19,7 @@ struct HomeResultView: View {
         VStack {
             filtersView
                 .padding(.horizontal)
+                .padding(.bottom, -5)
             
             ZStack(alignment: .top) {
                 if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
@@ -182,7 +183,7 @@ struct HomeResultView: View {
         .background {
             RoundedRectangle(cornerRadius: 15)
                 .padding(.horizontal)
-                .foregroundStyle(Color.yellow)
+                .foregroundStyle(Color.tcLightyellow)
                 .shadow(radius: 5, x: 2, y: 5)
         }
         .onAppear {
@@ -210,7 +211,7 @@ struct HomeResultView: View {
                     .overlay(
                         Circle()
                             .frame(width: 15)
-                            .foregroundStyle(isSelected ? Color.red : Color.clear)
+                            .foregroundStyle(isSelected ? Color.tcYellow : Color.clear)
                     )
             }
             .frame(width: 80)
