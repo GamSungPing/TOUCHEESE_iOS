@@ -70,6 +70,9 @@ struct StudioRow: View {
                             ProgressView()
                         }
                         .resizable()
+                        .downsampling(size: CGSize(width: 230, height: 230))
+                        .cancelOnDisappear(true)
+                        .fade(duration: 0.25)
                         .aspectRatio(contentMode: .fill)
                         .foregroundStyle(Color.black)
                         .frame(width: 130, height: 130)

@@ -33,6 +33,7 @@ struct ImageCarouselView: View {
                         ProgressView()
                     }
                     .resizable()
+                    .fade(duration: 0.25)
                     .scaledToFill()
                     .tag(index)
             }

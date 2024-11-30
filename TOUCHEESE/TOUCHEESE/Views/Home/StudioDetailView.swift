@@ -171,6 +171,8 @@ fileprivate struct ProductListView: View {
                             ProgressView()
                         }
                         .resizable()
+                        .downsampling(size: CGSize(width: 250, height: 250))
+                        .fade(duration: 0.25)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 120)
                         .overlay {

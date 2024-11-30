@@ -18,7 +18,9 @@ struct ProfileImageView: View {
                 ProgressView()
             }
             .resizable()
-            .aspectRatio(contentMode: .fit)
+            .downsampling(size: CGSize(width: 150, height: 150))
+            .fade(duration: 0.25)
+            .aspectRatio(contentMode: .fill)
             .frame(width: size, height: size)
             .foregroundStyle(Color.black)
             .clipShape(.circle)

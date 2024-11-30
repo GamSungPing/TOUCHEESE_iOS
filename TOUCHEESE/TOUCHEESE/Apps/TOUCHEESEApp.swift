@@ -12,6 +12,10 @@ struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
     @StateObject private var tempProductDetailViewModel = TempProductDetailViewModel()
     
+    init() {
+        CacheManager.configureKingfisherCache()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ToucheeseTabView()
