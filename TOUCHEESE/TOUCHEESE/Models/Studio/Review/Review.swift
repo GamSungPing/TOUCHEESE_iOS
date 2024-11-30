@@ -40,6 +40,13 @@ extension Review {
         imageString: "https://i.imgur.com/Uw5nNHQ.png"
     )
     
+    static let samples: [Review] = (0..<17).map { index in
+        Review(
+            id: index,
+            imageString: "https://i.imgur.com/Uw5nNHQ.png"
+        )
+    }
+    
     var imageURL: URL {
         URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
     }

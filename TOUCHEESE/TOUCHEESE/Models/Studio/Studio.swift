@@ -97,13 +97,7 @@ extension StudioDetail {
             Product.sample2,
             Product.sample3
         ],
-        reviews: [
-            Review.sample,
-            Review.sample,
-            Review.sample,
-            Review.sample,
-            Review.sample
-        ]
+        reviews: Review.samples
     )
     
     var detailImageURLs: [URL] {

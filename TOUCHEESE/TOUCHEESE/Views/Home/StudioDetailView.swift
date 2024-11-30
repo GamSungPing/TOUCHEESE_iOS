@@ -48,7 +48,10 @@ struct StudioDetailView: View {
                 if selectedSegmentedControlIndex == 0 {
                     ProductListView(studioDetail: studioDetail)
                 } else {
-                    reviewGridView
+                    ReviewImageGridView(reviews: studioDetail.reviews) { review in
+                        // MARK: - 추후에 ReviewDetailView로 넘어가는 로직 구현
+                        print(review.id)
+                    }
                 }
             }
         }
@@ -93,10 +96,6 @@ struct StudioDetailView: View {
                 }
             }
         }
-    }
-    
-    private var reviewGridView: some View {
-        Text("리뷰 그리드 표시")
     }
 }
 
