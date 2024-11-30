@@ -13,72 +13,71 @@ struct ProductDetailView: View {
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
     // 캘린더 시트 트리거
-    @State private var isCalendarPresented = true
+    @State private var isCalendarPresented = false
     
     var body: some View {
         VStack {
-            VStack {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        // 상단 상품 이미지 및 설명
-                        infoView(product: productDetailViewModel.product)
-                            .padding(.bottom, 6)
-                        
-                        // 리뷰로 이동하는 버튼
-                        reviewButtonView(reviewCount: productDetailViewModel.product.reviewCount)
-                            .padding(.bottom, 10)
-                        
-                        // 가격 정보
-                        priceView(productPrice: productDetailViewModel.product.price)
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        // 기준 인원 뷰
-                        baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        // 단체 인원 뷰
-                        AddPeopleView()
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        // 상품 옵션 설정 뷰
-                        productOptionView(productDetail: productDetailViewModel.productDetail)
-                            .padding(.bottom, 12)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        // 촬영 날짜 예약 뷰
-                        reservationView(isCalendarPresented: $isCalendarPresented)
-                    }
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // 상단 상품 이미지 및 설명
+                    infoView(product: productDetailViewModel.product)
+                        .padding(.bottom, 6)
+                    
+                    // 리뷰로 이동하는 버튼
+                    reviewButtonView(reviewCount: productDetailViewModel.product.reviewCount)
+                        .padding(.bottom, 10)
+                    
+                    // 가격 정보
+                    priceView(productPrice: productDetailViewModel.product.price)
+                        .padding(.bottom, 6)
+                    
+                    // 구분선
+                    myDivider
+                        .padding(.bottom, 10)
+                    
+                    // 기준 인원 뷰
+                    baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
+                        .padding(.bottom, 6)
+                    
+                    // 구분선
+                    myDivider
+                        .padding(.bottom, 10)
+                    
+                    // 단체 인원 뷰
+                    AddPeopleView()
+                        .padding(.bottom, 6)
+                    
+                    // 구분선
+                    myDivider
+                        .padding(.bottom, 10)
+                    
+                    // 상품 옵션 설정 뷰
+                    productOptionView(productDetail: productDetailViewModel.productDetail)
+                        .padding(.bottom, 12)
+                    
+                    // 구분선
+                    myDivider
+                        .padding(.bottom, 10)
+                    
+                    // 촬영 날짜 예약 뷰
+                    reservationView(isCalendarPresented: $isCalendarPresented)
                 }
-                // 하단 장바구니, 주문 뷰
-                bottomView()
             }
+            // 하단 장바구니, 주문 뷰
+            bottomView()
         }
         .sheet(isPresented: $isCalendarPresented) {
             // 예약할 날짜를 선택하는 캘린더 뷰
             calendarView(selectedDate: $productDetailViewModel.selectedDate, isCalendarPresented: $isCalendarPresented)
-            .presentationDetents([.fraction(0.65)])
-            .presentationDragIndicator(.visible)
+                .presentationDetents([.fraction(0.65)])
+                .presentationDragIndicator(.visible)
         }
     }
     
     private var myDivider: some View {
         Rectangle()
-            .frame(width: .infinity, height: 2.0)
+            .frame(maxWidth: .infinity)
+            .frame(height: 2.0)
             .foregroundStyle(.tcLightgray)
             .padding(.horizontal, 26)
     }
@@ -258,7 +257,8 @@ struct ProductDetailView: View {
                     isCalendarPresented.toggle()
                 } label: {
                     RoundedRectangle(cornerRadius: 12)
-                        .frame(width: .infinity, height: 60)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 60)
                         .foregroundStyle(Color.tcLightgray)
                         .overlay {
                             if productDetailViewModel.reservationDate == nil {
@@ -300,7 +300,8 @@ struct ProductDetailView: View {
                     
                 } label: {
                     RoundedRectangle(cornerRadius: 20)
-                        .frame(width: .infinity, height: 40)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
                         .foregroundStyle(Color.tcYellow)
                         .overlay {
                             Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
@@ -326,7 +327,7 @@ struct ProductDetailView: View {
                         .accentColor(.tcYellow)
                         .datePickerStyle(.graphical)
                         .environment(\.locale, Locale(identifier: "ko_KR"))
-
+                    
                     LazyVGrid(columns: productDetailViewModel.businessHourColums) {
                         ForEach(productDetailViewModel.businessHour, id: \.self) { time in
                             Button {
