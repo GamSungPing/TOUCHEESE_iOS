@@ -25,23 +25,18 @@ struct ReviewImageGridView: View {
         if let reviews {
             LazyVGrid(columns: columns, spacing: 2) {
                 ForEach(reviews) { review in
-                    Rectangle()
-                        .fill(Color.clear)
+                    KFImage(review.imageURL)
+                        .placeholder { ProgressView() }
+                        .downsampling(size: CGSize(width: 200, height: 200))
+                        .cacheMemoryOnly()
+                        .fade(duration: 0.25)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .frame(height: gridSize)
+                        .clipped()
                         .contentShape(Rectangle())
                         .onTapGesture {
                             action(review)
-                        }
-                        .background {
-                            KFImage(review.imageURL)
-                                .placeholder { ProgressView() }
-                                .downsampling(size: CGSize(width: 200, height: 200))
-                                .cacheMemoryOnly()
-                                .fade(duration: 0.25)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: gridSize)
-                                .clipped()
                         }
                 }
             }

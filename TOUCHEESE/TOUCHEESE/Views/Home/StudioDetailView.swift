@@ -52,6 +52,7 @@ struct StudioDetailView: View {
                         // MARK: - 추후에 ReviewDetailView로 넘어가는 로직 구현
                         print(review.id)
                     }
+                    .padding(.top, -13)
                 }
             }
         }
