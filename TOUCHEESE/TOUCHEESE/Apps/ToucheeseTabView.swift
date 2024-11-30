@@ -22,7 +22,7 @@ struct ToucheeseTabView: View {
             }
             .tag(0)
             
-            TestView()
+            ProductDetailView()
                 .tabItem {
                     Image(systemName: "house")
                     Text("예약일정")

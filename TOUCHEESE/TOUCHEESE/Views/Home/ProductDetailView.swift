@@ -12,11 +12,8 @@ struct ProductDetailView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
-    // 추가 인원
-    @State var addPeopleCount: Int = 0
-    
-    // 옵션 배열
-    @State var selectedOptionArray: [Bool] = []
+    // 캘린더 시트 트리거
+    @State private var isCalendarPresented = true
     
     var body: some View {
         VStack {
@@ -64,11 +61,18 @@ struct ProductDetailView: View {
                             .padding(.bottom, 10)
                         
                         // 촬영 날짜 예약 뷰
-                        reservationView
+                        reservationView(isCalendarPresented: $isCalendarPresented)
                     }
                 }
+                // 하단 장바구니, 주문 뷰
                 bottomView()
             }
+        }
+        .sheet(isPresented: $isCalendarPresented) {
+            // 예약할 날짜를 선택하는 캘린더 뷰
+            calendarView(selectedDate: $productDetailViewModel.selectedDate, isCalendarPresented: $isCalendarPresented)
+            .presentationDetents([.fraction(0.65)])
+            .presentationDragIndicator(.visible)
         }
     }
     
@@ -234,28 +238,39 @@ struct ProductDetailView: View {
         }
     }
     
-    private var reservationView: some View {
-        VStack {
-            HStack {
-                Text("촬영날짜")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .padding(.leading, 30)
+    private struct reservationView: View {
+        @State var isOpen: Bool = false
+        @Binding var isCalendarPresented: Bool
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("촬영날짜")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .padding(.leading, 30)
+                    
+                    Spacer()
+                }
                 
-                Spacer()
-            }
-            
-            Button {
-                
-            } label: {
-                RoundedRectangle(cornerRadius: 12)
-                    .padding(.horizontal, 20)
-                    .frame(width: .infinity, height: 60)
-                    .foregroundStyle(Color.tcLightgray)
-                    .overlay {
-                        Text("예약하실 날짜를 선택해주세요")
-                            .foregroundStyle(.black)
-                    }
+                Button {
+                    isCalendarPresented.toggle()
+                } label: {
+                    RoundedRectangle(cornerRadius: 12)
+                        .frame(width: .infinity, height: 60)
+                        .foregroundStyle(Color.tcLightgray)
+                        .overlay {
+                            if productDetailViewModel.reservationDate == nil {
+                                Text("예약하실 날짜를 선택해주세요")
+                                    .foregroundStyle(.black)
+                            } else {
+                                Text("예약 날짜:  \(productDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
+                                    .foregroundStyle(.black)
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                }
             }
         }
     }
@@ -294,6 +309,45 @@ struct ProductDetailView: View {
                 }
             }
             .padding(.horizontal, 30)
+        }
+    }
+    
+    private struct calendarView: View {
+        // 임시 뷰모델
+        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+        // 선택된 날짜
+        @Binding var selectedDate: Date
+        @Binding var isCalendarPresented: Bool
+        
+        var body: some View {
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    DatePicker("달력", selection: $selectedDate, in: Date()...,displayedComponents: .date)
+                        .accentColor(.tcYellow)
+                        .datePickerStyle(.graphical)
+                        .environment(\.locale, Locale(identifier: "ko_KR"))
+
+                    LazyVGrid(columns: productDetailViewModel.businessHourColums) {
+                        ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                            Button {
+                                productDetailViewModel.selectTime(time: time)
+                                isCalendarPresented = false
+                            } label: {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .foregroundStyle(.tcLightyellow)
+                                    .frame(height: 30)
+                                    .overlay {
+                                        Text("\(time)")
+                                            .foregroundStyle(.black)
+                                    }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+            }
         }
     }
 }
