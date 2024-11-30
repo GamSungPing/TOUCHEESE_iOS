@@ -13,6 +13,8 @@ struct StudioDetailView: View {
     
     @Environment(\.isPresented) var isPresented
     @State private var selectedSegmentedControlIndex = 0
+    @State private var carouselIndex = 0
+    @State private var isShowingImageExtensionView = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -22,6 +24,8 @@ struct StudioDetailView: View {
             LazyVStack(alignment: .leading, spacing: 15) {
                 ImageCarouselView(
                     imageURLs: studioDetail.detailImageURLs,
+                    carouselIndex: $carouselIndex,
+                    isShowingImageExtensionView: $isShowingImageExtensionView,
                     height: 250
                 )
                 
@@ -61,6 +65,13 @@ struct StudioDetailView: View {
         .toolbar {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
+        }
+        .fullScreenCover(isPresented: $isShowingImageExtensionView) {
+            ImageExtensionView(
+                imageURLs: studioDetail.detailImageURLs,
+                currentIndex: $carouselIndex,
+                isShowingImageExtensionView: $isShowingImageExtensionView
+            )
         }
     }
     
@@ -167,9 +178,7 @@ fileprivate struct ProductListView: View {
             ForEach(studioDetail.products, id: \.self) { product in
                 HStack(spacing: 15) {
                     KFImage(product.imageURL)
-                        .placeholder { _ in
-                            ProgressView()
-                        }
+                        .placeholder { ProgressView() }
                         .resizable()
                         .downsampling(size: CGSize(width: 250, height: 250))
                         .fade(duration: 0.25)

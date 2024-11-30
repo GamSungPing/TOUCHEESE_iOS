@@ -85,8 +85,8 @@ extension StudioDetail {
     static let sample = StudioDetail(
         detailImageStrings: [
             "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png"
+            "https://i.pinimg.com/736x/d2/59/7c/d2597c06b76ad83921e5c1ead54565ba.jpg",
+            "https://recsofficial.cafe24.com/web/upload/NNEditor/20230112/EC9784ECA780EC9CA4_EC8580EB9FACEBB88CEBA6ACED8BB0.jpg"
         ],
         reviewCount: 2_234,
         businessHours: "월~금 10:10~19:00 / 매주 월요일 휴무",

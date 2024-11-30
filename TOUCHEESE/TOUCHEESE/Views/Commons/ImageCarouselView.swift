@@ -10,32 +10,23 @@ import Kingfisher
 
 struct ImageCarouselView: View {
     let imageURLs: [URL]
-    let width: CGFloat
-    let height: CGFloat
+    @Binding var carouselIndex: Int
+    @Binding var isShowingImageExtensionView: Bool
     
-    @State private var currentIndex: Int = 0
-    
-    init(
-        imageURLs: [URL],
-        width: CGFloat = CGFloat.screenWidth,
-        height: CGFloat = .infinity
-    ) {
-        self.imageURLs = imageURLs
-        self.width = width
-        self.height = height
-    }
+    var width: CGFloat = CGFloat.screenWidth
+    var height: CGFloat = .infinity
     
     var body: some View {
-        TabView(selection: $currentIndex) {
+        TabView(selection: $carouselIndex) {
             ForEach(imageURLs.indices, id:\.self) { index in
                 KFImage(imageURLs[index])
-                    .placeholder { _ in
-                        ProgressView()
-                    }
+                    .placeholder { ProgressView() }
                     .resizable()
                     .fade(duration: 0.25)
                     .scaledToFill()
-                    .tag(index)
+                    .onTapGesture {
+                        isShowingImageExtensionView.toggle()
+                    }
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
@@ -43,7 +34,7 @@ struct ImageCarouselView: View {
         .overlay(alignment: .bottomTrailing) {
             HStack {
                 Spacer()
-                Text("\(currentIndex + 1) / \(imageURLs.count)")
+                Text("\(carouselIndex + 1) / \(imageURLs.count)")
                     .foregroundStyle(Color.white)
                     .font(.caption)
                     .padding(.horizontal, 8)
@@ -67,6 +58,7 @@ struct ImageCarouselView: View {
             URL(string: "https://i.imgur.com/Uw5nNHQ.png")!,
             URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
         ],
-        height: 300
+        carouselIndex: .constant(0),
+        isShowingImageExtensionView: .constant(false)
     )
 }

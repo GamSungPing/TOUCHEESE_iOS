@@ -66,9 +66,7 @@ struct StudioRow: View {
             HStack(spacing: 10) {
                 ForEach(imageURLs.indices, id: \.self) { index in
                     KFImage(imageURLs[index])
-                        .placeholder { _ in
-                            ProgressView()
-                        }
+                        .placeholder { ProgressView() }
                         .resizable()
                         .downsampling(size: CGSize(width: 230, height: 230))
                         .cancelOnDisappear(true)

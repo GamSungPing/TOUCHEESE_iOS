@@ -14,9 +14,7 @@ struct ProfileImageView: View {
     
     var body: some View {
         KFImage(imageURL)
-            .placeholder { _ in
-                ProgressView()
-            }
+            .placeholder { ProgressView() }
             .resizable()
             .downsampling(size: CGSize(width: 150, height: 150))
             .fade(duration: 0.25)
