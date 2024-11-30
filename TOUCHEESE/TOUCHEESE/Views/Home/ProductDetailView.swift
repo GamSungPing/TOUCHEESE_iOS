@@ -91,6 +91,12 @@ struct ProductDetailView: View {
                     .environmentObject(productDetailViewModel)
             }
         }
+        .sheet(isPresented: $isCalendarPresented) {
+            // 예약할 날짜를 선택하는 캘린더 뷰
+            CalendarView(isCalendarPresented: $isCalendarPresented)
+                .presentationDetents([.fraction(0.65)])
+                .presentationDragIndicator(.visible)
+        }
     }
     
     private var myDivider: some View {
@@ -569,8 +575,82 @@ fileprivate struct CustomCalendar: View {
             displayMonth = productDetailViewModel.selectedDate
         }
     }
+}
+
+fileprivate struct AddPeopleView: View {
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
-    private var reservationView: some View {
+    var body: some View {
+        HStack {
+            Text("추가 인원 (\(productDetailViewModel.getAddPeoplePrice()))")
+            
+            Spacer()
+            
+            Button {
+                productDetailViewModel.decreaseAddPeopleCount()
+            } label: {
+                Image(systemName: "minus.square.fill")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(Color.black, Color.gray)
+            }
+            
+            Text("\(productDetailViewModel.addPeopleCount) 명")
+            
+            Button {
+                productDetailViewModel.increaseAddPeopleCount()
+            } label: {
+                Image(systemName: "plus.square.fill")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(Color.black, Color.gray)
+            }
+            
+        }
+        .font(.headline)
+        .fontWeight(.semibold)
+        .padding(.horizontal, 45)
+    }
+}
+
+fileprivate struct OptionItemView: View {
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @State var isSelected: Bool = false
+    let productOption: ProductOption
+    
+    var body: some View {
+        HStack {
+            Button {
+                isSelected.toggle()
+                productDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
+            } label: {
+                Circle()
+                    .frame(width: 25)
+                    .foregroundStyle(Color.tcYellow)
+                    .overlay(
+                        Circle()
+                            .frame(width: 15)
+                            .foregroundStyle(isSelected ? Color.blue : Color.clear)
+                    )
+            }
+            .padding(.trailing, 22)
+            
+            Text("\(productOption.name)")
+            
+            Spacer()
+            
+            Text("\(productOption.price.moneyStringFormat)")
+        }
+        .padding(.horizontal, 30)
+    }
+}
+
+fileprivate struct ReservationView: View {
+    @State var isOpen: Bool = false
+    @Binding var isCalendarPresented: Bool
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    var body: some View {
         VStack {
             HStack {
                 Text("촬영날짜")
@@ -582,54 +662,184 @@ fileprivate struct CustomCalendar: View {
             }
             
             Button {
-                
+                isCalendarPresented.toggle()
             } label: {
                 RoundedRectangle(cornerRadius: 12)
-                    .padding(.horizontal, 20)
-                    .frame(width: .infinity, height: 60)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 60)
                     .foregroundStyle(Color.tcLightgray)
                     .overlay {
-                        Text("예약하실 날짜를 선택해주세요")
+                        if productDetailViewModel.reservationDate == nil {
+                            Text("예약하실 날짜를 선택해주세요")
+                                .foregroundStyle(.black)
+                        } else {
+                            Text("예약 날짜:  \(productDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
+                                .foregroundStyle(.black)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+            }
+        }
+    }
+}
+
+fileprivate struct BottomView: View {
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(width: 80, height: 40)
+                    .foregroundStyle(Color.tcYellow)
+                    .overlay {
+                        Image(systemName: "cart")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30)
+                            .foregroundStyle(Color.black)
+                    }
+            }
+            
+            Button {
+                
+            } label: {
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 40)
+                    .foregroundStyle(Color.tcYellow)
+                    .overlay {
+                        Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
                             .foregroundStyle(.black)
                     }
             }
         }
+        .padding(.horizontal, 30)
     }
+}
+
+fileprivate struct CalendarView: View {
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @Binding var isCalendarPresented: Bool
     
-    private struct bottomView: View {
-        // 임시 뷰모델
-        @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-        
-        var body: some View {
-            HStack(spacing: 12) {
-                Button {
-                    
-                } label: {
-                    RoundedRectangle(cornerRadius: 20)
-                        .frame(width: 80, height: 40)
-                        .foregroundStyle(Color.tcYellow)
-                        .overlay {
-                            Image(systemName: "cart")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30)
-                                .foregroundStyle(Color.black)
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack {
+                CustomCalendar()
+                    .padding(.vertical)
+                
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                    ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                        Button {
+                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.tempHolidays) {
+                                productDetailViewModel.selectTime(time: time)
+                                isCalendarPresented = false
+                            }
+                        } label: {
+                            RoundedRectangle(cornerRadius: 12)
+                                .foregroundStyle(.tcLightyellow)
+                                .frame(height: 30)
+                                .overlay {
+                                    Text("\(time)")
+                                        .foregroundStyle(.black)
+                                }
                         }
+                    }
+                }
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top)
+        }
+    }
+}
+
+fileprivate struct CustomCalendar: View {
+    // 임시 뷰모델
+    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    // 캘린더 상단에 표시되는 기준 날짜
+    @State private var displayDate = Date()
+    
+    // 현재 날짜의 정보를 가져오는 계산 속성
+    private var calendar: Calendar { Calendar.current }
+    
+    var body: some View {
+        VStack {
+            HStack {
+                // 이전 달 버튼
+                Button {
+                    displayDate = calendar.date(byAdding: .month, value: -1, to: displayDate) ?? Date()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.headline)
+                        .foregroundStyle(.tcYellow)
+                        .padding()
                 }
                 
+                // 현재 표시되는 날짜
+                Text("\(displayDate.toString(format: .yearMonth))")
+                    .font(.headline)
+                    .padding()
+                
+                // 다음 달 버튼
                 Button {
-                    
+                    displayDate = calendar.date(byAdding: .month, value: +1, to: displayDate) ?? Date()
                 } label: {
-                    RoundedRectangle(cornerRadius: 20)
-                        .frame(width: .infinity, height: 40)
-                        .foregroundStyle(Color.tcYellow)
-                        .overlay {
-                            Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
-                                .foregroundStyle(.black)
-                        }
+                    Image(systemName: "chevron.right")
+                        .font(.headline)
+                        .foregroundStyle(.tcYellow)
+                        .padding()
                 }
             }
-            .padding(.horizontal, 30)
+            
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                // 요일 표시
+                ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { weekday in
+                    Text(weekday)
+                        .foregroundStyle(Color.gray)
+                        .font(.subheadline)
+                        .frame(idealWidth: 40, idealHeight: 40)
+                }
+                
+                // 빈칸 표시
+                ForEach(0..<displayDate.firstWeekday - 1, id: \.self) { _ in
+                    Text("")
+                        .frame(idealWidth: 40, idealHeight: 40)
+                }
+                
+                // 날짜 표시
+                ForEach(displayDate.daysInMonth, id: \.self) { date in
+                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.tempHolidays)
+                    let isSelected = calendar.isDate(date, inSameDayAs: productDetailViewModel.selectedDate)
+                    
+                    Button {
+                        displayDate = date
+                        productDetailViewModel.selectedDate = date
+                    } label: {
+                        Text("\(date.dayNumber)")
+                            .font(isSelected ? .title3 : .headline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(
+                                isSelected ? Color.white : (isHoliday || date.isPast ? Color.tcLightgray : Color.black))
+                            .frame(width: 40, height: 40)
+                            .background(
+                                Circle()
+                                    .fill(
+                                        (isHoliday && date.isToday && isSelected) ? .tcLightgray : (isSelected ? .tcYellow : (date.isToday ? .tcLightyellow : .clear))
+                                    )
+                            )
+                    }
+                    .disabled(isHoliday || date.isPast)
+                }
+            }
+        }
+        .onAppear {
+            displayDate = productDetailViewModel.selectedDate
         }
     }
 }
