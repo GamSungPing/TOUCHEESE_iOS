@@ -42,6 +42,7 @@ extension Network {
             }
             
             return params
+        case .studioDetailRequest: return [:]
         }
     }
 }

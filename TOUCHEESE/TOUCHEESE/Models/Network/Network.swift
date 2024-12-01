@@ -16,4 +16,5 @@ enum Network {
         price: StudioPrice?,
         page: Int?
     )
+    case studioDetailRequest(id: Int)
 }

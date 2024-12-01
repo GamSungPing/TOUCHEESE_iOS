@@ -19,7 +19,7 @@ extension Network {
         ):
             // 컨셉 경로 추가
             var path = "/concept/\(concept.rawValue)"
-                       
+            
             // 점수 경로 추가
             if let isHighRating, isHighRating {
                 path += "/high-rating"
@@ -41,6 +41,8 @@ extension Network {
             }
             
             return path
+        case .studioDetailRequest(let id):
+            return "/detail/\(id)"
         }
     }
 }

@@ -53,15 +53,14 @@ class NetworkManager {
         
         switch response.result {
         case .success(let data):
-            print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+            // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
             
             // 데이터를 StudioList로 디코딩
             let decoder = JSONDecoder()
             do {
                 let studioList = try decoder.decode(StudioData.self, from: data)
-                let studios = studioList.data.content
-                print("디코딩된 Studio 배열 ===== \(studios)")
-                return studios
+                //print("디코딩된 Studio 배열 ===== \(studios)")
+                return studioList.data.content
             } catch {
                 print("디코딩 실패: \(error)")
                 throw error
@@ -69,6 +68,42 @@ class NetworkManager {
             
         case .failure(let error):
             print("네트워크 요청 실패: \(error)")
+            throw error
+        }
+    }
+    
+    /// 스튜디오의 자세한 데이터를 요청하는 메서드
+    /// - Parameter studioID: 스튜디오 아이디
+    func getStudioDetailData(studioID id: Int) async throws -> StudioDetail {
+        let fetchRequest = Network.studioDetailRequest(id: id)
+        let url = fetchRequest.baseURL + fetchRequest.path
+        
+        let request = AF.request(
+            url,
+            method: fetchRequest.method,
+            parameters: fetchRequest.parameters,
+            encoding: fetchRequest.encoding,
+            headers: fetchRequest.headers
+        )
+        
+        let reponse = await request.validate()
+            .serializingData()
+            .response
+        
+        switch reponse.result {
+        case .success(let data):
+            let decoder = JSONDecoder()
+            
+            do {
+                let studioDetailData = try decoder.decode(StudioDetailData.self, from: data)
+                
+                return studioDetailData.data
+            } catch {
+                print("스튜디오 디테일 디코딩 실패: \(error.localizedDescription)")
+                throw error
+            }
+        case .failure(let error):
+            print("스튜디오 디테일 API 요청 실패: \(error.localizedDescription)")
             throw error
         }
     }

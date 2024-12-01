@@ -12,7 +12,7 @@ extension Network {
         let server_url = Bundle.main.serverURL
         
         switch self {
-        case .studioRequest:
+        case .studioRequest, .studioDetailRequest:
             return "\(server_url)/api/v1/studio"
         }
     }
