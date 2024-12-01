@@ -27,7 +27,7 @@ struct FilterButtonView: View {
         .padding(.horizontal, 8)
         .background {
             RoundedRectangle(cornerRadius: 15)
-                .foregroundStyle(isFiltering ? .yellow : .gray)
+                .foregroundStyle(isFiltering ? .tcYellow : .tcLightyellow)
         }
     }
 }

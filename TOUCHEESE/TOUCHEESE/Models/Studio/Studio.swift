@@ -23,7 +23,7 @@ struct DataClass: Codable {
 
 
 // MARK: - Content
-struct Studio: Codable, Identifiable {
+struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profilePrice: Int
@@ -85,25 +85,19 @@ extension StudioDetail {
     static let sample = StudioDetail(
         detailImageStrings: [
             "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png"
+            "https://i.pinimg.com/736x/d2/59/7c/d2597c06b76ad83921e5c1ead54565ba.jpg",
+            "https://recsofficial.cafe24.com/web/upload/NNEditor/20230112/EC9784ECA780EC9CA4_EC8580EB9FACEBB88CEBA6ACED8BB0.jpg"
         ],
         reviewCount: 2_234,
         businessHours: "월~금 10:10~19:00 / 매주 월요일 휴무",
         address: "서울특별시 서초구 강남대로 11-11",
-        notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
+        notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
         products: [
             Product.sample1,
-            Product.sample1,
-            Product.sample1
+            Product.sample2,
+            Product.sample3
         ],
-        reviews: [
-            Review.sample,
-            Review.sample,
-            Review.sample,
-            Review.sample,
-            Review.sample
-        ]
+        reviews: Review.samples
     )
     
     var detailImageURLs: [URL] {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Product: Identifiable {
+struct Product: Identifiable, Hashable {
     let id: Int
     let name: String
     let description: String
@@ -39,9 +39,31 @@ extension Product {
         name: "증명사진",
         description: "신원 확인이 주된 목적이 사진 입니다. 주로 공식 문서 및 신분증에 사용되는 사진으로 여권, 운전면허증, 학생증 등과 함께 나타납니다.",
         imageString: "https://i.imgur.com/Uw5nNHQ.png",
-        price: 75000,
+        price: 7_5000,
         reviewCount: 108
     )
+    
+    static let sample2 = Product(
+        id: 2,
+        name: "배우st 프로필",
+        description: "신원 확인이 주된 목적이 사진 입니다. 주로 공식 문서 및 신분증에 사용되는 사진으로 여권, 운전면허증, 학생증 등과 함께 나타납니다.",
+        imageString: "https://i.imgur.com/Uw5nNHQ.png",
+        price: 250_000,
+        reviewCount: 143
+    )
+    
+    static let sample3 = Product(
+        id: 3,
+        name: "패키지 촬영",
+        description: "신원 확인이 주된 목적이 사진 입니다. 주로 공식 문서 및 신분증에 사용되는 사진으로 여권, 운전면허증, 학생증 등과 함께 나타납니다.",
+        imageString: "https://i.imgur.com/Uw5nNHQ.png",
+        price: 150_000,
+        reviewCount: 143
+    )
+    
+    var imageURL: URL {
+        URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+    }
 }
 
 
