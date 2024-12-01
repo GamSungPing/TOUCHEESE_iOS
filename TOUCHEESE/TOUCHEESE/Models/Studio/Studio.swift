@@ -49,6 +49,7 @@ struct StudioDetailData: Codable {
     let data: StudioDetail
 }
 
+
 // MARK: - DataClass
 struct StudioDetail: Codable {
     let detailImageStrings: [String]
@@ -113,5 +114,28 @@ extension StudioDetail {
         detailImageStrings.map { imageString in
             URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
         }
+    }
+    
+    var openTimeString: String {
+        String(openTime.dropLast(3))
+    }
+    
+    var closeTimeString: String {
+        String(closeTime.dropLast(3))
+    }
+    
+    var holidayString: String {
+        let dayMapping: [Int: String] = [
+            1: "일",
+            2: "월",
+            3: "화",
+            4: "수",
+            5: "목",
+            6: "금",
+            7: "토"
+        ]
+        let dayStrings = holidays.compactMap { dayMapping[$0] }
+        
+        return dayStrings.joined(separator: ", ")
     }
 }

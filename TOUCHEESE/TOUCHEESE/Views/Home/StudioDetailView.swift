@@ -36,7 +36,7 @@ struct StudioDetailView: View {
                         systemImage: "star"
                     )
                     Label(
-                        "\(studioDetail.businessHours)",
+                        "\(studioDetail.openTimeString)~\(studioDetail.closeTimeString) / 매주 \(studioDetail.holidayString) 휴무",
                         systemImage: "clock"
                     )
                     Label(
@@ -53,7 +53,7 @@ struct StudioDetailView: View {
                     ProductListView(studioDetail: studioDetail)
                 } else {
                     ReviewImageGridView(reviews: studioDetail.reviews) { review in
-                        // MARK: - 추후에 ReviewDetailView로 넘어가는 로직 구현
+                        // TODO: - 추후에 ReviewDetailView로 넘어가는 로직 구현
                         print(review.id)
                     }
                     .padding(.top, -13)
