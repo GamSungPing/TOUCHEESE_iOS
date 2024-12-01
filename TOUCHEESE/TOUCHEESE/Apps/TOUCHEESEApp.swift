@@ -107,6 +107,10 @@ struct TOUCHEESEApp: App {
         CacheManager.configureKingfisherCache()
     }
     
+    init() {
+        CacheManager.configureKingfisherCache()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ToucheeseTabView()
