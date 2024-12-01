@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Review: Identifiable, Hashable {
+struct Review: Identifiable, Hashable, Codable {
     let id: Int
     let imageString: String
 }

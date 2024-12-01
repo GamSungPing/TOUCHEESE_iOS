@@ -42,16 +42,23 @@ struct Studio: Codable, Identifiable, Hashable {
 }
 
 
-struct StudioDetail {
+// MARK: - StudioDetailData
+struct StudioDetailData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: StudioDetail
+}
+
+// MARK: - DataClass
+struct StudioDetail: Codable {
     let detailImageStrings: [String]
-    
     let reviewCount: Int
-    let businessHours: String
+    let openTime, closeTime: String
+    let holidays: [Int]
     let address: String
-    
     let notice: String?
     let products: [Product]
-    var reviews: [Review]?
+    let reviews: [Review]?
 }
 
 
@@ -89,7 +96,9 @@ extension StudioDetail {
             "https://recsofficial.cafe24.com/web/upload/NNEditor/20230112/EC9784ECA780EC9CA4_EC8580EB9FACEBB88CEBA6ACED8BB0.jpg"
         ],
         reviewCount: 2_234,
-        businessHours: "월~금 10:10~19:00 / 매주 월요일 휴무",
+        openTime: "10:00:00",
+        closeTime: "19:00:00",
+        holidays: [2],
         address: "서울특별시 서초구 강남대로 11-11",
         notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
         products: [
