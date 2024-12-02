@@ -246,15 +246,17 @@ fileprivate struct NoticeView: View {
             
             if let notice {
                 Text("\(notice)")
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(isExpanded ? nil : 2)
                     .multilineTextAlignment(.leading)
-            }
-            
-            Button {
-                isExpanded.toggle()
-            } label: {
-                Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+                
+                if notice.count > 38 {
+                    Button {
+                        isExpanded.toggle()
+                    } label: {
+                        Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+                    }
+                }
             }
         }
         .padding()
