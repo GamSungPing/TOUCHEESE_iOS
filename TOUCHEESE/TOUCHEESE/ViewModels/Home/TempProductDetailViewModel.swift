@@ -97,7 +97,7 @@ final class TempProductDetailViewModel: ObservableObject {
         totalPrice += (productDetail.addPeoplePrice ?? 0) * addPeopleCount
         
         // 옵션 별 상품 가격 추가
-        for option in productDetail.productOptions {
+        for option in productDetail.parsedProductOptions {
             if selectedOptionIDArray.contains(option.id) {
                 totalPrice += option.price
             }
