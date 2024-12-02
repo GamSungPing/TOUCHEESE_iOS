@@ -7,9 +7,20 @@
 
 import Foundation
 
+struct ReviewData: Codable {
+    let totalPagesCount, pageNumber: Int
+    let content: [Review]
+}
+
+
 struct Review: Identifiable, Hashable, Codable {
     let id: Int
     let imageString: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "reviewId"
+        case imageString = "imageUrl"
+    }
 }
 
 

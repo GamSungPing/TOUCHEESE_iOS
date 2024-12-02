@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - Welcome
 struct StudioData: Codable {
     let statusCode: Int
     let msg: String
@@ -15,14 +14,12 @@ struct StudioData: Codable {
 }
 
 
-// MARK: - DataClass
 struct DataClass: Codable {
     let totalPagesCount, pageNumber: Int
     let content: [Studio]
 }
 
 
-// MARK: - Content
 struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
@@ -42,7 +39,6 @@ struct Studio: Codable, Identifiable, Hashable {
 }
 
 
-// MARK: - StudioDetailData
 struct StudioDetailData: Codable {
     let statusCode: Int
     let msg: String
@@ -50,16 +46,17 @@ struct StudioDetailData: Codable {
 }
 
 
-// MARK: - DataClass
 struct StudioDetail: Codable {
     let detailImageStrings: [String]
     let reviewCount: Int
+    
     let openTime, closeTime: String
     let holidays: [Int]
     let address: String
     let notice: String?
+    
     let products: [Product]
-    let reviews: [Review]?
+    let reviews: ReviewData
 }
 
 
@@ -92,7 +89,7 @@ extension Studio {
 extension StudioDetail {
     static let sample = StudioDetail(
         detailImageStrings: [
-            "https://i.imgur.com/Uw5nNHQ.png",
+            "https://imgur.com/oKoO2ca",
             "https://i.pinimg.com/736x/d2/59/7c/d2597c06b76ad83921e5c1ead54565ba.jpg",
             "https://recsofficial.cafe24.com/web/upload/NNEditor/20230112/EC9784ECA780EC9CA4_EC8580EB9FACEBB88CEBA6ACED8BB0.jpg"
         ],
@@ -107,7 +104,7 @@ extension StudioDetail {
             Product.sample2,
             Product.sample3
         ],
-        reviews: Review.samples
+        reviews: ReviewData(totalPagesCount: 1, pageNumber: 1, content: Review.samples)
     )
     
     var detailImageURLs: [URL] {

@@ -14,6 +14,11 @@ struct Product: Identifiable, Hashable, Codable {
     let imageString: String
     let price: Int
     let reviewCount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, description, imageString, price
+        case reviewCount = "reviewCnt"
+    }
 }
 
 
