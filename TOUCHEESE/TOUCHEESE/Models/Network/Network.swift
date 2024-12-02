@@ -9,7 +9,8 @@ import Foundation
 import Alamofire
 
 enum Network {
-    case studioRequest(
+    /// Studio
+    case studioListRequest(
         concept: StudioConcept,
         isHighRating: Bool?,
         regionArray: [StudioRegion]?,
@@ -17,4 +18,15 @@ enum Network {
         page: Int?
     )
     case studioDetailRequest(id: Int)
+    
+    /// Review
+    case reviewListRequest(
+        studioID: Int,
+        productID: Int?,
+        page: Int?
+    )
+    case reviewDetailRequest(
+        studioID: Int,
+        reviewID: Int
+    )
 }

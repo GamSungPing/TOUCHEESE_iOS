@@ -10,7 +10,7 @@ import Foundation
 extension Network {
     func getPath() -> String {
         switch self {
-        case .studioRequest(
+        case .studioListRequest(
             let concept,
             let isHighRating,
             let regionArray,
@@ -43,6 +43,15 @@ extension Network {
             return path
         case .studioDetailRequest(let id):
             return "/detail/\(id)"
+            
+        case .reviewListRequest(let studioID, let productID, _):
+            var path = "/\(studioID)"
+            
+            if let productID { path += "/product/\(productID)" }
+            
+            return path
+        case .reviewDetailRequest(let studioID, let reviewID):
+            return "/\(studioID)/detail/\(reviewID)"
         }
     }
 }

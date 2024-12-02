@@ -123,7 +123,7 @@ final class StudioListViewModel: ObservableObject {
             Task {
                 do {
                     isStudioLoading = true
-                    studios.append(contentsOf: try await NetworkManager.shared.getStudioDatas(
+                    studios.append(contentsOf: try await NetworkManager.shared.getStudioListDatas(
                         concept: concept,
                         isHighRating: isHighRating,
                         regionArray: regionArray,
@@ -150,7 +150,7 @@ final class StudioListViewModel: ObservableObject {
         page = 1
         
         do {
-            studios = try await NetworkManager.shared.getStudioDatas(
+            studios = try await NetworkManager.shared.getStudioListDatas(
                 concept: concept,
                 isHighRating: isHighRating,
                 regionArray: regionArray,
