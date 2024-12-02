@@ -9,6 +9,7 @@ import Foundation
 
 final class StudioDetailViewModel: ObservableObject {
     
+    // MARK: - Data
     @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetail = StudioDetail.sample
     
@@ -22,6 +23,22 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
+    
+    // MARK: - Output
+    var businessHourString: String {
+        var basicString = "\(studioDetail.openTimeString)~\(studioDetail.closeTimeString)"
+        
+        if !studioDetail.holidayString.isEmpty {
+            basicString += " / 매주 \(studioDetail.holidayString) 휴무"
+        } else {
+            basicString += " / 휴무일 없음"
+        }
+        
+        return basicString
+    }
+    
+    
+    // MARK: - Logic
     @MainActor
     func fetchStudioDetail(StudioID id: Int) async {
         do {

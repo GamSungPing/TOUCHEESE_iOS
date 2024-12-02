@@ -36,7 +36,7 @@ struct StudioDetailView: View {
                         systemImage: "star"
                     )
                     Label(
-                        "\(studioDetail.openTimeString)~\(studioDetail.closeTimeString) / 매주 \(studioDetail.holidayString) 휴무",
+                        viewModel.businessHourString,
                         systemImage: "clock"
                     )
                     Label(
