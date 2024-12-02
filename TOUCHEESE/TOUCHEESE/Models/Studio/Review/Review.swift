@@ -24,8 +24,15 @@ struct Review: Identifiable, Hashable, Codable {
 }
 
 
+struct ReviewDetailData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: ReviewDetail
+}
+
+
 struct ReviewDetail: Codable {
-    let userProfileImageString: String
+    let userProfileImageString: String?
     let userName: String
     let dateString: String
     

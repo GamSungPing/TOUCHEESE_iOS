@@ -31,4 +31,13 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
+    // Test 코드, 불필요시 지우기
+    func fetchReviewDetail(reviewID: Int) async {
+        do {
+            dump(try await networkManager.getReviewDetailData(studioID: studio.id, reviewID: reviewID))
+        } catch {
+            print("Fetch ReviewDetail Error: \(error.localizedDescription)")
+        }
+    }
+    
 }

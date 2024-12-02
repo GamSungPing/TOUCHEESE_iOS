@@ -55,6 +55,10 @@ struct StudioDetailView: View {
                     ReviewImageGridView(reviews: studioDetail.reviews.content) { review in
                         // TODO: - 추후에 ReviewDetailView로 넘어가는 로직 구현
                         print(review.id)
+                        // Test 코드, 불필요시 지우기
+                        Task {
+                            await viewModel.fetchReviewDetail(reviewID: review.id)
+                        }
                     }
                     .padding(.top, -13)
                 }
