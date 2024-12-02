@@ -24,7 +24,7 @@ struct Review: Identifiable, Hashable, Codable {
 }
 
 
-struct ReviewDetail {
+struct ReviewDetail: Codable {
     let userProfileImageString: String
     let userName: String
     let dateString: String
@@ -37,7 +37,7 @@ struct ReviewDetail {
 }
 
 
-struct Reply: Identifiable {
+struct Reply: Identifiable, Codable {
     let id: Int
     let studioName: String
     let dateString: String
