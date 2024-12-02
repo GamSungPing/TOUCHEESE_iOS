@@ -92,9 +92,18 @@ class NetworkManager {
             productID: productID,
             page: page
         )
-        let reviewData = try await performRequest(fetchRequest, decodingType: ReviewData.self)
+        let reviewData: ReviewData = try await performRequest(fetchRequest, decodingType: ReviewData.self)
         
         return reviewData.content
+    }
+    
+    /// 상품의 자세한 데이터를 요청하는 함수
+    /// - Parameter productID: 상품의 아이디. 아이디에 해당하는 상품의 자세한 데이터를 불러온다.
+    func getProductDetailData(productID id: Int) async throws -> ProductDetail {
+        let fetchRequest = Network.productDetailRequest(id: id)
+        let  productDetailData: ProductDetailData = try await performRequest(fetchRequest, decodingType: ProductDetailData.self)
+        
+        return productDetailData.data
     }
     
     /// 리뷰의 자세한 데이터를 요청하는 함수

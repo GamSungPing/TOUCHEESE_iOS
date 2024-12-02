@@ -50,12 +50,19 @@ struct StudioDetailView: View {
                 
                 // 가격 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
-                    ProductListView(studioDetail: studioDetail)
+                    ProductListView(studioDetail: studioDetail) { product in
+                        // TODO: - 추후에 ProductDetailView로 넘어가는 로직 구현
+                        // Test 코드, 불필요시 지우기
+                        print(product.name)
+                        Task {
+                            await viewModel.fetchProductDetail(productID: product.id)
+                        }
+                    }
                 } else {
                     ReviewImageGridView(reviews: studioDetail.reviews.content) { review in
                         // TODO: - 추후에 ReviewDetailView로 넘어가는 로직 구현
-                        print(review.id)
                         // Test 코드, 불필요시 지우기
+                        print(review.id)
                         Task {
                             await viewModel.fetchReviewDetail(reviewID: review.id)
                         }
@@ -168,6 +175,7 @@ fileprivate struct RoundedCornersShape: Shape {
 
 fileprivate struct ProductListView: View {
     let studioDetail: StudioDetail
+    let action: (Product) -> Void
     @State private var isExpanded = false
     
     var body: some View {
@@ -215,7 +223,7 @@ fileprivate struct ProductListView: View {
                     }
                 }
                 .onTapGesture {
-                    print("\(product.name)")
+                    action(product)
                 }
             }
             

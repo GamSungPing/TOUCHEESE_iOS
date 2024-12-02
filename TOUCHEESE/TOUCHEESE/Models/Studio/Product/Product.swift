@@ -22,16 +22,23 @@ struct Product: Identifiable, Hashable, Codable {
 }
 
 
-struct ProductDetail {
+struct ProductDetailData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: ProductDetail
+}
+
+
+struct ProductDetail: Codable {
     let isGroup: Bool
     let baseGuestCount: Int?
     let addPeoplePrice: Int?
     
-    let productOptions: [ProductOption]
+    let productOptions: [String]
 }
 
 
-struct ProductOption: Identifiable {
+struct ProductOption: Identifiable, Codable {
     let id: Int
     let name: String
     let price: Int
@@ -77,8 +84,26 @@ extension ProductDetail {
         isGroup: true,
         baseGuestCount: 4,
         addPeoplePrice: 25000,
-        productOptions: [ProductOption.sample1, ProductOption.sample2, ProductOption.sample3]
+        productOptions: ["1:셀프촬영추가:50000", "2:필터:7000", "3:혈색:3000"]
     )
+    
+    var parsedProductOptions: [ProductOption] {
+        return productOptions.compactMap { optionString in
+            let components = optionString.split(separator: ":").map { String($0) }
+            
+            guard components.count == 3,
+                  let id = Int(components[0]),
+                  let price = Int(components[2])
+            else {
+                print("Invalid format: \(optionString)")
+                return nil
+            }
+            
+            let name = components[1]
+            
+            return ProductOption(id: id, name: name, price: price)
+        }
+    }
 }
 
 

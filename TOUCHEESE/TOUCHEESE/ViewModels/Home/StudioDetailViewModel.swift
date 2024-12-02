@@ -40,4 +40,13 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
+    // Test 코드, 불필요시 지우기
+    func fetchProductDetail(productID: Int) async {
+        do {
+            dump(try await networkManager.getProductDetailData(productID: productID))
+        } catch {
+            print("Fetch ProductDetail Error: \(error.localizedDescription)")
+        }
+    }
+    
 }
