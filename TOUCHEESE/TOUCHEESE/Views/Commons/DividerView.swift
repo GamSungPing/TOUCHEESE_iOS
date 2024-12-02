@@ -13,10 +13,10 @@ struct DividerView: View {
     let height: CGFloat?
     
     init(horizontalPadding: CGFloat? = nil, color: Color? = nil, height: CGFloat? = nil) {
-            self.horizontalPadding = horizontalPadding
-            self.color = color
-            self.height = height
-        }
+        self.horizontalPadding = horizontalPadding
+        self.color = color
+        self.height = height
+    }
     
     var body: some View {
         Rectangle()
