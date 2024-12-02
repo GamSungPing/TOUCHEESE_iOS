@@ -52,6 +52,9 @@ extension Network {
             return path
         case .reviewDetailRequest(let studioID, let reviewID):
             return "/\(studioID)/detail/\(reviewID)"
+            
+        case .productDetailRequest(let id):
+            return "/\(id)"
         }
     }
 }

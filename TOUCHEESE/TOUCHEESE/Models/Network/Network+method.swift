@@ -11,7 +11,7 @@ import Alamofire
 extension Network {
     func getMethod() -> HTTPMethod {
         switch self {
-        case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest:
+        case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest:
             return .get
         }
     }

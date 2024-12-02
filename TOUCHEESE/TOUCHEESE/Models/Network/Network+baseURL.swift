@@ -16,6 +16,8 @@ extension Network {
             return "\(server_url)/api/v1/studio"
         case .reviewListRequest, .reviewDetailRequest:
             return "\(server_url)/api/v1/review/studio"
+        case .productDetailRequest:
+            return "\(server_url)/api/v1/product"
         }
     }
 }

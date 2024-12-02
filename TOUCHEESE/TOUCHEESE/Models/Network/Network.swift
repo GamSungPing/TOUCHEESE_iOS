@@ -29,4 +29,7 @@ enum Network {
         studioID: Int,
         reviewID: Int
     )
+    
+    /// Product
+    case productDetailRequest(id: Int)
 }

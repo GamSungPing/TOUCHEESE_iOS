@@ -42,15 +42,14 @@ extension Network {
             }
             
             return params
-        case .studioDetailRequest: return [:]
-            
         case .reviewListRequest(_, _, let page):
             var params: Parameters = [:]
             
             if let page { params["page"] = page }
             
             return params
-        case .reviewDetailRequest: return [:]
+        case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest:
+            return [:]
         }
     }
 }
