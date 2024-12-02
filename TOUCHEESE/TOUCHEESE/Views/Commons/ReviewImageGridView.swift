@@ -29,6 +29,7 @@ struct ReviewImageGridView: View {
                         .placeholder { ProgressView() }
                         .downsampling(size: CGSize(width: 200, height: 200))
                         .cacheMemoryOnly()
+                        .cancelOnDisappear(true)
                         .fade(duration: 0.25)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
