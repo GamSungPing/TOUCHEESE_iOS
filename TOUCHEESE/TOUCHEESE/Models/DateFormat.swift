@@ -11,6 +11,7 @@ enum DateFormat: String {
     case hourMinute = "HH:mm"
     case monthDayTime = "MM월 dd일 HH:mm"
     case yearMonth = "yyyy년 MM월"
+    case yeatMonthDay = "yyyy년 MM월 dd일"
     
     func toDateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
