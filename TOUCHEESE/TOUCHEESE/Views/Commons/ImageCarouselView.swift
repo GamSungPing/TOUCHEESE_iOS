@@ -52,11 +52,11 @@ struct ImageCarouselView: View {
 #Preview {
     ImageCarouselView(
         imageURLs: [
-            URL(string: "https://i.imgur.com/Uw5nNHQ.png")!,
-            URL(string: "https://i.imgur.com/Uw5nNHQ.png")!,
-            URL(string: "https://i.imgur.com/Uw5nNHQ.png")!,
-            URL(string: "https://i.imgur.com/Uw5nNHQ.png")!,
-            URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+            .defaultImageURL,
+            .defaultImageURL,
+            .defaultImageURL,
+            .defaultImageURL,
+            .defaultImageURL
         ],
         carouselIndex: .constant(0),
         isShowingImageExtensionView: .constant(false)

@@ -74,7 +74,7 @@ extension Product {
     )
     
     var imageURL: URL {
-        URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+        URL(string: imageString) ?? .defaultImageURL
     }
 }
 

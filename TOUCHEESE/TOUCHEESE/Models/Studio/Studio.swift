@@ -75,12 +75,12 @@ extension Studio {
     }
     
     var profileImageURL: URL {
-        URL(string: profileImageString ) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+        URL(string: profileImageString ) ?? .defaultImageURL
     }
     
     var portfolioImageURLs: [URL] {
         portfolioImageStrings.map { string in
-            URL(string: string ) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+            URL(string: string ) ?? .defaultImageURL
         }
     }
 }
@@ -89,16 +89,16 @@ extension Studio {
 extension StudioDetail {
     static let sample = StudioDetail(
         detailImageStrings: [
-            "https://imgur.com/oKoO2ca",
-            "https://i.pinimg.com/736x/d2/59/7c/d2597c06b76ad83921e5c1ead54565ba.jpg",
-            "https://recsofficial.cafe24.com/web/upload/NNEditor/20230112/EC9784ECA780EC9CA4_EC8580EB9FACEBB88CEBA6ACED8BB0.jpg"
+            "https://imgur.com/oKoO2ca.png",
+            "https://imgur.com/YJaYOeA.png",
+            "https://imgur.com/YJaYOeA.png"
         ],
-        reviewCount: 2_234,
-        openTime: "10:00:00",
-        closeTime: "19:00:00",
-        holidays: [2],
-        address: "서울특별시 서초구 강남대로 11-11",
-        notice: "저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다! 저희 마루 스튜디오는 주차장을 따로 운영하고 있습니다!",
+        reviewCount: 0,
+        openTime: "00:00:00",
+        closeTime: "00:00:00",
+        holidays: [],
+        address: "주소가 표시됩니다.",
+        notice: "공지사항이 표시됩니다.",
         products: [
             Product.sample1,
             Product.sample2,
@@ -109,7 +109,7 @@ extension StudioDetail {
     
     var detailImageURLs: [URL] {
         detailImageStrings.map { imageString in
-            URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+            URL(string: imageString) ?? .defaultImageURL
         }
     }
     
@@ -123,13 +123,8 @@ extension StudioDetail {
     
     var holidayString: String {
         let dayMapping: [Int: String] = [
-            1: "일",
-            2: "월",
-            3: "화",
-            4: "수",
-            5: "목",
-            6: "금",
-            7: "토"
+            1: "일", 2: "월", 3: "화", 4: "수",
+            5: "목", 6: "금", 7: "토"
         ]
         let dayStrings = holidays.compactMap { dayMapping[$0] }
         

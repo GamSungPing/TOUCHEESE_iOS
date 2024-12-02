@@ -66,7 +66,7 @@ extension Review {
     }
     
     var imageURL: URL {
-        URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+        URL(string: imageString) ?? .defaultImageURL
     }
 }
 
@@ -88,7 +88,7 @@ extension ReviewDetail {
     
     var imageURLs: [URL] {
         imageStrings.map { imageString in
-            URL(string: imageString) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+            URL(string: imageString) ?? .defaultImageURL
         }
     }
 }
