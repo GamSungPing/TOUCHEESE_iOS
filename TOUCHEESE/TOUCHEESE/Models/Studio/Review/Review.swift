@@ -75,7 +75,7 @@ extension ReviewDetail {
     static let sample = ReviewDetail(
         userProfileImageString: "https://i.imgur.com/Uw5nNHQ.png",
         userName: "김마루",
-        dateString: "2024년 11월 28일",
+        dateString: "2024-9-02T10:12:30",
         imageStrings: [
             "https://i.imgur.com/Uw5nNHQ.png",
             "https://i.imgur.com/Uw5nNHQ.png",
@@ -98,7 +98,7 @@ extension Reply {
     static let sample = Reply(
         id: 0,
         studioName: "마루 스튜디오",
-        dateString: "2024년 11월 29일",
+        dateString: "2024-10-02T10:15:30",
         content: "감사합니다, 고객님! 다음에 또 방문해주세요 :)"
     )
 }
