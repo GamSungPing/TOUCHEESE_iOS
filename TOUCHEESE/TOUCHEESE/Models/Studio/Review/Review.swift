@@ -7,14 +7,32 @@
 
 import Foundation
 
-struct Review: Identifiable, Hashable {
-    let id: Int
-    let imageString: String
+struct ReviewData: Codable {
+    let totalPagesCount, pageNumber: Int
+    let content: [Review]
 }
 
 
-struct ReviewDetail {
-    let userProfileImageString: String
+struct Review: Identifiable, Hashable, Codable {
+    let id: Int
+    let imageString: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "reviewId"
+        case imageString = "imageUrl"
+    }
+}
+
+
+struct ReviewDetailData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: ReviewDetail
+}
+
+
+struct ReviewDetail: Codable {
+    let userProfileImageString: String?
     let userName: String
     let dateString: String
     
@@ -26,7 +44,7 @@ struct ReviewDetail {
 }
 
 
-struct Reply: Identifiable {
+struct Reply: Identifiable, Codable {
     let id: Int
     let studioName: String
     let dateString: String

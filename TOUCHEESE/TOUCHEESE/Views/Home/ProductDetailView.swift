@@ -162,7 +162,7 @@ struct ProductDetailView: View {
                     Spacer()
                 }
                 
-                ForEach(productDetail.productOptions) { option in
+                ForEach(productDetail.parsedProductOptions) { option in
                     OptionItemView(productOption: option)
                 }
             }

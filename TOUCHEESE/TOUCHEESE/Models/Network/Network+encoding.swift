@@ -11,7 +11,7 @@ import Alamofire
 extension Network {
     func getEncoding() -> ParameterEncoding {
         switch self {
-        case .studioRequest:
+        case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest:
             return URLEncoding.default
         }
     }
