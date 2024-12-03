@@ -17,6 +17,8 @@ final class StudioDetailViewModel: ObservableObject {
     
     let networkManager = NetworkManager.shared
     
+    private(set) var selectedProduct: Product = Product.sample1
+    
     init(studio: Studio) {
         self.studio = studio
         
@@ -71,4 +73,7 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
+    func selectProduct(product: Product) {
+        selectedProduct = product
+    }
 }
