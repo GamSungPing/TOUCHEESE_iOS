@@ -46,7 +46,6 @@ struct HomeResultView: View {
                         }
                     }
                     .scrollIndicators(.never)
-                    .padding(.vertical, 5)
                 }
                 
                 if isShowingPriceFilterOptionView {
@@ -236,4 +235,5 @@ struct HomeResultView: View {
         HomeResultView(concept: .liveliness)
     }
     .environmentObject(StudioListViewModel())
+    .environmentObject(TabbarManager())
 }

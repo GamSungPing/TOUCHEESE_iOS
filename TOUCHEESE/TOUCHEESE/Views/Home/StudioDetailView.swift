@@ -282,5 +282,6 @@ fileprivate struct NoticeView: View {
         StudioDetailView(
             viewModel: StudioDetailViewModel(studio: Studio.sample)
         )
+        .environmentObject(TabbarManager())
     }
 }

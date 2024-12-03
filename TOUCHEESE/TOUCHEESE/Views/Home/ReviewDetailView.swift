@@ -147,5 +147,6 @@ struct ReviewDetailView: View {
             .environmentObject(
                 StudioDetailViewModel(studio: Studio.sample)
             )
+            .environmentObject(TabbarManager())
     }
 }
