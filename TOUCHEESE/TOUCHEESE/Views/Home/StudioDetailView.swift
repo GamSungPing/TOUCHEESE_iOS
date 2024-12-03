@@ -9,13 +9,17 @@ import SwiftUI
 import Kingfisher
 
 struct StudioDetailView: View {
+    @EnvironmentObject private var tabbarManager: TabbarManager
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) var isPresented
+    
     @State private var selectedSegmentedControlIndex = 0
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
     @State private var isExpanded = false
+    
+    @State private var isPushingReviewDetailView = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -59,13 +63,17 @@ struct StudioDetailView: View {
                 if selectedSegmentedControlIndex == 0 {
                     ProductListView(studioDetail: studioDetail)
                 } else {
-                    ReviewImageGridView(reviews: studioDetail.reviews.content)
-                        .padding(.top, -13)
+                    ReviewImageGridView(
+                        reviews: studioDetail.reviews.content,
+                        isPushingDetailView: $isPushingReviewDetailView
+                    )
+                    .padding(.top, -13)
+                    .environmentObject(viewModel)
                 }
             }
         }
         .toolbarRole(.editor)
-        .toolbar(isPresented ? .hidden : .visible, for: .tabBar)
+        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .toolbar {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
@@ -82,8 +90,12 @@ struct StudioDetailView: View {
             ProductDetailView()
                 .environmentObject(viewModel)
         }
-        .navigationDestination(for: Review.self) { review in
+        .navigationDestination(isPresented: $isPushingReviewDetailView) {
             ReviewDetailView()
+                .environmentObject(viewModel)
+        }
+        .onAppear {
+            tabbarManager.isHidden = true
         }
     }
     
@@ -94,7 +106,7 @@ struct StudioDetailView: View {
             HStack {
                 ProfileImageView(
                     imageURL: studio.profileImageURL,
-                    size: 40
+                    size: 35
                 )
                 
                 Text("\(studio.name)")
@@ -270,5 +282,6 @@ fileprivate struct NoticeView: View {
         StudioDetailView(
             viewModel: StudioDetailViewModel(studio: Studio.sample)
         )
+        .environmentObject(TabbarManager())
     }
 }

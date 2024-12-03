@@ -11,6 +11,7 @@ import SwiftUI
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
     @StateObject private var tempProductDetailViewModel = TempProductDetailViewModel()
+    @StateObject private var tabbarManager = TabbarManager()
     
     init() {
         CacheManager.configureKingfisherCache()
@@ -21,6 +22,7 @@ struct TOUCHEESEApp: App {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
                 .environmentObject(tempProductDetailViewModel)
+                .environmentObject(tabbarManager)
         }
     }
 }

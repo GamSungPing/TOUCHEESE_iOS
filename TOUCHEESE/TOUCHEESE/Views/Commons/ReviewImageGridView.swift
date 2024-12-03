@@ -9,7 +9,10 @@ import SwiftUI
 import Kingfisher
 
 struct ReviewImageGridView: View {
+    @EnvironmentObject var viewModel: StudioDetailViewModel
+    
     let reviews: [Review]?
+    @Binding var isPushingDetailView: Bool
     
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 2),
@@ -24,19 +27,24 @@ struct ReviewImageGridView: View {
         if let reviews {
             LazyVGrid(columns: columns, spacing: 2) {
                 ForEach(reviews) { review in
-                    NavigationLink(value: review) {
-                        KFImage(review.imageURL)
-                            .placeholder { ProgressView() }
-                            .downsampling(size: CGSize(width: 200, height: 200))
-                            .cacheMemoryOnly()
-                            .cancelOnDisappear(true)
-                            .fade(duration: 0.25)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: gridSize)
-                            .clipped()
-                            .contentShape(Rectangle())
-                    }
+                    KFImage(review.imageURL)
+                        .placeholder { ProgressView() }
+                        .downsampling(size: CGSize(width: 200, height: 200))
+                        .cacheMemoryOnly()
+                        .cancelOnDisappear(true)
+                        .fade(duration: 0.25)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: gridSize)
+                        .clipped()
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            isPushingDetailView.toggle()
+                            
+                            Task {
+                                await viewModel.fetchReviewDetail(reviewID: review.id)
+                            }
+                        }
                 }
             }
         } else {
@@ -59,5 +67,5 @@ struct ReviewImageGridView: View {
 }
 
 #Preview {
-    ReviewImageGridView(reviews: Review.samples)
+    ReviewImageGridView(reviews: Review.samples, isPushingDetailView: .constant(false))
 }

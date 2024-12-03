@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeResultView: View {
+    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     
     let concept: StudioConcept
@@ -45,7 +46,6 @@ struct HomeResultView: View {
                         }
                     }
                     .scrollIndicators(.never)
-                    .padding(.vertical, 5)
                 }
                 
                 if isShowingPriceFilterOptionView {
@@ -63,6 +63,8 @@ struct HomeResultView: View {
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
+            
+            tabbarManager.isHidden = false
         }
     }
     
@@ -233,4 +235,5 @@ struct HomeResultView: View {
         HomeResultView(concept: .liveliness)
     }
     .environmentObject(StudioListViewModel())
+    .environmentObject(TabbarManager())
 }
