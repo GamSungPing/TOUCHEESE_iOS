@@ -20,7 +20,7 @@ struct ProductDetailView: View {
     
     var body: some View {
         let product = realProductDetailViewModel.product
-        
+        let productDetail = realProductDetailViewModel.productDetail
         
         VStack {
             ScrollView(.vertical, showsIndicators: false) {
@@ -30,20 +30,20 @@ struct ProductDetailView: View {
                         .padding(.bottom, 6)
                     
                     // 리뷰로 이동하는 버튼
-                    reviewButtonView(reviewCount: productDetailViewModel.product.reviewCount)
+                    reviewButtonView(reviewCount: product.reviewCount)
                         .padding(.bottom, 10)
                     
                     // 가격 정보
-                    priceView(productPrice: productDetailViewModel.product.price)
+                    priceView(productPrice: product.price)
                         .padding(.bottom, 6)
                     
                     // 구분선
                     myDivider
                         .padding(.bottom, 10)
                     
-                    if productDetailViewModel.productDetail.isGroup {
+                    if productDetail.isGroup {
                         // 기준 인원 뷰
-                        baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
+                        baseGuestCountView(baseGuestCount: productDetail.basePeopleCnt ?? 0)
                             .padding(.bottom, 6)
                         
                         // 구분선
@@ -53,19 +53,22 @@ struct ProductDetailView: View {
                         // 단체 인원 뷰
                         AddPeopleView()
                             .padding(.bottom, 6)
-            
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
+                            .environmentObject(realProductDetailViewModel)
+                        
+                        // 구분선
+                        myDivider
+                            .padding(.bottom, 10)
                     }
                     
-                    // 상품 옵션 설정 뷰
-                    productOptionView(productDetail: productDetailViewModel.productDetail)
-                        .padding(.bottom, 12)
-                    
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
+                    if !productDetail.productOptions.isEmpty {
+                        // 상품 옵션 설정 뷰
+                        productOptionView(productDetail: productDetail)
+                            .padding(.bottom, 12)
+                        
+                        // 구분선
+                        myDivider
+                            .padding(.bottom, 10)
+                    }
                     
                     // 촬영 날짜 예약 뷰
                     ReservationView(isCalendarPresented: $isCalendarPresented)
@@ -163,19 +166,17 @@ struct ProductDetailView: View {
     
     @ViewBuilder
     private func productOptionView(productDetail: ProductDetail) -> some View {
-        if !productDetail.productOptions.isEmpty {
-            VStack {
-                HStack {
-                    Text("추가 구매")
-                        .font(.footnote)
-                        .padding(.leading, 22)
-                    
-                    Spacer()
-                }
+        VStack {
+            HStack {
+                Text("추가 구매")
+                    .font(.footnote)
+                    .padding(.leading, 22)
                 
-                ForEach(productDetail.parsedProductOptions) { option in
-                    OptionItemView(productOption: option)
-                }
+                Spacer()
+            }
+            
+            ForEach(productDetail.parsedProductOptions) { option in
+                OptionItemView(productOption: option)
             }
         }
     }
@@ -185,9 +186,13 @@ fileprivate struct AddPeopleView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
+    
     var body: some View {
+        let addPeoplePrice = realProductDetailViewModel.productDetail.addPeoplePrice
+        
         HStack {
-            Text("추가 인원 (\(productDetailViewModel.getAddPeoplePrice()))")
+            Text("추가 인원 (\(addPeoplePrice?.moneyStringFormat ?? ""))")
             
             Spacer()
             

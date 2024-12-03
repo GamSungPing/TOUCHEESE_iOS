@@ -31,7 +31,7 @@ struct ProductDetailData: Codable {
 
 struct ProductDetail: Codable {
     let isGroup: Bool
-    let baseGuestCount: Int?
+    let basePeopleCnt: Int?
     let addPeoplePrice: Int?
     
     let productOptions: [String]
@@ -81,27 +81,33 @@ extension Product {
 
 extension ProductDetail {
     static let sample1 = ProductDetail(
-        isGroup: true,
-        baseGuestCount: 4,
+        isGroup: false,
+        basePeopleCnt: 4,
         addPeoplePrice: 25000,
-        productOptions: ["1:셀프촬영추가:50000", "2:필터:7000", "3:혈색:3000"]
+        productOptions: []
+    )
+    
+    static let sample2 = ProductDetail(
+        isGroup: false,
+        basePeopleCnt: 4,
+        addPeoplePrice: 25000,
+        productOptions: ["셀프촬영추가:50000", "필터:7000", "혈색:3000"]
     )
     
     var parsedProductOptions: [ProductOption] {
+        var currentID = 0
         return productOptions.compactMap { optionString in
             let components = optionString.split(separator: ":").map { String($0) }
             
-            guard components.count == 3,
-                  let id = Int(components[0]),
-                  let price = Int(components[2])
-            else {
+            // "name:price" 형식으로 파싱
+            guard components.count == 2, let price = Int(components[1]) else {
                 print("Invalid format: \(optionString)")
                 return nil
             }
             
-            let name = components[1]
-            
-            return ProductOption(id: id, name: name, price: price)
+            let option = ProductOption(id: currentID, name: components[0], price: price)
+            currentID += 1
+            return option
         }
     }
 }
