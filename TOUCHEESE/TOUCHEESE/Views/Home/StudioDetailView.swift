@@ -194,25 +194,29 @@ fileprivate struct ProductListView: View {
                         .resizable()
                         .downsampling(size: CGSize(width: 250, height: 250))
                         .fade(duration: 0.25)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 120)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 150)
+                        .clipped()
                         .overlay {
                             Rectangle()
                                 .fill(Color.clear)
                                 .border(Color.black, width: 1)
                         }
                     
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading) {
                         Text(product.name)
                             .fontWeight(.semibold)
+                            .padding(.bottom, 1)
                         
                         Text(product.description)
                             .font(.system(size: 14))
                             .multilineTextAlignment(.leading)
-                        
+                            .frame(alignment: .leading)                        
                         Text("리뷰 \(product.reviewCount)개")
                             .font(Font.caption)
                             .foregroundStyle(Color.gray)
+                        
+                        Spacer()
                         
                         HStack {
                             Spacer()
