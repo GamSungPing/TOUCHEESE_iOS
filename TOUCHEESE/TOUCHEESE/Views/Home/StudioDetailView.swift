@@ -15,6 +15,7 @@ struct StudioDetailView: View {
     @State private var selectedSegmentedControlIndex = 0
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
+    @State private var isExpanded = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -43,6 +44,12 @@ struct StudioDetailView: View {
                         "\(studioDetail.address)",
                         systemImage: "mappin.and.ellipse"
                     )
+                    
+                    if let notice = studioDetail.notice, notice != "" {
+                        NoticeView(notice: notice, isExpanded: $isExpanded)
+                            .padding(.top, 3)
+                            .padding(.bottom, 2)
+                    }
                 }
                 .padding(.horizontal)
                 
@@ -77,6 +84,7 @@ struct StudioDetailView: View {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
         }
+        .animation(.easeInOut, value: isExpanded)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
                 imageURLs: studioDetail.detailImageURLs,
@@ -125,7 +133,7 @@ struct StudioDetailView: View {
 
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
-    let options = ["가격", "리뷰"]
+    let options = ["상품", "리뷰"]
     
     var body: some View {
         HStack(spacing: 0) {
@@ -176,14 +184,9 @@ fileprivate struct RoundedCornersShape: Shape {
 fileprivate struct ProductListView: View {
     let studioDetail: StudioDetail
     let action: (Product) -> Void
-    @State private var isExpanded = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            if let notice = studioDetail.notice {
-                NoticeView(notice: notice, isExpanded: $isExpanded)
-            }
-            
             Text("촬영 상품")
                 .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
             
@@ -211,7 +214,7 @@ fileprivate struct ProductListView: View {
                         Text(product.description)
                             .font(.system(size: 14))
                             .multilineTextAlignment(.leading)
-                            .frame(alignment: .leading)                        
+                            .frame(alignment: .leading)
                         Text("리뷰 \(product.reviewCount)개")
                             .font(Font.caption)
                             .foregroundStyle(Color.gray)
@@ -235,7 +238,6 @@ fileprivate struct ProductListView: View {
                 .frame(height: 30)
         }
         .padding(.horizontal)
-        .animation(.easeInOut, value: isExpanded)
     }
 }
 
@@ -268,7 +270,6 @@ fileprivate struct NoticeView: View {
             RoundedRectangle(cornerRadius: 15)
                 .fill(.tcLightgray)
         }
-        .padding(.top, -5)
     }
 }
 

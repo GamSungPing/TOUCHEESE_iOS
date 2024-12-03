@@ -98,7 +98,7 @@ extension StudioDetail {
         closeTime: "00:00:00",
         holidays: [],
         address: "주소가 표시됩니다.",
-        notice: "공지사항이 표시됩니다.",
+        notice: nil,
         products: [
             Product.sample1,
             Product.sample2,
