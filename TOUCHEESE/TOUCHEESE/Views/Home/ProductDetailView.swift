@@ -35,21 +35,23 @@ struct ProductDetailView: View {
                     myDivider
                         .padding(.bottom, 10)
                     
-                    // 기준 인원 뷰
-                    baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
-                        .padding(.bottom, 6)
-                    
+                    if productDetailViewModel.productDetail.isGroup {
+                        // 기준 인원 뷰
+                        baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
+                            .padding(.bottom, 6)
+                        
+                        // 구분선
+                        myDivider
+                            .padding(.bottom, 10)
+                        
+                        // 단체 인원 뷰
+                        AddPeopleView()
+                            .padding(.bottom, 6)
+            
                     // 구분선
                     myDivider
                         .padding(.bottom, 10)
-                    
-                    // 단체 인원 뷰
-                    AddPeopleView()
-                        .padding(.bottom, 6)
-                    
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
+                    }
                     
                     // 상품 옵션 설정 뷰
                     productOptionView(productDetail: productDetailViewModel.productDetail)

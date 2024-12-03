@@ -12,7 +12,7 @@ struct ReviewDetailView: View {
     let studio = Studio.sample
     let review = Review.sample
     let reviewDetail = ReviewDetail.sample
-    let reply = Reply.sample
+    let reply: Reply? = Reply.sample
     let studioProfileImageString = URL(string: Studio.sample.profileImageString)!
     
     let tempUserName = "김민성"
@@ -84,32 +84,37 @@ struct ReviewDetailView: View {
         .padding(.leading)
     }
     
-    private func reviewReplyView(reply: Reply, studioProfileImageString: URL) -> some View {
-        HStack(alignment: .top) {
-            ProfileImageView(imageURL: studioProfileImageString, size: 40)
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("\(reply.studioName)")
-                        .fontWeight(.bold)
+    private func reviewReplyView(reply: Reply?, studioProfileImageString: URL) -> some View {
+        
+        VStack {
+            if let reply {
+                HStack(alignment: .top) {
+                    ProfileImageView(imageURL: studioProfileImageString, size: 40)
                     
-                    Text("\(day ?? "알 수 없음")")
-                        .foregroundStyle(.gray)
-                        .font(.footnote)
-                    
-                    Spacer()
-                    
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("\(reply.studioName)")
+                                .fontWeight(.bold)
+                            
+                            Text("\(day ?? "알 수 없음")")
+                                .foregroundStyle(.gray)
+                                .font(.footnote)
+                            
+                            Spacer()
+                            
+                        }
+                        .padding(.top, 4)
+                        
+                        Text("\(reply.content)")
+                            .font(.caption)
+                        
+                        Spacer()
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.top, 4)
-                
-                Text("\(reply.content)")
-                    .font(.caption)
-                
-                Spacer()
+                .padding(.leading)
             }
-            .padding(.horizontal)
         }
-        .padding(.leading)
     }
     
     private func leadingToolbarContent(
