@@ -94,7 +94,7 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     // MARK: - Output
-    /// 추가 가격을 구하는 함수
+    /// 인원 추가 가격을 문자열로 리턴하는 함수
     func getAddPeoplePrice() -> String {
         guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
         return addPeoplePrice
@@ -131,6 +131,7 @@ final class ProductDetailViewModel: ObservableObject {
         self.totalPrice = totalPrice
     }
     
+    /// 영업 시간을 계산하는 함수
     private func calBusinessHour() {
         let calendar = Calendar.current
         
@@ -149,6 +150,7 @@ final class ProductDetailViewModel: ObservableObject {
         businessHour = times
     }
     
+    /// 총 예약 가격을 계산하는 함수
     private func calReservationDate() {
         guard let selectedTime else { return }
         

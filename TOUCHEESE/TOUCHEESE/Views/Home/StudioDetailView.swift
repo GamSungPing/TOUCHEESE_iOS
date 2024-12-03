@@ -90,7 +90,7 @@ struct StudioDetailView: View {
         }
         .navigationDestination(isPresented: $isPushingProductDetailView) {
             ProductDetailView(
-                realProductDetailViewModel: ProductDetailViewModel(
+                productDetailViewModel: ProductDetailViewModel(
                     studio: studio,
                     studioDetails: studioDetail,
                     product: viewModel.selectedProduct
