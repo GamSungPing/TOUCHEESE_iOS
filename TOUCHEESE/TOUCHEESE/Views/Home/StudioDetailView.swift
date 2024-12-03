@@ -94,6 +94,9 @@ struct StudioDetailView: View {
         .onAppear {
             tabbarManager.isHidden = true
         }
+        .onAppear {
+            tabbarManager.isHidden = true
+        }
     }
     
     private func leadingToolbarContent(
