@@ -12,15 +12,21 @@ struct ProductDetailView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     
+    // 진짜 뷰모델
+    @StateObject var realProductDetailViewModel: ProductDetailViewModel
+    
     // 캘린더 시트 트리거
     @State private var isCalendarPresented = false
     
     var body: some View {
+        let product = realProductDetailViewModel.product
+        
+        
         VStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
                     // 상단 상품 이미지 및 설명
-                    infoView(product: productDetailViewModel.product)
+                    infoView(product: product)
                         .padding(.bottom, 6)
                     
                     // 리뷰로 이동하는 버튼
@@ -92,8 +98,11 @@ struct ProductDetailView: View {
         let imageScale: CGFloat = 1.5
         
         VStack {
-            Image(systemName: "house.fill")
+            KFImage(product.imageURL)
+                .placeholder { ProgressView() }
                 .resizable()
+                .cancelOnDisappear(true)
+                .fade(duration: 0.25)
                 .frame(width: imageWidth, height: imageWidth * imageScale)
             
             Text(product.name)
@@ -104,8 +113,8 @@ struct ProductDetailView: View {
                 .frame(width: 280)
                 .padding(.bottom, 30)
         }
-        .frame(width: CGFloat.screenWidth)
-        .background(Color.tcBackground)
+        .frame(width: .screenWidth)
+        .background(.tcBackground)
     }
     
     @ViewBuilder
@@ -440,6 +449,6 @@ fileprivate struct CustomCalendar: View {
 }
 
 #Preview {
-    ProductDetailView()
+    ProductDetailView(realProductDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
         .environmentObject(TempProductDetailViewModel())
 }
