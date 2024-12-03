@@ -9,12 +9,12 @@ import SwiftUI
 
 struct HomeConceptView: View {
     private let conceptCards: [ConceptCard] = [
-        ConceptCard(imageString: "liveliness", concept: .liveliness),
         ConceptCard(imageString: "flashIdol", concept: .flashIdol),
+        ConceptCard(imageString: "liveliness", concept: .liveliness),
         ConceptCard(imageString: "blackBlueActor", concept: .blackBlueActor),
         ConceptCard(imageString: "naturalPictorial", concept: .naturalPictorial),
-        ConceptCard(imageString: "clarityDoll", concept: .gorgeous),
-        ConceptCard(imageString: "waterColor", concept: .waterColor)
+        ConceptCard(imageString: "waterColor", concept: .waterColor),
+        ConceptCard(imageString: "clarityDoll", concept: .gorgeous)
     ]
     private let columns = [
         GridItem(.flexible(), spacing: -20),
@@ -22,13 +22,17 @@ struct HomeConceptView: View {
     ]
     
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 20) {
-            ForEach(conceptCards) { conceptCard in
-                NavigationLink(value: conceptCard) {
-                    conceptCardView(conceptCard)
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(conceptCards) { conceptCard in
+                    NavigationLink(value: conceptCard) {
+                        conceptCardView(conceptCard)
+                    }
                 }
             }
+            .padding(.vertical, 5)
         }
+        .background(.tcLightyellow)
         .navigationDestination(for: ConceptCard.self) { conceptCard in
             HomeResultView(concept: conceptCard.concept)
         }
@@ -38,7 +42,7 @@ struct HomeConceptView: View {
     
     @ViewBuilder
     private func conceptCardView(_ conceptCard: ConceptCard) -> some View {
-        VStack {
+        VStack(spacing: 8) {
             Image(conceptCard.imageString)
                 .resizable()
                 .scaledToFit()
@@ -48,10 +52,10 @@ struct HomeConceptView: View {
             Text(conceptCard.title)
                 .font(.headline)
                 .foregroundColor(.primary)
-                .padding(.vertical, 8)
         }
         .frame(width: 160, height: 190)
-        .background(Color.white)
+        .padding(.vertical, 10)
+        .background(Color.white.opacity(0.6))
         .cornerRadius(15)
         .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 5)
     }
