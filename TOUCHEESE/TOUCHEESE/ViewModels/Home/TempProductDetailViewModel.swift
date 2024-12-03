@@ -81,10 +81,10 @@ final class TempProductDetailViewModel: ObservableObject {
     }
     
     // MARK: - Output
-    func getAddPeoplePrice() -> String {
-        guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
-        return addPeoplePrice
-    }
+//    func getAddPeoplePrice() -> String {
+//        guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
+//        return addPeoplePrice
+//    }
     
     // MARK: - Logic
     private func calTotalPrice() {

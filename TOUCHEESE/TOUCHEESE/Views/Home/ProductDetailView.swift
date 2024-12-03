@@ -53,7 +53,6 @@ struct ProductDetailView: View {
                         // 단체 인원 뷰
                         AddPeopleView()
                             .padding(.bottom, 6)
-                            .environmentObject(realProductDetailViewModel)
                         
                         // 구분선
                         myDivider
@@ -77,11 +76,13 @@ struct ProductDetailView: View {
             // 하단 장바구니, 주문 뷰
             BottomView()
         }
+        .environmentObject(realProductDetailViewModel)
         .sheet(isPresented: $isCalendarPresented) {
             // 예약할 날짜를 선택하는 캘린더 뷰
             CalendarView(isCalendarPresented: $isCalendarPresented)
                 .presentationDetents([.fraction(0.65)])
                 .presentationDragIndicator(.visible)
+                .environmentObject(realProductDetailViewModel)
         }
     }
     
@@ -189,25 +190,25 @@ fileprivate struct AddPeopleView: View {
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
-        let addPeoplePrice = realProductDetailViewModel.productDetail.addPeoplePrice
+        let addPeoplePrice = realProductDetailViewModel.getAddPeoplePrice()
         
         HStack {
-            Text("추가 인원 (\(addPeoplePrice?.moneyStringFormat ?? ""))")
+            Text("추가 인원 (\(addPeoplePrice))")
             
             Spacer()
             
             Button {
-                productDetailViewModel.decreaseAddPeopleCount()
+                realProductDetailViewModel.decreaseAddPeopleCount()
             } label: {
                 Image(systemName: "minus.square.fill")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(Color.black, Color.gray)
             }
             
-            Text("\(productDetailViewModel.addPeopleCount) 명")
+            Text("\(realProductDetailViewModel.addPeopleCount) 명")
             
             Button {
-                productDetailViewModel.increaseAddPeopleCount()
+                realProductDetailViewModel.increaseAddPeopleCount()
             } label: {
                 Image(systemName: "plus.square.fill")
                     .symbolRenderingMode(.palette)
@@ -224,6 +225,9 @@ fileprivate struct AddPeopleView: View {
 fileprivate struct OptionItemView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
+    
     @State var isSelected: Bool = false
     let productOption: ProductOption
     
@@ -231,7 +235,7 @@ fileprivate struct OptionItemView: View {
         HStack {
             Button {
                 isSelected.toggle()
-                productDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
+                realProductDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
             } label: {
                 Circle()
                     .frame(width: 25)
@@ -255,9 +259,9 @@ fileprivate struct OptionItemView: View {
 }
 
 fileprivate struct ReservationView: View {
-    @State var isOpen: Bool = false
     @Binding var isCalendarPresented: Bool
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         VStack {
@@ -278,11 +282,11 @@ fileprivate struct ReservationView: View {
                     .frame(height: 60)
                     .foregroundStyle(Color.tcLightgray)
                     .overlay {
-                        if productDetailViewModel.reservationDate == nil {
+                        if realProductDetailViewModel.reservationDate == nil {
                             Text("예약하실 날짜를 선택해주세요")
                                 .foregroundStyle(.black)
                         } else {
-                            Text("예약 날짜:  \(productDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
+                            Text("예약 날짜:  \(realProductDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
                                 .foregroundStyle(.black)
                         }
                     }
@@ -295,6 +299,8 @@ fileprivate struct ReservationView: View {
 fileprivate struct BottomView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         HStack(spacing: 12) {
@@ -321,7 +327,7 @@ fileprivate struct BottomView: View {
                     .frame(height: 40)
                     .foregroundStyle(Color.tcYellow)
                     .overlay {
-                        Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
+                        Text("선택 상품 주문 (\(realProductDetailViewModel.totalPrice.moneyStringFormat))")
                             .foregroundStyle(.black)
                     }
             }
@@ -333,6 +339,9 @@ fileprivate struct BottomView: View {
 fileprivate struct CalendarView: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
+    
     @Binding var isCalendarPresented: Bool
     
     var body: some View {
@@ -342,10 +351,10 @@ fileprivate struct CalendarView: View {
                     .padding(.vertical)
                 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                    ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                    ForEach(realProductDetailViewModel.businessHour, id: \.self) { time in
                         Button {
-                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.tempHolidays) {
-                                productDetailViewModel.selectTime(time: time)
+                            if !realProductDetailViewModel.selectedDate.isHoliday(holidays: realProductDetailViewModel.studioDetail.holidays) {
+                                realProductDetailViewModel.selectTime(time: time)
                                 isCalendarPresented = false
                             }
                         } label: {
@@ -370,6 +379,8 @@ fileprivate struct CalendarView: View {
 fileprivate struct CustomCalendar: View {
     // 임시 뷰모델
     @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    
+    @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     // 캘린더 상단에 표시되는 기준 날짜
     @State private var displayDate = Date()
@@ -423,12 +434,12 @@ fileprivate struct CustomCalendar: View {
                 
                 // 날짜 표시
                 ForEach(displayDate.daysInMonth, id: \.self) { date in
-                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.tempHolidays)
-                    let isSelected = calendar.isDate(date, inSameDayAs: productDetailViewModel.selectedDate)
+                    let isHoliday = date.isHoliday(holidays: realProductDetailViewModel.studioDetail.holidays)
+                    let isSelected = calendar.isDate(date, inSameDayAs: realProductDetailViewModel.selectedDate)
                     
                     Button {
                         displayDate = date
-                        productDetailViewModel.selectedDate = date
+                        realProductDetailViewModel.selectDate(date: date)
                     } label: {
                         Text("\(date.dayNumber)")
                             .font(isSelected ? .title3 : .headline)
@@ -448,7 +459,7 @@ fileprivate struct CustomCalendar: View {
             }
         }
         .onAppear {
-            displayDate = productDetailViewModel.selectedDate
+            displayDate = realProductDetailViewModel.selectedDate
         }
     }
 }
