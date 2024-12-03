@@ -9,6 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct StudioDetailView: View {
+    @EnvironmentObject private var tabbarManager: TabbarManager
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) var isPresented
@@ -72,7 +73,7 @@ struct StudioDetailView: View {
             }
         }
         .toolbarRole(.editor)
-        .toolbar(isPresented ? .hidden : .visible, for: .tabBar)
+        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .toolbar {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
@@ -92,6 +93,9 @@ struct StudioDetailView: View {
         .navigationDestination(isPresented: $isPushingReviewDetailView) {
             ReviewDetailView()
                 .environmentObject(viewModel)
+        }
+        .onAppear {
+            tabbarManager.isHidden = true
         }
     }
     

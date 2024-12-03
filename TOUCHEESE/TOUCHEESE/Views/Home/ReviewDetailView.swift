@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReviewDetailView: View {
+    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject var viewModel: StudioDetailViewModel
     
     @State var carouselIndex: Int = 0
@@ -45,12 +46,16 @@ struct ReviewDetailView: View {
         .toolbar {
             leadingToolbarContent(for: reviewDetail)
         }
+        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
                 imageURLs: reviewDetail.imageURLs,
                 currentIndex: $carouselIndex,
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
+        }
+        .onAppear {
+            tabbarManager.isHidden = true
         }
     }
     
