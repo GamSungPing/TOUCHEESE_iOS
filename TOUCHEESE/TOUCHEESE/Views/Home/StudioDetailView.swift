@@ -15,6 +15,7 @@ struct StudioDetailView: View {
     @State private var selectedSegmentedControlIndex = 0
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
+    @State private var isExpanded = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -36,13 +37,19 @@ struct StudioDetailView: View {
                         systemImage: "star"
                     )
                     Label(
-                        "\(studioDetail.openTimeString)~\(studioDetail.closeTimeString) / 매주 \(studioDetail.holidayString) 휴무",
+                        viewModel.businessHourString,
                         systemImage: "clock"
                     )
                     Label(
                         "\(studioDetail.address)",
                         systemImage: "mappin.and.ellipse"
                     )
+                    
+                    if let notice = studioDetail.notice, notice != "" {
+                        NoticeView(notice: notice, isExpanded: $isExpanded)
+                            .padding(.top, 3)
+                            .padding(.bottom, 2)
+                    }
                 }
                 .padding(.horizontal)
                 
@@ -77,6 +84,7 @@ struct StudioDetailView: View {
             leadingToolbarContent(for: studio)
             trailingToolbarContent
         }
+        .animation(.easeInOut, value: isExpanded)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
                 imageURLs: studioDetail.detailImageURLs,
@@ -125,7 +133,7 @@ struct StudioDetailView: View {
 
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
-    let options = ["가격", "리뷰"]
+    let options = ["상품", "리뷰"]
     
     var body: some View {
         HStack(spacing: 0) {
@@ -176,14 +184,9 @@ fileprivate struct RoundedCornersShape: Shape {
 fileprivate struct ProductListView: View {
     let studioDetail: StudioDetail
     let action: (Product) -> Void
-    @State private var isExpanded = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            if let notice = studioDetail.notice {
-                NoticeView(notice: notice, isExpanded: $isExpanded)
-            }
-            
             Text("촬영 상품")
                 .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
             
@@ -194,25 +197,29 @@ fileprivate struct ProductListView: View {
                         .resizable()
                         .downsampling(size: CGSize(width: 250, height: 250))
                         .fade(duration: 0.25)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 120)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 150)
+                        .clipped()
                         .overlay {
                             Rectangle()
                                 .fill(Color.clear)
                                 .border(Color.black, width: 1)
                         }
                     
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading) {
                         Text(product.name)
                             .fontWeight(.semibold)
+                            .padding(.bottom, 1)
                         
                         Text(product.description)
                             .font(.system(size: 14))
                             .multilineTextAlignment(.leading)
-                        
+                            .frame(alignment: .leading)
                         Text("리뷰 \(product.reviewCount)개")
                             .font(Font.caption)
                             .foregroundStyle(Color.gray)
+                        
+                        Spacer()
                         
                         HStack {
                             Spacer()
@@ -231,7 +238,6 @@ fileprivate struct ProductListView: View {
                 .frame(height: 30)
         }
         .padding(.horizontal)
-        .animation(.easeInOut, value: isExpanded)
     }
 }
 
@@ -246,15 +252,17 @@ fileprivate struct NoticeView: View {
             
             if let notice {
                 Text("\(notice)")
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(isExpanded ? nil : 2)
                     .multilineTextAlignment(.leading)
-            }
-            
-            Button {
-                isExpanded.toggle()
-            } label: {
-                Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+                
+                if notice.count > 38 {
+                    Button {
+                        isExpanded.toggle()
+                    } label: {
+                        Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+                    }
+                }
             }
         }
         .padding()
@@ -262,7 +270,6 @@ fileprivate struct NoticeView: View {
             RoundedRectangle(cornerRadius: 15)
                 .fill(.tcLightgray)
         }
-        .padding(.top, -5)
     }
 }
 

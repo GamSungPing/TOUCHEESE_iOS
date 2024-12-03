@@ -31,7 +31,7 @@ class NetworkManager {
         
         switch response.result {
         case .success(let data):
-            // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+             print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
             let decoder = JSONDecoder()
             do {
                 return try decoder.decode(T.self, from: data)
