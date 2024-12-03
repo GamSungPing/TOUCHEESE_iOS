@@ -9,9 +9,6 @@ import SwiftUI
 import Kingfisher
 
 struct ProductDetailView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     // 진짜 뷰모델
     @StateObject var realProductDetailViewModel: ProductDetailViewModel
     
@@ -184,9 +181,6 @@ struct ProductDetailView: View {
 }
 
 fileprivate struct AddPeopleView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
@@ -223,9 +217,6 @@ fileprivate struct AddPeopleView: View {
 }
 
 fileprivate struct OptionItemView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     @State var isSelected: Bool = false
@@ -260,7 +251,6 @@ fileprivate struct OptionItemView: View {
 
 fileprivate struct ReservationView: View {
     @Binding var isCalendarPresented: Bool
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
@@ -297,9 +287,6 @@ fileprivate struct ReservationView: View {
 }
 
 fileprivate struct BottomView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     var body: some View {
@@ -337,9 +324,6 @@ fileprivate struct BottomView: View {
 }
 
 fileprivate struct CalendarView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     @Binding var isCalendarPresented: Bool
@@ -377,9 +361,6 @@ fileprivate struct CalendarView: View {
 }
 
 fileprivate struct CustomCalendar: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
-    
     @EnvironmentObject private var realProductDetailViewModel: ProductDetailViewModel
     
     // 캘린더 상단에 표시되는 기준 날짜
@@ -466,5 +447,4 @@ fileprivate struct CustomCalendar: View {
 
 #Preview {
     ProductDetailView(realProductDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
-        .environmentObject(TempProductDetailViewModel())
 }

@@ -10,7 +10,6 @@ import SwiftUI
 @main
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
-    @StateObject private var tempProductDetailViewModel = TempProductDetailViewModel()
     @StateObject private var tabbarManager = TabbarManager()
     
     init() {
@@ -21,7 +20,6 @@ struct TOUCHEESEApp: App {
         WindowGroup {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
-                .environmentObject(tempProductDetailViewModel)
                 .environmentObject(tabbarManager)
         }
     }
