@@ -55,26 +55,12 @@ struct StudioDetailView: View {
                 
                 CustomSegmentedControl(selectedIndex: $selectedSegmentedControlIndex)
                 
-                // 가격 또는 리뷰 View
+                // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
-                    ProductListView(studioDetail: studioDetail) { product in
-                        // TODO: - 추후에 ProductDetailView로 넘어가는 로직 구현
-                        // Test 코드, 불필요시 지우기
-                        print(product.name)
-                        Task {
-                            await viewModel.fetchProductDetail(productID: product.id)
-                        }
-                    }
+                    ProductListView(studioDetail: studioDetail)
                 } else {
-                    ReviewImageGridView(reviews: studioDetail.reviews.content) { review in
-                        // TODO: - 추후에 ReviewDetailView로 넘어가는 로직 구현
-                        // Test 코드, 불필요시 지우기
-                        print(review.id)
-                        Task {
-                            await viewModel.fetchReviewDetail(reviewID: review.id)
-                        }
-                    }
-                    .padding(.top, -13)
+                    ReviewImageGridView(reviews: studioDetail.reviews.content)
+                        .padding(.top, -13)
                 }
             }
         }
@@ -91,6 +77,13 @@ struct StudioDetailView: View {
                 currentIndex: $carouselIndex,
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
+        }
+        .navigationDestination(for: Product.self) { product in
+            ProductDetailView()
+                .environmentObject(viewModel)
+        }
+        .navigationDestination(for: Review.self) { review in
+            ReviewDetailView()
         }
     }
     
@@ -183,7 +176,6 @@ fileprivate struct RoundedCornersShape: Shape {
 
 fileprivate struct ProductListView: View {
     let studioDetail: StudioDetail
-    let action: (Product) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
@@ -191,46 +183,45 @@ fileprivate struct ProductListView: View {
                 .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
             
             ForEach(studioDetail.products, id: \.self) { product in
-                HStack(spacing: 15) {
-                    KFImage(product.imageURL)
-                        .placeholder { ProgressView() }
-                        .resizable()
-                        .downsampling(size: CGSize(width: 250, height: 250))
-                        .fade(duration: 0.25)
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 120, height: 150)
-                        .clipped()
-                        .overlay {
-                            Rectangle()
-                                .fill(Color.clear)
-                                .border(Color.black, width: 1)
-                        }
-                    
-                    VStack(alignment: .leading) {
-                        Text(product.name)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 1)
+                NavigationLink(value: product) {
+                    HStack(spacing: 15) {
+                        KFImage(product.imageURL)
+                            .placeholder { ProgressView() }
+                            .resizable()
+                            .downsampling(size: CGSize(width: 250, height: 250))
+                            .fade(duration: 0.25)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 120, height: 150)
+                            .clipped()
+                            .overlay {
+                                Rectangle()
+                                    .fill(Color.clear)
+                                    .border(Color.black, width: 1)
+                            }
                         
-                        Text(product.description)
-                            .font(.system(size: 14))
-                            .multilineTextAlignment(.leading)
-                            .frame(alignment: .leading)
-                        Text("리뷰 \(product.reviewCount)개")
-                            .font(Font.caption)
-                            .foregroundStyle(Color.gray)
-                        
-                        Spacer()
-                        
-                        HStack {
+                        VStack(alignment: .leading) {
+                            Text(product.name)
+                                .fontWeight(.semibold)
+                                .padding(.bottom, 1)
+                            
+                            Text(product.description)
+                                .font(.system(size: 14))
+                                .multilineTextAlignment(.leading)
+                                .frame(alignment: .leading)
+                            Text("리뷰 \(product.reviewCount)개")
+                                .font(Font.caption)
+                                .foregroundStyle(Color.gray)
+                            
                             Spacer()
                             
-                            Text("\(product.price)원")
-                                .font(.system(size: 18, weight: .bold))
+                            HStack {
+                                Spacer()
+                                
+                                Text("\(product.price)원")
+                                    .font(.system(size: 18, weight: .bold))
+                            }
                         }
                     }
-                }
-                .onTapGesture {
-                    action(product)
                 }
             }
             

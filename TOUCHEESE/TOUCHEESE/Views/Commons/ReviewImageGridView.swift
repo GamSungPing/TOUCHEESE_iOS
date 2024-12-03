@@ -10,7 +10,6 @@ import Kingfisher
 
 struct ReviewImageGridView: View {
     let reviews: [Review]?
-    let action: (Review) -> Void
     
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 2),
@@ -25,20 +24,19 @@ struct ReviewImageGridView: View {
         if let reviews {
             LazyVGrid(columns: columns, spacing: 2) {
                 ForEach(reviews) { review in
-                    KFImage(review.imageURL)
-                        .placeholder { ProgressView() }
-                        .downsampling(size: CGSize(width: 200, height: 200))
-                        .cacheMemoryOnly()
-                        .cancelOnDisappear(true)
-                        .fade(duration: 0.25)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: gridSize)
-                        .clipped()
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            action(review)
-                        }
+                    NavigationLink(value: review) {
+                        KFImage(review.imageURL)
+                            .placeholder { ProgressView() }
+                            .downsampling(size: CGSize(width: 200, height: 200))
+                            .cacheMemoryOnly()
+                            .cancelOnDisappear(true)
+                            .fade(duration: 0.25)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: gridSize)
+                            .clipped()
+                            .contentShape(Rectangle())
+                    }
                 }
             }
         } else {
@@ -61,7 +59,5 @@ struct ReviewImageGridView: View {
 }
 
 #Preview {
-    ReviewImageGridView(reviews: Review.samples) { review in
-        print(review.id)
-    }
+    ReviewImageGridView(reviews: Review.samples)
 }
