@@ -12,10 +12,13 @@ struct StudioDetailView: View {
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) var isPresented
+    
     @State private var selectedSegmentedControlIndex = 0
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
     @State private var isExpanded = false
+    
+    @State private var isPushingReviewDetailView = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -59,8 +62,12 @@ struct StudioDetailView: View {
                 if selectedSegmentedControlIndex == 0 {
                     ProductListView(studioDetail: studioDetail)
                 } else {
-                    ReviewImageGridView(reviews: studioDetail.reviews.content)
-                        .padding(.top, -13)
+                    ReviewImageGridView(
+                        reviews: studioDetail.reviews.content,
+                        isPushingDetailView: $isPushingReviewDetailView
+                    )
+                    .padding(.top, -13)
+                    .environmentObject(viewModel)
                 }
             }
         }
@@ -82,8 +89,9 @@ struct StudioDetailView: View {
             ProductDetailView()
                 .environmentObject(viewModel)
         }
-        .navigationDestination(for: Review.self) { review in
+        .navigationDestination(isPresented: $isPushingReviewDetailView) {
             ReviewDetailView()
+                .environmentObject(viewModel)
         }
     }
     
@@ -94,7 +102,7 @@ struct StudioDetailView: View {
             HStack {
                 ProfileImageView(
                     imageURL: studio.profileImageURL,
-                    size: 40
+                    size: 35
                 )
                 
                 Text("\(studio.name)")

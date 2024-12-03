@@ -13,6 +13,8 @@ final class StudioDetailViewModel: ObservableObject {
     @Published private(set) var studio: Studio
     @Published private(set) var studioDetail: StudioDetail = StudioDetail.sample
     
+    @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
+    
     let networkManager = NetworkManager.shared
     
     init(studio: Studio) {
@@ -48,10 +50,13 @@ final class StudioDetailViewModel: ObservableObject {
         }
     }
     
-    // Test 코드, 불필요시 지우기
+    @MainActor
     func fetchReviewDetail(reviewID: Int) async {
         do {
-            dump(try await networkManager.getReviewDetailData(studioID: studio.id, reviewID: reviewID))
+            reviewDetail = try await networkManager.getReviewDetailData(
+                studioID: studio.id,
+                reviewID: reviewID
+            )
         } catch {
             print("Fetch ReviewDetail Error: \(error.localizedDescription)")
         }

@@ -86,6 +86,14 @@ extension ReviewDetail {
         reply: Reply.sample
     )
     
+    var userProfileImageURL: URL {
+        if let userProfileImageString {
+            return URL(string: userProfileImageString) ?? .defaultImageURL
+        } else {
+            return .defaultImageURL
+        }
+    }
+    
     var imageURLs: [URL] {
         imageStrings.map { imageString in
             URL(string: imageString) ?? .defaultImageURL
