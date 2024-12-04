@@ -21,7 +21,7 @@ struct ProductDetailView: View {
         ZStack {
             VStack {
                 Color.tcBackground
-                    .frame(width: .screenWidth, height: 200)
+                    .frame(width: .screenWidth, height: 370)
                     .ignoresSafeArea()
                 
                 Spacer()
