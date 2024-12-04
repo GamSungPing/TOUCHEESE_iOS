@@ -91,12 +91,6 @@ struct ProductDetailView: View {
                     .environmentObject(productDetailViewModel)
             }
         }
-        .sheet(isPresented: $isCalendarPresented) {
-            // 예약할 날짜를 선택하는 캘린더 뷰
-            CalendarView(isCalendarPresented: $isCalendarPresented)
-                .presentationDetents([.fraction(0.65)])
-                .presentationDragIndicator(.visible)
-        }
     }
     
     private var myDivider: some View {
@@ -578,12 +572,13 @@ fileprivate struct CustomCalendar: View {
 }
 
 fileprivate struct AddPeopleView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
+        let addPeoplePrice = productDetailViewModel.getAddPeoplePrice()
+        
         HStack {
-            Text("추가 인원 (\(productDetailViewModel.getAddPeoplePrice()))")
+            Text("추가 인원 (\(addPeoplePrice))")
             
             Spacer()
             
@@ -613,9 +608,10 @@ fileprivate struct AddPeopleView: View {
 }
 
 fileprivate struct OptionItemView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    
     @State var isSelected: Bool = false
+    
     let productOption: ProductOption
     
     var body: some View {
@@ -646,9 +642,8 @@ fileprivate struct OptionItemView: View {
 }
 
 fileprivate struct ReservationView: View {
-    @State var isOpen: Bool = false
     @Binding var isCalendarPresented: Bool
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         VStack {
@@ -684,8 +679,7 @@ fileprivate struct ReservationView: View {
 }
 
 fileprivate struct BottomView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         HStack(spacing: 12) {
@@ -712,7 +706,7 @@ fileprivate struct BottomView: View {
                     .frame(height: 40)
                     .foregroundStyle(Color.tcYellow)
                     .overlay {
-                        Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
+                        Text("선택 상품 주문 (\(productDetailViewModel.totalPrice.moneyStringFormat))")
                             .foregroundStyle(.black)
                     }
             }
@@ -722,12 +716,12 @@ fileprivate struct BottomView: View {
 }
 
 fileprivate struct CalendarView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    
     @Binding var isCalendarPresented: Bool
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ViewThatFits(in: .vertical) {
             VStack {
                 CustomCalendar()
                     .padding(.vertical)
@@ -735,7 +729,7 @@ fileprivate struct CalendarView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
                     ForEach(productDetailViewModel.businessHour, id: \.self) { time in
                         Button {
-                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.tempHolidays) {
+                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
                                 productDetailViewModel.selectTime(time: time)
                                 isCalendarPresented = false
                             }
@@ -754,13 +748,41 @@ fileprivate struct CalendarView: View {
             }
             .padding(.horizontal)
             .padding(.top)
+            
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    CustomCalendar()
+                        .padding(.vertical)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                        ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                            Button {
+                                if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                    productDetailViewModel.selectTime(time: time)
+                                    isCalendarPresented = false
+                                }
+                            } label: {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .foregroundStyle(.tcLightyellow)
+                                    .frame(height: 30)
+                                    .overlay {
+                                        Text("\(time)")
+                                            .foregroundStyle(.black)
+                                    }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+            }
         }
     }
 }
 
 fileprivate struct CustomCalendar: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     // 캘린더 상단에 표시되는 기준 날짜
     @State private var displayDate = Date()
@@ -814,12 +836,12 @@ fileprivate struct CustomCalendar: View {
                 
                 // 날짜 표시
                 ForEach(displayDate.daysInMonth, id: \.self) { date in
-                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.tempHolidays)
+                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.studioDetail.holidays)
                     let isSelected = calendar.isDate(date, inSameDayAs: productDetailViewModel.selectedDate)
                     
                     Button {
                         displayDate = date
-                        productDetailViewModel.selectedDate = date
+                        productDetailViewModel.selectDate(date: date)
                     } label: {
                         Text("\(date.dayNumber)")
                             .font(isSelected ? .title3 : .headline)
