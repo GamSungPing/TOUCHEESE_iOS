@@ -224,6 +224,7 @@ fileprivate struct ProductListView: View {
                             
                             Text(product.description)
                                 .font(.system(size: 14))
+                                .lineLimit(4)
                                 .multilineTextAlignment(.leading)
                                 .frame(alignment: .leading)
                             Text("리뷰 \(product.reviewCount)개")
