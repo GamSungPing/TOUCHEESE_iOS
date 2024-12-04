@@ -16,9 +16,7 @@ final class StudioDetailViewModel: ObservableObject {
     @Published private(set) var reviewDetail: ReviewDetail = ReviewDetail.sample
     
     let networkManager = NetworkManager.shared
-    
-    private(set) var selectedProduct: Product = Product.sample1
-    
+        
     init(studio: Studio) {
         self.studio = studio
         
@@ -71,9 +69,5 @@ final class StudioDetailViewModel: ObservableObject {
         } catch {
             print("Fetch ProductDetail Error: \(error.localizedDescription)")
         }
-    }
-    
-    func selectProduct(product: Product) {
-        selectedProduct = product
     }
 }

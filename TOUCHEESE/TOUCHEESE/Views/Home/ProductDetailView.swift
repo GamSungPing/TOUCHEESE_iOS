@@ -18,67 +18,78 @@ struct ProductDetailView: View {
         let product = productDetailViewModel.product
         let productDetail = productDetailViewModel.productDetail
         
-        VStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 0) {
-                    // 상단 상품 이미지 및 설명
-                    infoView(product: product)
-                        .padding(.bottom, 6)
-                    
-                    // 리뷰로 이동하는 버튼
-                    reviewButtonView(reviewCount: product.reviewCount)
-                        .padding(.bottom, 10)
-                    
-                    // 가격 정보
-                    priceView(productPrice: product.price)
-                        .padding(.bottom, 6)
-                    
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
-                    
-                    if productDetail.isGroup {
-                        // 기준 인원 뷰
-                        baseGuestCountView(baseGuestCount: productDetail.basePeopleCnt ?? 0)
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        // 단체 인원 뷰
-                        AddPeopleView()
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                    }
-                    
-                    if !productDetail.parsedProductOptions.isEmpty {
-                        // 상품 옵션 설정 뷰
-                        productOptionView(productDetail: productDetail)
-                            .padding(.bottom, 12)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                    }
-                    
-                    // 촬영 날짜 예약 뷰
-                    ReservationView(isCalendarPresented: $isCalendarPresented)
-                }
+        ZStack {
+            VStack {
+                Color.tcBackground
+                    .frame(width: .screenWidth, height: 200)
+                    .ignoresSafeArea()
+                
+                Spacer()
             }
-            // 하단 장바구니, 주문 뷰
-            BottomView()
-        }
-        .environmentObject(productDetailViewModel)
-        .sheet(isPresented: $isCalendarPresented) {
-            // 예약할 날짜를 선택하는 캘린더 뷰
-            CalendarView(isCalendarPresented: $isCalendarPresented)
-                .presentationDetents([.fraction(0.65)])
-                .presentationDragIndicator(.visible)
-                .environmentObject(productDetailViewModel)
+            
+            VStack {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // 상단 상품 이미지 및 설명
+                        infoView(product: product)
+                            .padding(.bottom, 10)
+                        
+                        // 리뷰로 이동하는 버튼
+//                        reviewButtonView(reviewCount: product.reviewCount)
+//                            .padding(.bottom, 10)
+                        
+                        // 가격 정보
+                        priceView(productPrice: product.price)
+                            .padding(.bottom, 6)
+                        
+                        // 구분선
+                        myDivider
+                            .padding(.bottom, 10)
+                        
+                        if productDetail.isGroup {
+                            // 기준 인원 뷰
+                            baseGuestCountView(baseGuestCount: productDetail.basePeopleCnt ?? 0)
+                                .padding(.bottom, 6)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                            
+                            // 단체 인원 뷰
+                            AddPeopleView()
+                                .padding(.bottom, 6)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                        }
+                        
+                        if !productDetail.parsedProductOptions.isEmpty {
+                            // 상품 옵션 설정 뷰
+                            productOptionView(productDetail: productDetail)
+                                .padding(.bottom, 12)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                        }
+                        
+                        // 촬영 날짜 예약 뷰
+                        ReservationView(isCalendarPresented: $isCalendarPresented)
+                    }
+                }
+                // 하단 장바구니, 주문 뷰
+                BottomView()
+            }
+            .toolbarRole(.editor)
+            .environmentObject(productDetailViewModel)
+            .sheet(isPresented: $isCalendarPresented) {
+                // 예약할 날짜를 선택하는 캘린더 뷰
+                CalendarView(isCalendarPresented: $isCalendarPresented)
+                    .presentationDetents([.fraction(0.80)])
+                    .presentationDragIndicator(.visible)
+                    .environmentObject(productDetailViewModel)
+            }
         }
     }
     
@@ -103,6 +114,7 @@ struct ProductDetailView: View {
                 .resizable()
                 .cancelOnDisappear(true)
                 .fade(duration: 0.25)
+                .aspectRatio(contentMode: .fit)
                 .frame(width: imageWidth, height: imageWidth * imageScale)
             
             Text(product.name)
@@ -329,7 +341,7 @@ fileprivate struct CalendarView: View {
     @Binding var isCalendarPresented: Bool
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ViewThatFits(in: .vertical) {
             VStack {
                 CustomCalendar()
                     .padding(.vertical)
@@ -356,6 +368,35 @@ fileprivate struct CalendarView: View {
             }
             .padding(.horizontal)
             .padding(.top)
+            
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    CustomCalendar()
+                        .padding(.vertical)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                        ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                            Button {
+                                if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                    productDetailViewModel.selectTime(time: time)
+                                    isCalendarPresented = false
+                                }
+                            } label: {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .foregroundStyle(.tcLightyellow)
+                                    .frame(height: 30)
+                                    .overlay {
+                                        Text("\(time)")
+                                            .foregroundStyle(.black)
+                                    }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+            }
         }
     }
 }
