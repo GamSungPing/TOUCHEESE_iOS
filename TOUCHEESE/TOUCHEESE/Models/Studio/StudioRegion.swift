@@ -8,7 +8,8 @@
 import Foundation
 
 enum StudioRegion: Int, OptionType, CaseIterable {
-    case gangnam = 1
+    case all = 0
+    case gangnam
     case seocheo
     case songpa
     case gangseo
@@ -21,6 +22,7 @@ enum StudioRegion: Int, OptionType, CaseIterable {
     var id: Int { self.rawValue }
     var title: String {
         switch self {
+        case .all: "전체"
         case .gangnam: "강남구"
         case .seocheo: "서초구"
         case .songpa: "송파구"

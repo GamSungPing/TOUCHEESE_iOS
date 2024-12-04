@@ -10,11 +10,17 @@ import SwiftUI
 @main
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
+    @StateObject private var tabbarManager = TabbarManager()
+    
+    init() {
+        CacheManager.configureKingfisherCache()
+    }
     
     var body: some Scene {
         WindowGroup {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
+                .environmentObject(tabbarManager)
         }
     }
 }

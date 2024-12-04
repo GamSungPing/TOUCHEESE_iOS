@@ -11,11 +11,7 @@ import Alamofire
 extension Network {
     func getParameters() -> Parameters? {
         switch self {
-        case .testRequestType:
-            return nil
-        case .conceptRequestType:
-            return nil
-        case .tempStudioRequest(
+        case .studioListRequest(
             _,
             _,
             let regionArray,
@@ -27,7 +23,7 @@ extension Network {
             if let regionArray {
                 params["regionIds"] = regionArray.map { $0.rawValue }
             }
-                        
+            
             if let price {
                 switch price {
                 case .all:
@@ -46,6 +42,14 @@ extension Network {
             }
             
             return params
+        case .reviewListRequest(_, _, let page):
+            var params: Parameters = [:]
+            
+            if let page { params["page"] = page }
+            
+            return params
+        case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest:
+            return [:]
         }
     }
 }

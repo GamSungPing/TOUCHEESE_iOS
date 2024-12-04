@@ -19,7 +19,10 @@ struct StudioRow: View {
     var body: some View {
         VStack {
             HStack {
-                profileImage
+                ProfileImageView(
+                    imageURL: studio.profileImageURL,
+                    size: 45
+                )
                 
                 VStack(alignment: .leading) {
                     Text("\(studio.name)")
@@ -45,22 +48,6 @@ struct StudioRow: View {
         }
     }
     
-    private var profileImage: some View {
-        KFImage(studio.profileImageURL)
-            .placeholder { _ in
-                ProgressView()
-            }
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 45, height: 45)
-            .foregroundStyle(Color.black)
-            .clipShape(.circle)
-            .overlay {
-                Circle()
-                    .stroke(Color.gray, lineWidth: 1)
-            }
-    }
-    
     private var bookmarkButton: some View {
         Button {
             isBookmarked.toggle()
@@ -79,10 +66,11 @@ struct StudioRow: View {
             HStack(spacing: 10) {
                 ForEach(imageURLs.indices, id: \.self) { index in
                     KFImage(imageURLs[index])
-                        .placeholder { _ in
-                            ProgressView()
-                        }
+                        .placeholder { ProgressView() }
                         .resizable()
+                        .downsampling(size: CGSize(width: 230, height: 230))
+                        .cancelOnDisappear(true)
+                        .fade(duration: 0.25)
                         .aspectRatio(contentMode: .fill)
                         .foregroundStyle(Color.black)
                         .frame(width: 130, height: 130)

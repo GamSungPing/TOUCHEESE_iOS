@@ -9,13 +9,27 @@ import Foundation
 import Alamofire
 
 enum Network {
-    case testRequestType
-    case conceptRequestType(concept: StudioConcept)
-    case tempStudioRequest(
+    /// Studio
+    case studioListRequest(
         concept: StudioConcept,
         isHighRating: Bool?,
         regionArray: [StudioRegion]?,
         price: StudioPrice?,
         page: Int?
     )
+    case studioDetailRequest(id: Int)
+    
+    /// Review
+    case reviewListRequest(
+        studioID: Int,
+        productID: Int?,
+        page: Int?
+    )
+    case reviewDetailRequest(
+        studioID: Int,
+        reviewID: Int
+    )
+    
+    /// Product
+    case productDetailRequest(id: Int)
 }

@@ -7,21 +7,20 @@
 
 import Foundation
 
-// MARK: - Welcome
 struct StudioData: Codable {
     let statusCode: Int
     let msg: String
     let data: DataClass
 }
 
-// MARK: - DataClass
+
 struct DataClass: Codable {
-    let totalElementsCount, pageElementsCount, totalPagesCount, pageNumber: Int
+    let totalPagesCount, pageNumber: Int
     let content: [Studio]
 }
 
-// MARK: - Content
-struct Studio: Codable, Identifiable {
+
+struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
     let profilePrice: Int
@@ -39,6 +38,28 @@ struct Studio: Codable, Identifiable {
     }
 }
 
+
+struct StudioDetailData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: StudioDetail
+}
+
+
+struct StudioDetail: Codable {
+    let detailImageStrings: [String]
+    let reviewCount: Int
+    
+    let openTime, closeTime: String
+    let holidays: [Int]
+    let address: String
+    let notice: String?
+    
+    let products: [Product]
+    let reviews: ReviewData
+}
+
+
 extension Studio {
     static let sample = Studio(
         id: 1,
@@ -54,12 +75,59 @@ extension Studio {
     }
     
     var profileImageURL: URL {
-        URL(string: profileImageString ) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+        URL(string: profileImageString ) ?? .defaultImageURL
     }
     
     var portfolioImageURLs: [URL] {
         portfolioImageStrings.map { string in
-            URL(string: string ) ?? URL(string: "https://i.imgur.com/Uw5nNHQ.png")!
+            URL(string: string ) ?? .defaultImageURL
         }
+    }
+}
+
+
+extension StudioDetail {
+    static let sample = StudioDetail(
+        detailImageStrings: [
+            "https://imgur.com/oKoO2ca.png",
+            "https://imgur.com/YJaYOeA.png",
+            "https://imgur.com/YJaYOeA.png"
+        ],
+        reviewCount: 0,
+        openTime: "00:00:00",
+        closeTime: "00:00:00",
+        holidays: [],
+        address: "주소가 표시됩니다.",
+        notice: nil,
+        products: [
+            Product.sample1,
+            Product.sample2,
+            Product.sample3
+        ],
+        reviews: ReviewData(totalPagesCount: 1, pageNumber: 1, content: Review.samples)
+    )
+    
+    var detailImageURLs: [URL] {
+        detailImageStrings.map { imageString in
+            URL(string: imageString) ?? .defaultImageURL
+        }
+    }
+    
+    var openTimeString: String {
+        String(openTime.dropLast(3))
+    }
+    
+    var closeTimeString: String {
+        String(closeTime.dropLast(3))
+    }
+    
+    var holidayString: String {
+        let dayMapping: [Int: String] = [
+            1: "일", 2: "월", 3: "화", 4: "수",
+            5: "목", 6: "금", 7: "토"
+        ]
+        let dayStrings = holidays.compactMap { dayMapping[$0] }
+        
+        return dayStrings.joined(separator: ", ")
     }
 }
