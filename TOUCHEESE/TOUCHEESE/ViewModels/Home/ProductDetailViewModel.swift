@@ -1,33 +1,23 @@
-//  tembProductDetailViewModel.swift
+//
+//  ProductDetailViewModel.swift
 //  TOUCHEESE
 //
-//  Created by Healthy on 11/29/24.
+//  Created by Healthy on 12/3/24.
 //
 
 import Foundation
-import SwiftUI
 
-final class TempProductDetailViewModel: ObservableObject {
+final class ProductDetailViewModel: ObservableObject {
     // MARK: - Data
-    let product: Product = Product.sample1
-    let productDetail: ProductDetail = ProductDetail.sample1
-    let tempOpenTime = "11:00"
-    let tempCloseTime = "17:00"
-    let tempHolidays: [Int] = [1, 7]
+    let networkManager = NetworkManager.shared
     
-    // 선택된 옵션의 ID Set
-    private var selectedOptionIDArray: Set<Int> = [] {
-        didSet {
-            calTotalPrice()
-        }
-    }
+    @Published private(set) var studio: Studio
+    @Published private(set) var studioDetail: StudioDetail
+    @Published private(set) var product: Product
+    @Published private(set) var productDetail: ProductDetail = ProductDetail.sample1
     
-    // 추가 인원 변수
-    @Published private(set) var addPeopleCount: Int = 0 {
-        didSet {
-            calTotalPrice()
-        }
-    }
+    // 예약한 날짜
+    @Published private(set) var reservationDate: Date?
     
     // 총 가격
     @Published private(set) var totalPrice: Int = 0
@@ -35,20 +25,40 @@ final class TempProductDetailViewModel: ObservableObject {
     // 영업 시간 배열
     @Published private(set) var businessHour: [String] = []
     
-    // 예약한 날짜
-    @Published private(set) var reservationDate: Date?
-    
-    // 선택된 날짜
-    var selectedDate: Date = Date()
+    // 추가 인원 변수
+    @Published private(set) var addPeopleCount: Int = 0 {
+        didSet {
+            calTotalPrice()
+        }
+    }
+
+    // 선택된 옵션의 ID Set
+    private var selectedOptionIDArray: Set<Int> = [] {
+        didSet {
+            calTotalPrice()
+        }
+    }
     
     // 선택된 시간
-    private var selectedTime: Date? {
+    private(set) var selectedTime: Date? {
         didSet {
             calReservationDate()
         }
     }
     
-    init() {
+    // 선택된 날짜
+    private(set) var selectedDate: Date = Date()
+    
+    // MARK: - Init
+    init(studio: Studio, studioDetails: StudioDetail, product: Product) {
+        self.studio = studio
+        self.studioDetail = studioDetails
+        self.product = product
+        
+        Task {
+            await fetchProductDetail()
+        }
+        
         calTotalPrice()
         calBusinessHour()
     }
@@ -64,6 +74,7 @@ final class TempProductDetailViewModel: ObservableObject {
         }
     }
     
+    /// 상품의 옵션을 선택/취소했을 때 동작하는 함수
     func optionChanged(isSelected: Bool, id: Int) {
         if isSelected {
             selectedOptionIDArray.insert(id)
@@ -72,21 +83,35 @@ final class TempProductDetailViewModel: ObservableObject {
         }
     }
     
-    func selectDate(date: Date) {
-        selectedDate = date
-    }
-    
+    /// 상품의 예약 시간을 선택했을 때 동작하는 함수
     func selectTime(time: String) {
         selectedTime = time.toDate(dateFormat: .hourMinute)
     }
     
+    /// 상품의 예약 날짜를 선택했을 때 동작하는 함수
+    func selectDate(date: Date) {
+        selectedDate = date
+    }
+    
     // MARK: - Output
+    /// 인원 추가 가격을 문자열로 리턴하는 함수
     func getAddPeoplePrice() -> String {
         guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
         return addPeoplePrice
     }
     
     // MARK: - Logic
+    @MainActor
+    /// ProductDetail 정보를 네트워크 통신을 통해 가져오는 함수
+    private func fetchProductDetail() async {
+        do {
+            productDetail = try await networkManager.getProductDetailData(productID: product.id)
+        } catch {
+            print("Fetch ProductDetail Error: \(error.localizedDescription)")
+        }
+    }
+    
+    /// 상품의 총 가격을 계산하는 함수
     private func calTotalPrice() {
         var totalPrice: Int = 0
         
@@ -106,11 +131,12 @@ final class TempProductDetailViewModel: ObservableObject {
         self.totalPrice = totalPrice
     }
     
+    /// 영업 시간을 계산하는 함수
     private func calBusinessHour() {
         let calendar = Calendar.current
         
-        guard let openTime = tempOpenTime.toDate(dateFormat: .hourMinute) else { return }
-        guard let closeTime = tempCloseTime.toDate(dateFormat: .hourMinute) else { return }
+        guard let openTime = studioDetail.openTimeString.toDate(dateFormat: .hourMinute) else { return }
+        guard let closeTime = studioDetail.closeTimeString.toDate(dateFormat: .hourMinute) else { return }
         guard let hourDifference = calendar.dateComponents([.hour], from: openTime, to: closeTime).hour else { return }
         
         var times: [String] = []
@@ -124,6 +150,7 @@ final class TempProductDetailViewModel: ObservableObject {
         businessHour = times
     }
     
+    /// 총 예약 가격을 계산하는 함수
     private func calReservationDate() {
         guard let selectedTime else { return }
         

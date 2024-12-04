@@ -62,6 +62,7 @@ struct StudioDetailView: View {
                 // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
                     ProductListView(studioDetail: studioDetail)
+                        .environmentObject(viewModel)
                 } else {
                     ReviewImageGridView(
                         reviews: studioDetail.reviews.content,
@@ -87,8 +88,13 @@ struct StudioDetailView: View {
             )
         }
         .navigationDestination(for: Product.self) { product in
-            ProductDetailView()
-                .environmentObject(viewModel)
+            ProductDetailView(
+                productDetailViewModel: ProductDetailViewModel(
+                    studio: studio,
+                    studioDetails: studioDetail,
+                    product: product
+                )
+            )
         }
         .navigationDestination(isPresented: $isPushingReviewDetailView) {
             ReviewDetailView()

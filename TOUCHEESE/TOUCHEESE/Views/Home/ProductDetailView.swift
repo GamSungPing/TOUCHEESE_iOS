@@ -9,70 +9,87 @@ import SwiftUI
 import Kingfisher
 
 struct ProductDetailView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @StateObject var productDetailViewModel: ProductDetailViewModel
     
     // 캘린더 시트 트리거
     @State private var isCalendarPresented = false
     
     var body: some View {
-        VStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 0) {
-                    // 상단 상품 이미지 및 설명
-                    infoView(product: productDetailViewModel.product)
-                        .padding(.bottom, 6)
-                    
-                    // 리뷰로 이동하는 버튼
-                    reviewButtonView(reviewCount: productDetailViewModel.product.reviewCount)
-                        .padding(.bottom, 10)
-                    
-                    // 가격 정보
-                    priceView(productPrice: productDetailViewModel.product.price)
-                        .padding(.bottom, 6)
-                    
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
-                    
-                    if productDetailViewModel.productDetail.isGroup {
-                        // 기준 인원 뷰
-                        baseGuestCountView(baseGuestCount: productDetailViewModel.productDetail.baseGuestCount!)
+        let product = productDetailViewModel.product
+        let productDetail = productDetailViewModel.productDetail
+        
+        ZStack {
+            VStack {
+                Color.tcBackground
+                    .frame(width: .screenWidth, height: 370)
+                    .ignoresSafeArea()
+                
+                Spacer()
+            }
+            
+            VStack {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // 상단 상품 이미지 및 설명
+                        infoView(product: product)
+                            .padding(.bottom, 10)
+                        
+                        // 리뷰로 이동하는 버튼
+//                        reviewButtonView(reviewCount: product.reviewCount)
+//                            .padding(.bottom, 10)
+                        
+                        // 가격 정보
+                        priceView(productPrice: product.price)
                             .padding(.bottom, 6)
                         
                         // 구분선
                         myDivider
                             .padding(.bottom, 10)
                         
-                        // 단체 인원 뷰
-                        AddPeopleView()
-                            .padding(.bottom, 6)
-            
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
+                        if productDetail.isGroup {
+                            // 기준 인원 뷰
+                            baseGuestCountView(baseGuestCount: productDetail.basePeopleCnt ?? 0)
+                                .padding(.bottom, 6)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                            
+                            // 단체 인원 뷰
+                            AddPeopleView()
+                                .padding(.bottom, 6)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                        }
+                        
+                        if !productDetail.parsedProductOptions.isEmpty {
+                            // 상품 옵션 설정 뷰
+                            productOptionView(productDetail: productDetail)
+                                .padding(.bottom, 12)
+                            
+                            // 구분선
+                            myDivider
+                                .padding(.bottom, 10)
+                        }
+                        
+                        // 촬영 날짜 예약 뷰
+                        ReservationView(isCalendarPresented: $isCalendarPresented)
                     }
-                    
-                    // 상품 옵션 설정 뷰
-                    productOptionView(productDetail: productDetailViewModel.productDetail)
-                        .padding(.bottom, 12)
-                    
-                    // 구분선
-                    myDivider
-                        .padding(.bottom, 10)
-                    
-                    // 촬영 날짜 예약 뷰
-                    ReservationView(isCalendarPresented: $isCalendarPresented)
                 }
+                // 하단 장바구니, 주문 뷰
+                BottomView()
             }
-            // 하단 장바구니, 주문 뷰
-            BottomView()
-        }
-        .sheet(isPresented: $isCalendarPresented) {
-            // 예약할 날짜를 선택하는 캘린더 뷰
-            CalendarView(isCalendarPresented: $isCalendarPresented)
-                .presentationDetents([.fraction(0.65)])
-                .presentationDragIndicator(.visible)
+            .toolbarRole(.editor)
+            .environmentObject(productDetailViewModel)
+            .sheet(isPresented: $isCalendarPresented) {
+                // 예약할 날짜를 선택하는 캘린더 뷰
+                CalendarView(isCalendarPresented: $isCalendarPresented)
+                    .presentationDetents([.fraction(0.80)])
+                    .presentationDragIndicator(.visible)
+                    .environmentObject(productDetailViewModel)
+            }
         }
     }
     
@@ -92,8 +109,12 @@ struct ProductDetailView: View {
         let imageScale: CGFloat = 1.5
         
         VStack {
-            Image(systemName: "house.fill")
+            KFImage(product.imageURL)
+                .placeholder { ProgressView() }
                 .resizable()
+                .cancelOnDisappear(true)
+                .fade(duration: 0.25)
+                .aspectRatio(contentMode: .fit)
                 .frame(width: imageWidth, height: imageWidth * imageScale)
             
             Text(product.name)
@@ -104,8 +125,8 @@ struct ProductDetailView: View {
                 .frame(width: 280)
                 .padding(.bottom, 30)
         }
-        .frame(width: CGFloat.screenWidth)
-        .background(Color.tcBackground)
+        .frame(width: .screenWidth)
+        .background(.tcBackground)
     }
     
     @ViewBuilder
@@ -154,31 +175,30 @@ struct ProductDetailView: View {
     
     @ViewBuilder
     private func productOptionView(productDetail: ProductDetail) -> some View {
-        if !productDetail.productOptions.isEmpty {
-            VStack {
-                HStack {
-                    Text("추가 구매")
-                        .font(.footnote)
-                        .padding(.leading, 22)
-                    
-                    Spacer()
-                }
+        VStack {
+            HStack {
+                Text("추가 구매")
+                    .font(.footnote)
+                    .padding(.leading, 22)
                 
-                ForEach(productDetail.parsedProductOptions) { option in
-                    OptionItemView(productOption: option)
-                }
+                Spacer()
+            }
+            
+            ForEach(productDetail.parsedProductOptions) { option in
+                OptionItemView(productOption: option)
             }
         }
     }
 }
 
 fileprivate struct AddPeopleView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
+        let addPeoplePrice = productDetailViewModel.getAddPeoplePrice()
+        
         HStack {
-            Text("추가 인원 (\(productDetailViewModel.getAddPeoplePrice()))")
+            Text("추가 인원 (\(addPeoplePrice))")
             
             Spacer()
             
@@ -208,9 +228,10 @@ fileprivate struct AddPeopleView: View {
 }
 
 fileprivate struct OptionItemView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    
     @State var isSelected: Bool = false
+    
     let productOption: ProductOption
     
     var body: some View {
@@ -241,9 +262,8 @@ fileprivate struct OptionItemView: View {
 }
 
 fileprivate struct ReservationView: View {
-    @State var isOpen: Bool = false
     @Binding var isCalendarPresented: Bool
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         VStack {
@@ -279,8 +299,7 @@ fileprivate struct ReservationView: View {
 }
 
 fileprivate struct BottomView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     var body: some View {
         HStack(spacing: 12) {
@@ -307,7 +326,7 @@ fileprivate struct BottomView: View {
                     .frame(height: 40)
                     .foregroundStyle(Color.tcYellow)
                     .overlay {
-                        Text("선택 상품 주문(\(productDetailViewModel.totalPrice))")
+                        Text("선택 상품 주문 (\(productDetailViewModel.totalPrice.moneyStringFormat))")
                             .foregroundStyle(.black)
                     }
             }
@@ -317,12 +336,12 @@ fileprivate struct BottomView: View {
 }
 
 fileprivate struct CalendarView: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    
     @Binding var isCalendarPresented: Bool
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ViewThatFits(in: .vertical) {
             VStack {
                 CustomCalendar()
                     .padding(.vertical)
@@ -330,7 +349,7 @@ fileprivate struct CalendarView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
                     ForEach(productDetailViewModel.businessHour, id: \.self) { time in
                         Button {
-                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.tempHolidays) {
+                            if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
                                 productDetailViewModel.selectTime(time: time)
                                 isCalendarPresented = false
                             }
@@ -349,13 +368,41 @@ fileprivate struct CalendarView: View {
             }
             .padding(.horizontal)
             .padding(.top)
+            
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    CustomCalendar()
+                        .padding(.vertical)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                        ForEach(productDetailViewModel.businessHour, id: \.self) { time in
+                            Button {
+                                if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                    productDetailViewModel.selectTime(time: time)
+                                    isCalendarPresented = false
+                                }
+                            } label: {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .foregroundStyle(.tcLightyellow)
+                                    .frame(height: 30)
+                                    .overlay {
+                                        Text("\(time)")
+                                            .foregroundStyle(.black)
+                                    }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+            }
         }
     }
 }
 
 fileprivate struct CustomCalendar: View {
-    // 임시 뷰모델
-    @EnvironmentObject private var productDetailViewModel: TempProductDetailViewModel
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
     // 캘린더 상단에 표시되는 기준 날짜
     @State private var displayDate = Date()
@@ -409,12 +456,12 @@ fileprivate struct CustomCalendar: View {
                 
                 // 날짜 표시
                 ForEach(displayDate.daysInMonth, id: \.self) { date in
-                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.tempHolidays)
+                    let isHoliday = date.isHoliday(holidays: productDetailViewModel.studioDetail.holidays)
                     let isSelected = calendar.isDate(date, inSameDayAs: productDetailViewModel.selectedDate)
                     
                     Button {
                         displayDate = date
-                        productDetailViewModel.selectedDate = date
+                        productDetailViewModel.selectDate(date: date)
                     } label: {
                         Text("\(date.dayNumber)")
                             .font(isSelected ? .title3 : .headline)
@@ -440,6 +487,5 @@ fileprivate struct CustomCalendar: View {
 }
 
 #Preview {
-    ProductDetailView()
-        .environmentObject(TempProductDetailViewModel())
+    ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
 }
