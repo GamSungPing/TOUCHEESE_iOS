@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD321362D02D40F00C513F3 /* FirebaseCore */; };
 		3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8DE2CE47321000C30B7 /* Alamofire */; };
 		3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8E12CE47330000C30B7 /* Kingfisher */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */,
+				3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */,
 				3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,10 +52,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3BD321352D02D40F00C513F3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3BFBE87C2CE47261000C30B7 = {
 			isa = PBXGroup;
 			children = (
 				3BFBE8872CE47261000C30B7 /* TOUCHEESE */,
+				3BD321352D02D40F00C513F3 /* Frameworks */,
 				3BFBE8862CE47261000C30B7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +98,7 @@
 			packageProductDependencies = (
 				3BFBE8DE2CE47321000C30B7 /* Alamofire */,
 				3BFBE8E12CE47330000C30B7 /* Kingfisher */,
+				3BD321362D02D40F00C513F3 /* FirebaseCore */,
 			);
 			productName = TOUCHEESE;
 			productReference = 3BFBE8852CE47261000C30B7 /* TOUCHEESE.app */;
@@ -120,6 +131,7 @@
 			packageReferences = (
 				3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				3BFBE8E02CE47330000C30B7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3BFBE8862CE47261000C30B7 /* Products */;
@@ -369,6 +381,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.6.0;
+			};
+		};
 		3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -388,6 +408,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3BD321362D02D40F00C513F3 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
 		3BFBE8DE2CE47321000C30B7 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */;
