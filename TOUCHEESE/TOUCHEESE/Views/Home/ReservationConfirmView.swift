@@ -9,18 +9,17 @@ import SwiftUI
 
 struct ReservationConfirmView: View {
     // MARK: - TempDatas
-    let studioName = "마루 스튜디오"
-    let address = "서울시 땡땡구 땡땡번지 땡떙"
-    let userName = "김마루"
-    let product: [String] = ["프로필 촬영", "뽀샵?", "전체 출력"]
-    let productPrice: [Int] = [10000, 20000, 30000]
-    let totalPrice: Int = 130000
-    let date: String = "2024년 12월 7일 13시"
+    @StateObject private var tempReservationViewModel = TempReservationViewModel()
         
-    @State var userEmail: String = ""
-    @State var userPhone: String = ""
-    
     var body: some View {
+        let studioName = tempReservationViewModel.studioName
+        let address = tempReservationViewModel.address
+        let userName = tempReservationViewModel.userName
+        let product: [String] = tempReservationViewModel.product
+        let productPrice: [Int] = tempReservationViewModel.productPrice
+        let totalPrice: Int = tempReservationViewModel.totalPrice
+        let date: String = tempReservationViewModel.date
+        
         VStack {
             VStack(alignment: .leading) {
                 
@@ -47,12 +46,12 @@ struct ReservationConfirmView: View {
                     .font(.title)
                 HStack {
                     Text("이메일")
-                    TextField("이메일을 입력해주세요", text: $userEmail)
+                    TextField("이메일을 입력해주세요", text: $tempReservationViewModel.userEmail)
                 }
                 
                 HStack {
                     Text("전화번호")
-                    TextField("전화번호를 입력해주세요", text: $userPhone)
+                    TextField("전화번호를 입력해주세요", text: $tempReservationViewModel.userPhone)
                 }
             }
             .padding(.leading, 30)
