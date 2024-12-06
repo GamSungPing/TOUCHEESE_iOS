@@ -19,9 +19,23 @@ final class TempReservationViewModel: ObservableObject {
         
     @Published var userEmail: String = ""
     @Published var userPhone: String = ""
-    
-    
-    
-    
-    
+        
+    /// 사용자가 입력한 정보(이메일, 전화번호)가 유효한지 검사하는 함수
+    func isUserInputInfoValid() -> Bool {
+        var isValid: Bool = true
+        
+        // 사용자가 입력한 이메일이 유효한지 검사
+        if !userEmail.contains("@") {
+            isValid = false
+            return isValid
+        }
+        
+        // 사용자가 입력한 비밀번호가 유효한지 검사
+        if userPhone.count < 10 || userPhone.count > 12 {
+            isValid = false
+            return isValid
+        }
+        
+        return isValid
+    }
 }

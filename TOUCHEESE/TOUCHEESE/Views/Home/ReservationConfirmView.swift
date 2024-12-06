@@ -47,11 +47,13 @@ struct ReservationConfirmView: View {
                 HStack {
                     Text("이메일")
                     TextField("이메일을 입력해주세요", text: $tempReservationViewModel.userEmail)
+                        .keyboardType(.emailAddress)
                 }
                 
                 HStack {
                     Text("전화번호")
                     TextField("전화번호를 입력해주세요", text: $tempReservationViewModel.userPhone)
+                        .keyboardType(.numberPad)
                 }
             }
             .padding(.leading, 30)
@@ -62,13 +64,17 @@ struct ReservationConfirmView: View {
                 
             } label: {
                 RoundedRectangle(cornerRadius: 16)
-                    .foregroundStyle(.tcYellow)
+                    .foregroundStyle(tempReservationViewModel.isUserInputInfoValid() ? .tcYellow : .tcLightgray)
                     .frame(width: .screenWidth - 60, height: 40)
                     .overlay {
                         Text("예약 하기")
                     }
                     .padding(.bottom, 30)
             }
+            .disabled(!tempReservationViewModel.isUserInputInfoValid())
+        }
+        .onChange(of: tempReservationViewModel.userPhone) { newValue in
+            tempReservationViewModel.userPhone = newValue.filter { $0.isNumber }
         }
     }
 }
