@@ -10,15 +10,14 @@ import SwiftUI
 struct ReservationConfirmView: View {
     // MARK: - TempDatas
     @StateObject private var tempReservationViewModel = TempReservationViewModel()
-        
+    
     var body: some View {
         let studioName = tempReservationViewModel.studioName
         let address = tempReservationViewModel.address
         let userName = tempReservationViewModel.userName
-        let product: [String] = tempReservationViewModel.product
-        let productPrice: [Int] = tempReservationViewModel.productPrice
+        let productOptions = tempReservationViewModel.productOptions
         let totalPrice: Int = tempReservationViewModel.totalPrice
-        let date: String = tempReservationViewModel.date
+        let date: String = tempReservationViewModel.reservationDate.toString(format: .yearMonthDay)
         
         VStack {
             VStack(alignment: .leading) {
@@ -30,10 +29,10 @@ struct ReservationConfirmView: View {
                 Text("주소: \(address)")
                 Text("예약자: \(userName)")
                 
-                ForEach(product.indices, id: \.self) { index in
+                ForEach(productOptions.indices, id: \.self) { index in
                     HStack {
-                        Text("옵션\(index + 1): \(product[index])")
-                        Text("(\(productPrice[index]) 원)")
+                        Text("옵션\(index + 1): \(productOptions[index].name)")
+                        Text("(\(productOptions[index].price) 원)")
                     }
                 }
                 
@@ -61,7 +60,9 @@ struct ReservationConfirmView: View {
             Spacer()
             
             Button {
-                
+                Task {
+                    await tempReservationViewModel.requestStudioReservation()
+                }
             } label: {
                 RoundedRectangle(cornerRadius: 16)
                     .foregroundStyle(tempReservationViewModel.isUserInputInfoValid() ? .tcYellow : .tcLightgray)
