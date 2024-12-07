@@ -32,4 +32,7 @@ enum Network {
     
     /// Product
     case productDetailRequest(id: Int)
+    
+    /// Reservation
+    case studioReservationRequest(ReservationRequestType)
 }

@@ -31,7 +31,7 @@ class NetworkManager {
         
         switch response.result {
         case .success(let data):
-             print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+            print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
             let decoder = JSONDecoder()
             do {
                 return try decoder.decode(T.self, from: data)
@@ -120,5 +120,22 @@ class NetworkManager {
         let reviewDetailData = try await performRequest(fetchRequest, decodingType: ReviewDetailData.self)
         
         return reviewDetailData.data
+    }
+    
+    /// 스튜디오에 예약을 요청하는 함수
+    /// - Parameter ReservationRequestType: 예약에 필요한 정보를 담은 구조체
+    func reserveStudio(
+        reservationRequest: ReservationRequestType
+    ) async throws -> ReservationData {
+        let fetchRequest = Network.studioReservationRequest(
+            reservationRequest
+        )
+        
+        let reservationResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservationResponse.self
+        )
+        
+        return reservationResponseData.data
     }
 }
