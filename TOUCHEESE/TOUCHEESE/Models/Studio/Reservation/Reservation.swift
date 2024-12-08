@@ -46,4 +46,8 @@ extension Reservation {
     var studioProfileImageURL: URL {
         URL(string: studioImage) ?? .defaultImageURL
     }
+    
+    var reservationTimeString: String {
+        String(reservationTime.dropLast(3))
+    }
 }

@@ -8,28 +8,34 @@
 import SwiftUI
 
 struct ReservationRow: View {
+    let reservation: Reservation
+    private var status: ReservationStatus {
+        ReservationStatus(rawValue: reservation.reservationStatus)!
+    }
+    
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
-            ProfileImageView(imageURL: .defaultImageURL, size: 40)
+            ProfileImageView(imageURL: reservation.studioProfileImageURL, size: 40)
             
             VStack(alignment: .leading) {
-                Text("시현하다-강남 오리지널")
+                Text(reservation.studioName)
                     .fontWeight(.bold)
                 
-                Label("2024-12-8 (일)", systemImage: "calendar")
+                Label(reservation.reservationDate, systemImage: "calendar")
                 
-                Label("11:00~12:00", systemImage: "clock")
+                Label(reservation.reservationTimeString, systemImage: "clock")
             }
             
             Spacer()
             
-            Text("예약 대기")
+            Text(status.description)
+                .foregroundStyle(status.color.font)
                 .fontWeight(.bold)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background {
                     RoundedRectangle(cornerRadius: 15)
-                        .fill(.tcLightgray)
+                        .fill(status.color.background)
                 }
         }
         .padding()
@@ -42,5 +48,5 @@ struct ReservationRow: View {
 }
 
 #Preview {
-    ReservationRow()
+    ReservationRow(reservation: Reservation.sample)
 }
