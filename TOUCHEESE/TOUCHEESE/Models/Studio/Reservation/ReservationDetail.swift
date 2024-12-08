@@ -16,8 +16,7 @@ struct ReservationDetailData: Codable {
 
 struct ReservationDetail: Codable {
     let id: Int
-    let studioName, memberName, memberEmail, phoneNumber: String
-    let reservationDate, reservationTime: String
+    let memberName, memberEmail, phoneNumber: String
     let productOption: String
     let totalPrice: Int
     let studioAddress: String
@@ -27,12 +26,9 @@ struct ReservationDetail: Codable {
 extension ReservationDetail {
     static let sample = ReservationDetail(
         id: 0,
-        studioName: "허쉬스튜디오",
         memberName: "김마루",
         memberEmail: "sjybext@naver.com",
         phoneNumber: "01011112222",
-        reservationDate: "2024-12-25",
-        reservationTime: "16:00:00",
         productOption: "고화질 원본 전체:2000@보정본 추가:10000",
         totalPrice: 230_000,
         studioAddress: "서울 강남구 강남대로120길 76 2층"

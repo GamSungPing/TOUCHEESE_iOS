@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReservationListView: View {
+    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
     @State private var selectedIndex = 0
@@ -42,7 +43,12 @@ struct ReservationListView: View {
         }
         .padding(.horizontal)
         .navigationDestination(for: Reservation.self) { reservation in
-            ReservationDetailView(reservation: reservation)
+            ReservationDetailView(
+                viewModel: ReservationDetailViewModel(reservation: reservation)
+            )
+        }
+        .onAppear {
+            tabbarManager.isHidden = false
         }
     }
     
@@ -98,4 +104,5 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
 #Preview {
     ReservationListView()
         .environmentObject(ReservationListViewModel())
+        .environmentObject(TabbarManager())
 }
