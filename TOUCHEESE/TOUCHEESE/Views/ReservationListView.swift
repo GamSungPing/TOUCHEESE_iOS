@@ -39,7 +39,7 @@ struct ReservationListView: View {
                     }
                 }
             } else {
-                if viewModel.lastReservations.isEmpty {
+                if viewModel.pastReservations.isEmpty {
                     reservationEmptyView(description: "지난 내역이 없습니다.")
                 } else {
                     ScrollView(.vertical) {
@@ -47,7 +47,7 @@ struct ReservationListView: View {
                             .frame(height: 5)
                         
                         LazyVStack(spacing: 15) {
-                            ForEach(viewModel.lastReservations) { reservation in
+                            ForEach(viewModel.pastReservations) { reservation in
                                 ReservationRow(reservation: reservation)
                             }
                         }
