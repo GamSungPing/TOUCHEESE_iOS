@@ -19,11 +19,14 @@ struct ReservationListView: View {
             .pickerStyle(.segmented)
             
             ScrollView(.vertical) {
-                LazyVStack {
+                Color.clear
+                    .frame(height: 5)
+                
+                LazyVStack(spacing: 15) {
                     if selectedIndex == 0 {
-                        Text("Reservation Card0")
-                        Text("Reservation Card1")
-                        Text("Reservation Card2")
+                        ReservationRow()
+                        ReservationRow()
+                        ReservationRow()
                     } else {
                         Text("Reservation Card3")
                         Text("Reservation Card4")
@@ -33,6 +36,7 @@ struct ReservationListView: View {
                 }
             }
         }
+        .padding(.horizontal)
     }
 }
 
