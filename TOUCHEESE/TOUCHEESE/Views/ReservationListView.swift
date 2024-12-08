@@ -21,44 +21,29 @@ struct ReservationListView: View {
             .pickerStyle(.segmented)
             
             if selectedIndex == 0 {
-                if viewModel.reservations.isEmpty {
+                FilteredReservationListView(
+                    reservations: viewModel.reservations
+                ) {
                     reservationEmptyView(description: "예약 일정이 없습니다.")
-                } else {
-                    ScrollView(.vertical) {
-                        Color.clear
-                            .frame(height: 5)
-                        
-                        LazyVStack(spacing: 15) {
-                            ForEach(viewModel.reservations) { reservation in
-                                ReservationRow(reservation: reservation)
-                            }
-                        }
-                    }
-                    .refreshable {
-                        // TODO: - 새로운 내역 받아오기
-                    }
+                } refreshAction: {
+                    // TODO: - 내역 업데이트 메서드 호출하기
                 }
+
             } else {
-                if viewModel.pastReservations.isEmpty {
+                FilteredReservationListView(
+                    reservations: viewModel.pastReservations
+                ) {
                     reservationEmptyView(description: "지난 내역이 없습니다.")
-                } else {
-                    ScrollView(.vertical) {
-                        Color.clear
-                            .frame(height: 5)
-                        
-                        LazyVStack(spacing: 15) {
-                            ForEach(viewModel.pastReservations) { reservation in
-                                ReservationRow(reservation: reservation)
-                            }
-                        }
-                    }
-                    .refreshable {
-                        // TODO: - 새로운 내역 받아오기
-                    }
+                } refreshAction: {
+                    // TODO: - 내역 업데이트 메서드 호출하기
                 }
+
             }
         }
         .padding(.horizontal)
+        .navigationDestination(for: Reservation.self) { reservation in
+            ReservationDetailView(reservation: reservation)
+        }
     }
     
     private func reservationEmptyView(description: String) -> some View {
@@ -78,6 +63,35 @@ struct ReservationListView: View {
             Spacer()
         }
         .padding()
+    }
+}
+
+
+fileprivate struct FilteredReservationListView<Content>: View where Content: View {
+    @State var reservations: [Reservation]
+    @ViewBuilder let emptyView: Content
+    let refreshAction: () -> Void
+    
+    var body: some View {
+        if reservations.isEmpty {
+            emptyView
+        } else {
+            ScrollView(.vertical) {
+                Color.clear
+                    .frame(height: 5)
+                
+                LazyVStack(spacing: 15) {
+                    ForEach(reservations) { reservation in
+                        NavigationLink(value: reservation) {
+                            ReservationRow(reservation: reservation)
+                        }
+                    }
+                }
+            }
+            .refreshable {
+                refreshAction()
+            }
+        }
     }
 }
 
