@@ -50,6 +50,20 @@ extension Network {
             return params
         case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest:
             return [:]
+        case .studioReservationRequest(let reservationRequestType):
+            var params: Parameters = [:]
+            
+            params["memberId"] = reservationRequestType.memberId
+            params["studioId"] = reservationRequestType.studioId
+            params["reservationDate"] = reservationRequestType.reservationDateString
+            params["reservationTime"] = reservationRequestType.reservationTimeString
+            params["productId"] = reservationRequestType.productId
+            params["productOption"] = reservationRequestType.productOptionString
+            params["totalPrice"] = reservationRequestType.totalPrice
+            params["phoneNumber"] = reservationRequestType.phoneNumberString
+            params["email"] = reservationRequestType.email
+    
+            return params
         }
     }
 }

@@ -13,6 +13,8 @@ extension Network {
         switch self {
         case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest:
             return .get
+        case .studioReservationRequest:
+            return .post
         }
     }
 }
