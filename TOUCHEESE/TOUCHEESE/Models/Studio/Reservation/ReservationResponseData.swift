@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct ReservationResponse: Codable {
+struct ReservationResponseData: Codable {
     let statusCode: Int
     let msg: String
-    let data: ReservationData
+    let data: ReservationResponse
 }
 
-struct ReservationData: Codable {
+struct ReservationResponse: Codable {
     let id: Int
     let studioName: String
     let memberName: String
