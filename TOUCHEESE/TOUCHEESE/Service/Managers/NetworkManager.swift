@@ -126,14 +126,14 @@ class NetworkManager {
     /// - Parameter ReservationRequestType: 예약에 필요한 정보를 담은 구조체
     func reserveStudio(
         reservationRequest: ReservationRequestType
-    ) async throws -> ReservationData {
+    ) async throws -> ReservationResponse {
         let fetchRequest = Network.studioReservationRequest(
             reservationRequest
         )
         
         let reservationResponseData = try await performRequest(
             fetchRequest,
-            decodingType: ReservationResponse.self
+            decodingType: ReservationResponseData.self
         )
         
         return reservationResponseData.data

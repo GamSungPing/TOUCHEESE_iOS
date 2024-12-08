@@ -25,7 +25,7 @@ final class TempReservationViewModel: ObservableObject {
     @Published var userEmail: String = ""
     @Published var userPhone: String = ""
     
-    private(set) var reservationResponseData: ReservationData? = nil
+    private(set) var reservationResponseData: ReservationResponse? = nil
     
     /// 사용자가 입력한 정보(이메일, 전화번호)가 유효한지 검사하는 함수
     func isUserInputInfoValid() -> Bool {
