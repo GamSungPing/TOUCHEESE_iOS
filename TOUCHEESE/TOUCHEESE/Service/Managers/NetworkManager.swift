@@ -45,7 +45,7 @@ class NetworkManager {
         }
     }
     
-    /// 스튜디오 데이터를 요청하는 함수
+    /// 스튜디오 리스트 데이터를 요청하는 함수
     /// - Parameter concept: 스튜디오 컨셉
     /// - Parameter isHighRating: 점수 필터 (True에 적용 O, False와 Nil일 때 적용 X)
     /// - Parameter regionArray: 지역 필터 (배열에 해당하는 Region 타입을 담아서 사용)
@@ -65,7 +65,11 @@ class NetworkManager {
             price: price,
             page: page
         )
-        let studioData: StudioData = try await performRequest(fetchRequest, decodingType: StudioData.self)
+        let studioData: StudioData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioData.self
+        )
+        
         return studioData.data.content
     }
     
@@ -73,9 +77,25 @@ class NetworkManager {
     /// - Parameter studioID: 스튜디오 아이디
     func getStudioDetailData(studioID id: Int) async throws -> StudioDetail {
         let fetchRequest = Network.studioDetailRequest(id: id)
-        let studioDetailData: StudioDetailData = try await performRequest(fetchRequest, decodingType: StudioDetailData.self)
+        let studioDetailData: StudioDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioDetailData.self
+        )
         
         return studioDetailData.data
+    }
+    
+    
+    /// 단일 스튜디오 데이터를 요청하는 함수
+    /// - Parameter studioID: 스튜디오 아이디. 아이디에 해당하는 스튜디오 데이터를 불러온다.
+    func getStudioData(studioID id: Int) async throws -> Studio {
+        let fetchRequest = Network.studioRequest(id: id)
+        let singleStudioData: SingleStudioData = try await performRequest(
+            fetchRequest,
+            decodingType: SingleStudioData.self
+        )
+        
+        return singleStudioData.data
     }
     
     /// 리뷰 리스트를 요청하는 함수

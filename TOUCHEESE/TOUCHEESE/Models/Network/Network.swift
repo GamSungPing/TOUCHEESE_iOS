@@ -18,6 +18,7 @@ enum Network {
         page: Int?
     )
     case studioDetailRequest(id: Int)
+    case studioRequest(id: Int)
     
     /// Review
     case reviewListRequest(
