@@ -34,5 +34,5 @@ enum Network {
     case productDetailRequest(id: Int)
     
     /// Reservation
-    case studioReservationRequest(ReservationRequestType)
+    case studioReservationRequest(ReservationRequest)
 }

@@ -48,7 +48,7 @@ final class TempReservationViewModel: ObservableObject {
     
     /// 스튜디오 예약 요청을 보내는 함수
     func requestStudioReservation() async {
-        let reservationRequestType = ReservationRequestType(
+        let reservationRequestType = ReservationRequest(
             memberId: memberId,
             studioId: studioId,
             reservationDate: reservationDate,
