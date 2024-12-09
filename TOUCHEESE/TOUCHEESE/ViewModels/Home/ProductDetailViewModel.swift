@@ -49,6 +49,11 @@ final class ProductDetailViewModel: ObservableObject {
     // 선택된 날짜
     private(set) var selectedDate: Date = Date()
     
+    // 선택된 옵션 배열
+    var selectedProductOptionArray: [ProductOption] {
+        productDetail.parsedProductOptions.filter { selectedOptionIDArray.contains($0.id) }
+    }
+    
     // MARK: - Init
     init(studio: Studio, studioDetails: StudioDetail, product: Product) {
         self.studio = studio
@@ -134,19 +139,30 @@ final class ProductDetailViewModel: ObservableObject {
     /// 영업 시간을 계산하는 함수
     private func calBusinessHour() {
         let calendar = Calendar.current
-        
+
         guard let openTime = studioDetail.openTimeString.toDate(dateFormat: .hourMinute) else { return }
         guard let closeTime = studioDetail.closeTimeString.toDate(dateFormat: .hourMinute) else { return }
-        guard let hourDifference = calendar.dateComponents([.hour], from: openTime, to: closeTime).hour else { return }
-        
+
         var times: [String] = []
-        
-        for index in 0...(hourDifference - 1) {
-            if let nextTime = calendar.date(byAdding: .hour, value: index, to: openTime) {
-                times.append(DateFormat.hourMinute.toDateFormatter().string(from: nextTime))
+        var currentTime = openTime
+
+        while currentTime < closeTime {
+            // 현재 시간을 포맷에 맞게 추가
+            times.append(DateFormat.hourMinute.toDateFormatter().string(from: currentTime))
+
+            // 1시간씩 추가
+            if let nextTime = calendar.date(byAdding: .hour, value: 1, to: currentTime) {
+                currentTime = nextTime
+            } else {
+                break
             }
         }
-        
+
+        // 종료 시간이 분 단위로 남아 있는 경우 마지막 시간 추가
+        if calendar.compare(currentTime, to: closeTime, toGranularity: .minute) != .orderedSame {
+            times.append(DateFormat.hourMinute.toDateFormatter().string(from: closeTime))
+        }
+
         businessHour = times
     }
     
