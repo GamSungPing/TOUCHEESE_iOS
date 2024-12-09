@@ -57,7 +57,7 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest(_):
+        case .studioReservationRequest:
             return ""
         case .reservationListRequest(let memberID, let isPast):
             var path = "/member/\(memberID)"

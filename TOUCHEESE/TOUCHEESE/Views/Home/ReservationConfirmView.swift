@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ReservationConfirmView: View {
     // MARK: - TempDatas
-    @StateObject private var tempReservationViewModel = TempReservationViewModel()
+    @StateObject var tempReservationViewModel: TempReservationViewModel
+    @State private var isPushingReservationCompeteView = false
     
     var body: some View {
-        let studioName = tempReservationViewModel.studioName
-        let address = tempReservationViewModel.address
-        let userName = tempReservationViewModel.userName
+        let studioName = tempReservationViewModel.studio.name
+        let address = tempReservationViewModel.studioDetail.address
+        let userName = tempReservationViewModel.studio.id
         let productOptions = tempReservationViewModel.productOptions
         let totalPrice: Int = tempReservationViewModel.totalPrice
         let date: String = tempReservationViewModel.reservationDate.toString(format: .yearMonthDay)
@@ -62,6 +63,7 @@ struct ReservationConfirmView: View {
             Button {
                 Task {
                     await tempReservationViewModel.requestStudioReservation()
+                    isPushingReservationCompeteView = true
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 16)
@@ -77,9 +79,14 @@ struct ReservationConfirmView: View {
         .onChange(of: tempReservationViewModel.userPhone) { newValue in
             tempReservationViewModel.userPhone = newValue.filter { $0.isNumber }
         }
+        .navigationDestination(isPresented: $isPushingReservationCompeteView) {
+            ReservationCompleteView()
+        }
     }
 }
 
 #Preview {
-    ReservationConfirmView()
+    NavigationStack {
+        ReservationConfirmView(tempReservationViewModel: TempReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000))
+    }
 }
