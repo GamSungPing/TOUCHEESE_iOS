@@ -8,11 +8,11 @@
 import Foundation
 
 /// 예약 요청 타입
-struct ReservationRequestType {
+struct ReservationRequest {
     let memberId: Int
     let studioId: Int
     let reservationDate: Date
-    let productId: Int
+    let productName: String
     let productOptions: [ProductOption]
     let totalPrice: Int
     let phoneNumber: String
@@ -34,11 +34,20 @@ struct ReservationRequestType {
         phoneNumber.phoneNumberString
     }
     
-    init(memberId: Int, studioId: Int, reservationDate: Date, productId: Int, productOptions: [ProductOption], totalPrice: Int, phoneNumber: String, email: String) {
+    init(
+        memberId: Int,
+        studioId: Int,
+        reservationDate: Date,
+        productName: String,
+        productOptions: [ProductOption],
+        totalPrice: Int,
+        phoneNumber: String,
+        email: String
+    ) {
         self.memberId = memberId
         self.studioId = studioId
         self.reservationDate = reservationDate
-        self.productId = productId
+        self.productName = productName
         self.productOptions = productOptions
         self.totalPrice = totalPrice
         self.phoneNumber = phoneNumber

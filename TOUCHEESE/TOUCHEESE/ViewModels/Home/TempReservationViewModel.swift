@@ -10,22 +10,42 @@ import Foundation
 final class TempReservationViewModel: ObservableObject {
     let networkmanager = NetworkManager.shared
     
-    // MARK: - TempDatas
-    let studioName = "마루 스튜디오"
-    let address = "서울시 땡땡구 땡땡번지 땡떙"
-    let userName = "김마루"
+    // MARK: - 받아올 RealDatas
+    let studio: Studio
+    let studioDetail: StudioDetail
+    let product: Product
+    let productDetail: ProductDetail
+    let productOptions: [ProductOption]
+    let reservationDate: Date
+    let totalPrice: Int
     
-    // MARK: - 스튜디오 예약 요청에 필요한 데이터들
+    // MARK: - 멤버 임시 데이터
+    let userName = "김마루"
     let memberId = 1
-    let studioId: Int = 6
-    let reservationDate: Date = Date()
-    let productId: Int = 1
-    let productOptions: [ProductOption] = [ProductOption.sample1, ProductOption.sample2, ProductOption.sample3]
-    let totalPrice: Int = 130000
+    
     @Published var userEmail: String = ""
     @Published var userPhone: String = ""
     
     private(set) var reservationResponseData: ReservationResponse? = nil
+    
+    // MARK: - Init
+    init(
+        studio: Studio,
+        studioDetail: StudioDetail,
+        product: Product,
+        productDetail: ProductDetail,
+        productOptions: [ProductOption],
+        reservationDate: Date,
+        totalPrice: Int
+    ) {
+        self.studio = studio
+        self.studioDetail = studioDetail
+        self.product = product
+        self.productDetail = productDetail
+        self.productOptions = productOptions
+        self.reservationDate = reservationDate
+        self.totalPrice = totalPrice
+    }
     
     /// 사용자가 입력한 정보(이메일, 전화번호)가 유효한지 검사하는 함수
     func isUserInputInfoValid() -> Bool {
@@ -48,17 +68,17 @@ final class TempReservationViewModel: ObservableObject {
     
     /// 스튜디오 예약 요청을 보내는 함수
     func requestStudioReservation() async {
-        let reservationRequestType = ReservationRequestType(
+        let reservationRequestType = ReservationRequest(
             memberId: memberId,
-            studioId: studioId,
+            studioId: studio.id,
             reservationDate: reservationDate,
-            productId: productId,
+            productName: product.name,
             productOptions: productOptions,
             totalPrice: totalPrice,
             phoneNumber: userPhone,
             email: userEmail
         )
-        
+                
         do {
             reservationResponseData = try await networkmanager.reserveStudio(reservationRequest: reservationRequestType)
             print("\(reservationResponseData)")

@@ -15,7 +15,7 @@ struct ReviewData: Codable {
 
 struct Review: Identifiable, Hashable, Codable {
     let id: Int
-    let imageString: String
+    let imageString: String?
     
     enum CodingKeys: String, CodingKey {
         case id = "reviewId"
@@ -66,7 +66,7 @@ extension Review {
     }
     
     var imageURL: URL {
-        URL(string: imageString) ?? .defaultImageURL
+        URL(string: imageString ?? "https://i.imgur.com/Uw5nNHQ.png") ?? .defaultImageURL
     }
 }
 

@@ -55,7 +55,7 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest(_):
+        case .studioReservationRequest:
             return ""
         }
     }

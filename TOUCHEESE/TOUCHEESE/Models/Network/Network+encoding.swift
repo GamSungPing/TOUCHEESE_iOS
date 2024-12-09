@@ -13,7 +13,7 @@ extension Network {
         switch self {
         case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest:
             return URLEncoding.default
-        case .studioReservationRequest(_):
+        case .studioReservationRequest:
             return JSONEncoding.default
         }
     }
