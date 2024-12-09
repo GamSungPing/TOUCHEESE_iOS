@@ -16,7 +16,7 @@ class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-        
+        print(url)
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -101,7 +101,10 @@ class NetworkManager {
     /// - Parameter productID: 상품의 아이디. 아이디에 해당하는 상품의 자세한 데이터를 불러온다.
     func getProductDetailData(productID id: Int) async throws -> ProductDetail {
         let fetchRequest = Network.productDetailRequest(id: id)
-        let  productDetailData: ProductDetailData = try await performRequest(fetchRequest, decodingType: ProductDetailData.self)
+        let productDetailData: ProductDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: ProductDetailData.self
+        )
         
         return productDetailData.data
     }
@@ -137,5 +140,24 @@ class NetworkManager {
         )
         
         return reservationResponseData.data
+    }
+    
+    /// 특정 회원의 예약 리스트를 요청하는 함수
+    /// - Parameter memberID: 회원의 아이디. 아이디에 해당하는 회원의 예약 리스트를 불러온다.
+    /// - Parameter isPast: true 값이면 예약 대기, 예약 확정 리스트를 불러오고, false 값이면 예약 완료, 예약 취소 리스트를 불러온다.
+    func getReservationListDatas(
+        memberID: Int,
+        isPast: Bool = false
+    ) async throws -> [Reservation] {
+        let fetchRequest = Network.reservationListRequest(
+            memberID: memberID,
+            isPast: isPast
+        )
+        let reservationData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservationData.self
+        )
+        
+        return reservationData.data
     }
 }

@@ -35,4 +35,5 @@ enum Network {
     
     /// Reservation
     case studioReservationRequest(ReservationRequestType)
+    case reservationListRequest(memberID: Int, isPast: Bool)
 }

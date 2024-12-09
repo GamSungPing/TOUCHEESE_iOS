@@ -11,7 +11,7 @@ import Alamofire
 extension Network {
     func getHeaders() -> HTTPHeaders? {
         switch self {
-        case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .studioReservationRequest:
+        case .studioListRequest, .studioDetailRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .studioReservationRequest, .reservationListRequest:
             return ["Content-Type": "application/json"]
         }
     }
