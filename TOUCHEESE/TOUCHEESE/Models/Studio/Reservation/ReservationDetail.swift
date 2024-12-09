@@ -16,6 +16,7 @@ struct ReservationDetailData: Codable {
 
 struct ReservationDetail: Codable {
     let id: Int
+    let studioId: Int
     let memberName, memberEmail, phoneNumber: String
     let productOption: String
     let totalPrice: Int
@@ -26,6 +27,7 @@ struct ReservationDetail: Codable {
 extension ReservationDetail {
     static let sample = ReservationDetail(
         id: 0,
+        studioId: 1,
         memberName: "김마루",
         memberEmail: "sjybext@naver.com",
         phoneNumber: "01011112222",

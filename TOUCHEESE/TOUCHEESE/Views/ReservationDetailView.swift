@@ -15,6 +15,7 @@ struct ReservationDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var isShowingReservationCancelAlert = false
+    @State private var isPushingStudioDetailView = false
     
     var body: some View {
         let reservation = viewModel.reservation
@@ -56,12 +57,14 @@ struct ReservationDetailView: View {
             Spacer()
             
             VStack(alignment: .center, spacing: 15) {
-                Button {
-                    
-                } label: {
+                NavigationLink(value: viewModel.reservedStudio) {
                     Text("스튜디오 바로가기")
+                        .padding(10)
+                        .background {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.tcLightgray)
+                        }
                 }
-                .buttonStyle(.bordered)
                 
                 if viewModel.isShowingReservationCancelButton() {
                     Button {
@@ -79,6 +82,11 @@ struct ReservationDetailView: View {
         }
         .padding(.horizontal)
         .navigationTitle("예약 상세 내역")
+        .navigationDestination(for: Studio.self) { studio in
+            StudioDetailView(
+                viewModel: StudioDetailViewModel(studio: studio)
+            )
+        }
         .toolbarRole(.editor)
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {

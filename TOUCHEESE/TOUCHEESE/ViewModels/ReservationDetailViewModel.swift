@@ -12,6 +12,7 @@ final class ReservationDetailViewModel: ObservableObject {
     // MARK: - Data
     @Published private(set) var reservation: Reservation
     @Published private(set) var reservationDetail: ReservationDetail = ReservationDetail.sample
+    @Published private(set) var reservedStudio: Studio = Studio.sample
     
     let networkManager = NetworkManager.shared
     
@@ -20,6 +21,7 @@ final class ReservationDetailViewModel: ObservableObject {
         
         Task {
             await fetchReservationDetail(reservationID: reservation.id)
+            await fetchReservedStudio()
         }
     }
     
@@ -51,6 +53,15 @@ final class ReservationDetailViewModel: ObservableObject {
             try await networkManager.deleteReservationData(reservationID: reservationID, memberID: 1)
         } catch {
             print("Reservation Cancel Error: \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    private func fetchReservedStudio() async {
+        do {
+            reservedStudio = try await networkManager.getStudioData(studioID: reservationDetail.studioId)
+        } catch {
+            print("Reserved Studio Fetch Error: \(error.localizedDescription)")
         }
     }
     
