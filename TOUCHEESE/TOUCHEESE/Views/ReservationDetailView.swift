@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReservationDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
+    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
     @StateObject var viewModel: ReservationDetailViewModel
     
     @Environment(\.dismiss) private var dismiss
@@ -89,9 +90,10 @@ struct ReservationDetailView: View {
         ) {
             Button(role: .destructive) {
                 dismiss()
-                // TODO: - 테스트 필요!!!
+                
                 Task {
                     await viewModel.cancelReservation(reservationID: reservation.id)
+                    await reservationListViewModel.fetchReservations()
                 }
             } label: {
                 Text("취소하기")
