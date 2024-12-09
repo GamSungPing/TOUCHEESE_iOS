@@ -318,8 +318,10 @@ fileprivate struct BottomView: View {
                     }
             }
             
-            Button {
-                
+            NavigationLink {
+                ReservationConfirmView(
+                    tempReservationViewModel: TempReservationViewModel(studio: productDetailViewModel.studio, studioDetail: productDetailViewModel.studioDetail, product: productDetailViewModel.product, productDetail: productDetailViewModel.productDetail, productOptions: productDetailViewModel.selectedProductOptionArray, reservationDate: productDetailViewModel.reservationDate ?? Date(), totalPrice: productDetailViewModel.totalPrice)
+                )
             } label: {
                 RoundedRectangle(cornerRadius: 20)
                     .frame(maxWidth: .infinity)
@@ -487,5 +489,7 @@ fileprivate struct CustomCalendar: View {
 }
 
 #Preview {
-    ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
+    NavigationStack {
+        ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
+    }
 }
