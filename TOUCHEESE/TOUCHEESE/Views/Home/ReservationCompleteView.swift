@@ -45,11 +45,12 @@ struct ReservationCompleteView: View {
                     .frame(width: 200, height: 30)
             }
         }
-        
-      
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    ReservationCompleteView()
+    NavigationStack {
+        ReservationCompleteView()
+    }
 }
