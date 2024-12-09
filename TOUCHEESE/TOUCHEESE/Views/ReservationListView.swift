@@ -31,7 +31,6 @@ struct ReservationListView: View {
                         await viewModel.fetchReservations()
                     }
                 }
-
             } else {
                 FilteredReservationListView(
                     reservations: viewModel.pastReservations
@@ -42,7 +41,6 @@ struct ReservationListView: View {
                         await viewModel.fetchPastReservations()
                     }
                 }
-
             }
         }
         .padding(.horizontal)
