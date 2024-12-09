@@ -135,7 +135,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     private func calBusinessHour() {
         let calendar = Calendar.current
-        
+
         guard let openTime = studioDetail.openTimeString.toDate(dateFormat: .hourMinute) else { return }
         
         // closeTime 처리: "24:00:00", "24:30:00" 등을 변환
