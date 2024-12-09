@@ -21,7 +21,7 @@ final class StudioDetailViewModel: ObservableObject {
         self.studio = studio
         
         Task {
-            await fetchStudioDetail(StudioID: studio.id)
+            await fetchStudioDetail(studioID: studio.id)
         }
     }
     
@@ -42,7 +42,7 @@ final class StudioDetailViewModel: ObservableObject {
     
     // MARK: - Logic
     @MainActor
-    func fetchStudioDetail(StudioID id: Int) async {
+    func fetchStudioDetail(studioID id: Int) async {
         do {
             studioDetail = try await networkManager.getStudioDetailData(studioID: id)
         } catch {
