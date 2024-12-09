@@ -89,8 +89,10 @@ struct ReservationDetailView: View {
         ) {
             Button(role: .destructive) {
                 dismiss()
-                // TODO: - 취소 API 요청하기
-                
+                // TODO: - 테스트 필요!!!
+                Task {
+                    await viewModel.cancelReservation(reservationID: reservation.id)
+                }
             } label: {
                 Text("취소하기")
             }

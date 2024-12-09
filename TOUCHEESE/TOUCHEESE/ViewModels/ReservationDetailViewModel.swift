@@ -45,4 +45,14 @@ final class ReservationDetailViewModel: ObservableObject {
         }
     }
     
+    @MainActor
+    func cancelReservation(reservationID: Int) async {
+        do {
+            // TODO: - 추후 memberID 수정, 현재는 고정값으로 사용
+            try await networkManager.deleteReservationData(reservationID: reservationID, memberID: 1)
+        } catch {
+            print("Reservation Cancel Error: \(error.localizedDescription)")
+        }
+    }
+    
 }

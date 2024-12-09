@@ -15,6 +15,8 @@ extension Network {
             return .get
         case .studioReservationRequest:
             return .post
+        case .reservationCancelRequest:
+            return .delete
         }
     }
 }

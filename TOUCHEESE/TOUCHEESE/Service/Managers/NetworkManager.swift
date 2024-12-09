@@ -174,4 +174,21 @@ class NetworkManager {
         
         return reservationDetailData.data
     }
+    
+    /// 특정 맴버의 스튜디오 예약을 취소하는 함수
+    /// - Parameter reservationID: 예약 아이디. 아이디에 해당하는 예약을 취소한다.
+    /// - Parameter memberID: 회원 아이디. 아이디에 해당하는 회원의 예약 중 예약 아이디에 해당하는 예약을 취소한다.
+    @discardableResult
+    func deleteReservationData(
+        reservationID: Int,
+        memberID: Int
+    ) async throws -> ReservationCancelResponseData {
+        let fetchRequest = Network.reservationCancelRequest(
+            reservationID: reservationID,
+            memberID: memberID
+        )
+        let reservationCancelResponseData = try await performRequest(fetchRequest, decodingType: ReservationCancelResponseData.self)
+        
+        return reservationCancelResponseData
+    }
 }

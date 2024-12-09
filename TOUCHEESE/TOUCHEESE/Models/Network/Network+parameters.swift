@@ -64,6 +64,8 @@ extension Network {
             params["email"] = reservationRequestType.email
             
             return params
+        case .reservationCancelRequest(_, let memberID):
+            return ["memberId": memberID]
         }
     }
 }

@@ -67,6 +67,8 @@ extension Network {
             return path
         case .reservationDetailRequest(let id):
             return "/\(id)"
+        case .reservationCancelRequest(let reservationID, _):
+            return "/\(reservationID)/cancel"
         }
     }
 }
