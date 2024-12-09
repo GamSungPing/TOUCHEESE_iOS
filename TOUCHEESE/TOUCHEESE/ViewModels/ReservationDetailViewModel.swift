@@ -18,7 +18,6 @@ final class ReservationDetailViewModel: ObservableObject {
     init(reservation: Reservation) {
         self.reservation = reservation
         
-        // TODO: - API를 통해 ReservationDetail Fetch 하기
         Task {
             await fetchReservationDetail(reservationID: reservation.id)
         }
