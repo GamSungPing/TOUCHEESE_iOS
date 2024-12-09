@@ -160,4 +160,18 @@ class NetworkManager {
         
         return reservationData.data
     }
+    
+    /// 특정 예약의 자세한 데이터를 요청하는 함수
+    /// - Parameter reservationID: 예약 아이디. 아이디에 해당하는 예약의 자세한 데이터를 불러온다.
+    func getReservationDetailData(
+        reservationID id: Int
+    ) async throws -> ReservationDetail {
+        let fetchRequest = Network.reservationDetailRequest(id: id)
+        let reservationDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservationDetailData.self
+        )
+        
+        return reservationDetailData.data
+    }
 }

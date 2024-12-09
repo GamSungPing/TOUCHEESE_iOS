@@ -48,7 +48,7 @@ extension Network {
             if let page { params["page"] = page }
             
             return params
-        case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest:
+        case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest:
             return [:]
         case .studioReservationRequest(let reservationRequestType):
             var params: Parameters = [:]

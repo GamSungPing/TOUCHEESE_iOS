@@ -63,6 +63,8 @@ extension Network {
             } else {
                 return "/\(memberID)"
             }
+        case .reservationDetailRequest(let id):
+            return "/\(id)"
         }
     }
 }

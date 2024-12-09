@@ -19,6 +19,9 @@ final class ReservationDetailViewModel: ObservableObject {
         self.reservation = reservation
         
         // TODO: - API를 통해 ReservationDetail Fetch 하기
+        Task {
+            await fetchReservationDetail(reservationID: reservation.id)
+        }
     }
     
     // MARK: - Logic
@@ -30,6 +33,15 @@ final class ReservationDetailViewModel: ObservableObject {
             true
         default:
             false
+        }
+    }
+    
+    @MainActor
+    func fetchReservationDetail(reservationID: Int) async {
+        do {
+            reservationDetail = try await networkManager.getReservationDetailData(reservationID: reservationID)
+        } catch {
+            print("ReservationDetail Fetch Error: \(error.localizedDescription)")
         }
     }
     
