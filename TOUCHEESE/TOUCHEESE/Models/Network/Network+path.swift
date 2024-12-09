@@ -58,11 +58,13 @@ extension Network {
         case .studioReservationRequest(_):
             return ""
         case .reservationListRequest(let memberID, let isPast):
+            var path = "/member/\(memberID)"
+            
             if isPast {
-                return "/\(memberID)/completed"
-            } else {
-                return "/\(memberID)"
+                path += "/completed"
             }
+            
+            return path
         case .reservationDetailRequest(let id):
             return "/\(id)"
         }

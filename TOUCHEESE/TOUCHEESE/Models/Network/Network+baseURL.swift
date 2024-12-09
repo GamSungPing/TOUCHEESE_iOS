@@ -18,10 +18,8 @@ extension Network {
             return "\(server_url)/api/v1/review/studio"
         case .productDetailRequest:
             return "\(server_url)/api/v1/product"
-        case .studioReservationRequest, .reservationDetailRequest:
+        case .studioReservationRequest, .reservationDetailRequest, .reservationListRequest:
             return "\(server_url)/api/v1/reservation"
-        case .reservationListRequest:
-            return "\(server_url)/api/v1/reservation/member"
         }
     }
 }
