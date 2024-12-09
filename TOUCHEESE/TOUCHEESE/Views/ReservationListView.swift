@@ -78,7 +78,7 @@ struct ReservationListView: View {
 
 
 fileprivate struct FilteredReservationListView<Content>: View where Content: View {
-    @State var reservations: [Reservation]
+    var reservations: [Reservation]
     @ViewBuilder let emptyView: Content
     let refreshAction: () -> Void
     
@@ -101,6 +101,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
             .refreshable {
                 refreshAction()
             }
+            .animation(.easeInOut, value: reservations)
         }
     }
 }
