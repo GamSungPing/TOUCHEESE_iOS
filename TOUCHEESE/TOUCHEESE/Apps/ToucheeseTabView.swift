@@ -22,12 +22,15 @@ struct ToucheeseTabView: View {
             }
             .tag(0)
             
-            TestView()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("예약일정")
-                }
-                .tag(1)
+            NavigationStack {
+                ReservationListView()
+            }
+            .tint(Color.black)
+            .tabItem {
+                Image(systemName: "calendar.badge.clock")
+                Text("예약일정")
+            }
+            .tag(1)
             
             TestView2()
                 .tabItem {

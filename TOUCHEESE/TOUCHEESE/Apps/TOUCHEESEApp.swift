@@ -22,6 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
+    @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var tabbarManager = TabbarManager()
     
     init() {
@@ -33,6 +34,7 @@ struct TOUCHEESEApp: App {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
                 .environmentObject(tabbarManager)
+                .environmentObject(reservationListViewModel)
         }
     }
 }
