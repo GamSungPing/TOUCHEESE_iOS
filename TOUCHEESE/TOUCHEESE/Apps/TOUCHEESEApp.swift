@@ -20,6 +20,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // MARK: - Push Notification 권한 설정
         UNUserNotificationCenter.current().delegate = self
+        
         let center = UNUserNotificationCenter.current()
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         
@@ -58,8 +59,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        print("🪙🪙🪙🪙", deviceTokenString)
+        print(deviceTokenString)
         
+        // APN 토큰을 명시적으로 FCM 등록 토큰에 매핑하는 코드
         Messaging.messaging().apnsToken = deviceToken
     }
 }
