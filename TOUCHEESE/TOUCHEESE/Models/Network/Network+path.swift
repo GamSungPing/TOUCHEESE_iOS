@@ -63,7 +63,7 @@ extension Network {
             var path = "/member/\(memberID)"
             
             if isPast {
-                path += "/completed"
+                path += "/completed-cancelled"
             }
             
             return path
