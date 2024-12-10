@@ -18,6 +18,7 @@ struct ToucheeseTabView: View {
                         navigationManager.buildView(viewType: viewType)
                     }
             }
+        
             .tint(Color.black)
             .tabItem {
                 Image(systemName: "house")

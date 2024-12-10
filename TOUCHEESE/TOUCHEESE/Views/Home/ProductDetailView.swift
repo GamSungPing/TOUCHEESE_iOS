@@ -871,5 +871,6 @@ fileprivate struct CustomCalendar: View {
 #Preview {
     NavigationStack {
         ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
+            .environmentObject(NavigationManager())
     }
 }

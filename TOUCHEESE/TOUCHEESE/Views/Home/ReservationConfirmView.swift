@@ -312,9 +312,6 @@ fileprivate struct UserInfoInputView: View {
         .onChange(of: userPhone) { newValue in
             userPhone = newValue.filter { $0.isNumber }
         }
-        .navigationDestination(isPresented: $isPushingReservationCompeteView) {
-            ReservationCompleteView()
-        }
     }
 }
 
