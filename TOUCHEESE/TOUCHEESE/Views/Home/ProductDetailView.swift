@@ -300,6 +300,7 @@ fileprivate struct ReservationView: View {
 
 fileprivate struct BottomView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    @EnvironmentObject var navigationManager: NavigationManager
     
     var body: some View {
         HStack(spacing: 12) {
@@ -318,10 +319,8 @@ fileprivate struct BottomView: View {
                     }
             }
             
-            NavigationLink {
-                ReservationConfirmView(
-                    tempReservationViewModel: TempReservationViewModel(studio: productDetailViewModel.studio, studioDetail: productDetailViewModel.studioDetail, product: productDetailViewModel.product, productDetail: productDetailViewModel.productDetail, productOptions: productDetailViewModel.selectedProductOptionArray, reservationDate: productDetailViewModel.reservationDate ?? Date(), totalPrice: productDetailViewModel.totalPrice)
-                )
+            Button {
+                navigationManager.goReservationConfirmView(material: ReservationConfirmViewMaterial(viewModel: TempReservationViewModel(studio: productDetailViewModel.studio, studioDetail: productDetailViewModel.studioDetail, product: productDetailViewModel.product, productDetail: productDetailViewModel.productDetail, productOptions: productDetailViewModel.selectedProductOptionArray, reservationDate: productDetailViewModel.reservationDate ?? Date(), totalPrice: productDetailViewModel.totalPrice)))
             } label: {
                 RoundedRectangle(cornerRadius: 20)
                     .frame(maxWidth: .infinity)
@@ -491,5 +490,6 @@ fileprivate struct CustomCalendar: View {
 #Preview {
     NavigationStack {
         ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
+            .environmentObject(NavigationManager())
     }
 }

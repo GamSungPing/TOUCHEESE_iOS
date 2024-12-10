@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ReservationConfirmView: View {
     // MARK: - TempDatas
+    @EnvironmentObject var navigationManager: NavigationManager
     @StateObject var tempReservationViewModel: TempReservationViewModel
-    @State private var isPushingReservationCompeteView = false
     
     var body: some View {
         let studioName = tempReservationViewModel.studio.name
@@ -63,7 +63,7 @@ struct ReservationConfirmView: View {
             Button {
                 Task {
                     await tempReservationViewModel.requestStudioReservation()
-                    isPushingReservationCompeteView = true
+                    navigationManager.goReservationCompleteView()
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 16)
@@ -79,14 +79,12 @@ struct ReservationConfirmView: View {
         .onChange(of: tempReservationViewModel.userPhone) { newValue in
             tempReservationViewModel.userPhone = newValue.filter { $0.isNumber }
         }
-        .navigationDestination(isPresented: $isPushingReservationCompeteView) {
-            ReservationCompleteView()
-        }
     }
 }
 
 #Preview {
     NavigationStack {
         ReservationConfirmView(tempReservationViewModel: TempReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000))
+            .environmentObject(NavigationManager())
     }
 }

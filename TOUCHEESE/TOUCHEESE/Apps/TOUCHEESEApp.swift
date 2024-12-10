@@ -24,6 +24,7 @@ struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
     @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var tabbarManager = TabbarManager()
+    @StateObject private var navigationManager = NavigationManager()
     
     init() {
         CacheManager.configureKingfisherCache()
@@ -35,6 +36,7 @@ struct TOUCHEESEApp: App {
                 .environmentObject(studioListViewModel)
                 .environmentObject(tabbarManager)
                 .environmentObject(reservationListViewModel)
+                .environmentObject(navigationManager)
         }
     }
 }
