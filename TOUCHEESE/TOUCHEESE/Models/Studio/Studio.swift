@@ -20,6 +20,13 @@ struct DataClass: Codable {
 }
 
 
+struct SingleStudioData: Codable {
+    let statusCode: Int
+    let msg: String
+    let data: Studio
+}
+
+
 struct Studio: Codable, Identifiable, Hashable {
     let id: Int
     let name: String

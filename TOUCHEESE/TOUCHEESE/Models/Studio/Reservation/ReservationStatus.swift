@@ -18,7 +18,7 @@ enum ReservationStatus: String {
         switch self {
         case .waiting: "예약 대기"
         case .confirm: "예약 확정"
-        case .complete: "예약 완료"
+        case .complete: "촬영 완료"
         case .cancel: "예약 취소"
         }
     }

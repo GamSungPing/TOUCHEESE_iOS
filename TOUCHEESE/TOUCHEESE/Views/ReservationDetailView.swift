@@ -9,11 +9,13 @@ import SwiftUI
 
 struct ReservationDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
+    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
     @StateObject var viewModel: ReservationDetailViewModel
     
     @Environment(\.dismiss) private var dismiss
     
     @State private var isShowingReservationCancelAlert = false
+    @State private var isPushingStudioDetailView = false
     
     var body: some View {
         let reservation = viewModel.reservation
@@ -55,12 +57,14 @@ struct ReservationDetailView: View {
             Spacer()
             
             VStack(alignment: .center, spacing: 15) {
-                Button {
-                    
-                } label: {
+                NavigationLink(value: viewModel.reservedStudio) {
                     Text("스튜디오 바로가기")
+                        .padding(10)
+                        .background {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.tcLightgray)
+                        }
                 }
-                .buttonStyle(.bordered)
                 
                 if viewModel.isShowingReservationCancelButton() {
                     Button {
@@ -78,6 +82,11 @@ struct ReservationDetailView: View {
         }
         .padding(.horizontal)
         .navigationTitle("예약 상세 내역")
+        .navigationDestination(for: Studio.self) { studio in
+            StudioDetailView(
+                viewModel: StudioDetailViewModel(studio: studio)
+            )
+        }
         .toolbarRole(.editor)
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
@@ -89,8 +98,11 @@ struct ReservationDetailView: View {
         ) {
             Button(role: .destructive) {
                 dismiss()
-                // TODO: - 취소 API 요청하기
                 
+                Task {
+                    await viewModel.cancelReservation(reservationID: reservation.id)
+                    await reservationListViewModel.fetchReservations()
+                }
             } label: {
                 Text("취소하기")
             }

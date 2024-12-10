@@ -18,6 +18,7 @@ enum Network {
         page: Int?
     )
     case studioDetailRequest(id: Int)
+    case studioRequest(id: Int)
     
     /// Review
     case reviewListRequest(
@@ -35,4 +36,7 @@ enum Network {
     
     /// Reservation
     case studioReservationRequest(ReservationRequest)
+    case reservationListRequest(memberID: Int, isPast: Bool)
+    case reservationDetailRequest(id: Int)
+    case reservationCancelRequest(reservationID: Int, memberID: Int)
 }

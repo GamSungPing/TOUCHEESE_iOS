@@ -37,7 +37,7 @@ struct ReviewDetail: Codable {
     let dateString: String
     
     let imageStrings: [String]
-    let content: String
+    let content: String?
     let rating: Double
     
     let reply: Reply?

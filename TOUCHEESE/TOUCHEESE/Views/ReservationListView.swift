@@ -27,18 +27,20 @@ struct ReservationListView: View {
                 ) {
                     reservationEmptyView(description: "예약 일정이 없습니다.")
                 } refreshAction: {
-                    // TODO: - 내역 업데이트 메서드 호출하기
+                    Task {
+                        await viewModel.fetchReservations()
+                    }
                 }
-
             } else {
                 FilteredReservationListView(
                     reservations: viewModel.pastReservations
                 ) {
                     reservationEmptyView(description: "지난 내역이 없습니다.")
                 } refreshAction: {
-                    // TODO: - 내역 업데이트 메서드 호출하기
+                    Task {
+                        await viewModel.fetchPastReservations()
+                    }
                 }
-
             }
         }
         .padding(.horizontal)
@@ -74,7 +76,7 @@ struct ReservationListView: View {
 
 
 fileprivate struct FilteredReservationListView<Content>: View where Content: View {
-    @State var reservations: [Reservation]
+    var reservations: [Reservation]
     @ViewBuilder let emptyView: Content
     let refreshAction: () -> Void
     
@@ -97,6 +99,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
             .refreshable {
                 refreshAction()
             }
+            .animation(.easeInOut, value: reservations)
         }
     }
 }

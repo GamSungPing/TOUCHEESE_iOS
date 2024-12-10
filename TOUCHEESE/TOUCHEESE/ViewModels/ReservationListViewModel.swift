@@ -9,13 +9,36 @@ import Foundation
 
 final class ReservationListViewModel: ObservableObject {
     
-    @Published private(set) var reservations: [Reservation]
-    @Published private(set) var pastReservations: [Reservation]
+    @Published private(set) var reservations: [Reservation] = []
+    @Published private(set) var pastReservations: [Reservation] = []
+    
+    let networkManager = NetworkManager.shared
     
     init() {
-        // TODO: - 추후에는 네트워크 통신으로 Reservations를 fetch할 예정
-        self.reservations = Reservation.samples
-        self.pastReservations = Reservation.samples
+        Task {
+            await fetchReservations()
+            await fetchPastReservations()
+        }
+    }
+    
+    @MainActor
+    func fetchReservations() async {
+        do {
+            // TODO: - 추후 맴버 ID 변경, 현재는 고정값
+            reservations = try await networkManager.getReservationListDatas(memberID: 1)
+        } catch {
+            print("Reservation List Fetch Error: \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    func fetchPastReservations() async {
+        do {
+            // TODO: - 추후 맴버 ID 변경, 현재는 고정값
+            pastReservations = try await networkManager.getReservationListDatas(memberID: 1, isPast: true)
+        } catch {
+            print("Past Reservation List Fetch Error: \(error.localizedDescription)")
+        }
     }
     
 }

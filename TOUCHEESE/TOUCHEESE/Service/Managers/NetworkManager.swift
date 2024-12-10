@@ -16,7 +16,7 @@ class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-        
+        print(url)
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -45,7 +45,7 @@ class NetworkManager {
         }
     }
     
-    /// 스튜디오 데이터를 요청하는 함수
+    /// 스튜디오 리스트 데이터를 요청하는 함수
     /// - Parameter concept: 스튜디오 컨셉
     /// - Parameter isHighRating: 점수 필터 (True에 적용 O, False와 Nil일 때 적용 X)
     /// - Parameter regionArray: 지역 필터 (배열에 해당하는 Region 타입을 담아서 사용)
@@ -65,7 +65,11 @@ class NetworkManager {
             price: price,
             page: page
         )
-        let studioData: StudioData = try await performRequest(fetchRequest, decodingType: StudioData.self)
+        let studioData: StudioData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioData.self
+        )
+        
         return studioData.data.content
     }
     
@@ -73,9 +77,25 @@ class NetworkManager {
     /// - Parameter studioID: 스튜디오 아이디
     func getStudioDetailData(studioID id: Int) async throws -> StudioDetail {
         let fetchRequest = Network.studioDetailRequest(id: id)
-        let studioDetailData: StudioDetailData = try await performRequest(fetchRequest, decodingType: StudioDetailData.self)
+        let studioDetailData: StudioDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioDetailData.self
+        )
         
         return studioDetailData.data
+    }
+    
+    
+    /// 단일 스튜디오 데이터를 요청하는 함수
+    /// - Parameter studioID: 스튜디오 아이디. 아이디에 해당하는 스튜디오 데이터를 불러온다.
+    func getStudioData(studioID id: Int) async throws -> Studio {
+        let fetchRequest = Network.studioRequest(id: id)
+        let singleStudioData: SingleStudioData = try await performRequest(
+            fetchRequest,
+            decodingType: SingleStudioData.self
+        )
+        
+        return singleStudioData.data
     }
     
     /// 리뷰 리스트를 요청하는 함수
@@ -101,7 +121,10 @@ class NetworkManager {
     /// - Parameter productID: 상품의 아이디. 아이디에 해당하는 상품의 자세한 데이터를 불러온다.
     func getProductDetailData(productID id: Int) async throws -> ProductDetail {
         let fetchRequest = Network.productDetailRequest(id: id)
-        let  productDetailData: ProductDetailData = try await performRequest(fetchRequest, decodingType: ProductDetailData.self)
+        let productDetailData: ProductDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: ProductDetailData.self
+        )
         
         return productDetailData.data
     }
@@ -137,5 +160,55 @@ class NetworkManager {
         )
         
         return reservationResponseData.data
+    }
+    
+    /// 특정 회원의 예약 리스트를 요청하는 함수
+    /// - Parameter memberID: 회원의 아이디. 아이디에 해당하는 회원의 예약 리스트를 불러온다.
+    /// - Parameter isPast: true 값이면 예약 대기, 예약 확정 리스트를 불러오고, false 값이면 예약 완료, 예약 취소 리스트를 불러온다.
+    func getReservationListDatas(
+        memberID: Int,
+        isPast: Bool = false
+    ) async throws -> [Reservation] {
+        let fetchRequest = Network.reservationListRequest(
+            memberID: memberID,
+            isPast: isPast
+        )
+        let reservationData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservationData.self
+        )
+        
+        return reservationData.data
+    }
+    
+    /// 특정 예약의 자세한 데이터를 요청하는 함수
+    /// - Parameter reservationID: 예약 아이디. 아이디에 해당하는 예약의 자세한 데이터를 불러온다.
+    func getReservationDetailData(
+        reservationID id: Int
+    ) async throws -> ReservationDetail {
+        let fetchRequest = Network.reservationDetailRequest(id: id)
+        let reservationDetailData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservationDetailData.self
+        )
+        
+        return reservationDetailData.data
+    }
+    
+    /// 특정 맴버의 스튜디오 예약을 취소하는 함수
+    /// - Parameter reservationID: 예약 아이디. 아이디에 해당하는 예약을 취소한다.
+    /// - Parameter memberID: 회원 아이디. 아이디에 해당하는 회원의 예약 중 예약 아이디에 해당하는 예약을 취소한다.
+    @discardableResult
+    func deleteReservationData(
+        reservationID: Int,
+        memberID: Int
+    ) async throws -> ReservationCancelResponseData {
+        let fetchRequest = Network.reservationCancelRequest(
+            reservationID: reservationID,
+            memberID: memberID
+        )
+        let reservationCancelResponseData = try await performRequest(fetchRequest, decodingType: ReservationCancelResponseData.self)
+        
+        return reservationCancelResponseData
     }
 }
