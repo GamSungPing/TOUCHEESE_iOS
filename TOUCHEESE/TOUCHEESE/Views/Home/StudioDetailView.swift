@@ -61,7 +61,7 @@ struct StudioDetailView: View {
                 
                 // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
-                    ProductListView(studioDetail: studioDetail)
+                    ProductListView(studioDetail: studioDetail, studio: studio)
                         .environmentObject(viewModel)
                 } else {
                     ReviewImageGridView(
@@ -85,15 +85,6 @@ struct StudioDetailView: View {
                 imageURLs: studioDetail.detailImageURLs,
                 currentIndex: $carouselIndex,
                 isShowingImageExtensionView: $isShowingImageExtensionView
-            )
-        }
-        .navigationDestination(for: Product.self) { product in
-            ProductDetailView(
-                productDetailViewModel: ProductDetailViewModel(
-                    studio: studio,
-                    studioDetails: studioDetail,
-                    product: product
-                )
             )
         }
         .navigationDestination(isPresented: $isPushingReviewDetailView) {
@@ -193,7 +184,9 @@ fileprivate struct RoundedCornersShape: Shape {
 
 
 fileprivate struct ProductListView: View {
+    @EnvironmentObject var navigationManager: NavigationManager
     let studioDetail: StudioDetail
+    let studio: Studio
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
@@ -201,7 +194,9 @@ fileprivate struct ProductListView: View {
                 .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
             
             ForEach(studioDetail.products, id: \.self) { product in
-                NavigationLink(value: product) {
+                Button {
+                    navigationManager.goProductDetailView(material: ProductDetailViewMaterial(viewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product)))
+                } label: {
                     HStack(spacing: 15) {
                         KFImage(product.imageURL)
                             .placeholder { ProgressView() }

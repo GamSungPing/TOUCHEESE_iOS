@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ReservationCompleteView: View {
+    @EnvironmentObject var navigationManager: NavigationManager
+    
     var reservationMessage = """
     예약이 신청되었습니다.
     
@@ -22,7 +24,7 @@ struct ReservationCompleteView: View {
                 .padding(.bottom, 60)
             
             Button {
-                
+                navigationManager.goFirstViewAndSecondTap()
             } label: {
                 Rectangle()
                     .foregroundStyle(Color.tcLightgray)
@@ -34,7 +36,7 @@ struct ReservationCompleteView: View {
             }
             
             Button {
-                
+                navigationManager.goFirstView()
             } label: {
                 Rectangle()
                     .foregroundStyle(Color.tcLightgray)
@@ -52,5 +54,6 @@ struct ReservationCompleteView: View {
 #Preview {
     NavigationStack {
         ReservationCompleteView()
+            .environmentObject(NavigationManager())
     }
 }
