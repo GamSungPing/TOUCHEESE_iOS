@@ -21,8 +21,8 @@ struct DividerView: View {
     var body: some View {
         Rectangle()
             .frame(maxWidth: .infinity)
-            .frame(height: height ?? 2.0)
+            .frame(height: height ?? 1.0)
             .foregroundStyle(color ?? .tcLightgray)
-            .padding(.horizontal, horizontalPadding ?? 26)
+            .padding(.horizontal, horizontalPadding ?? 0)
     }
 }
