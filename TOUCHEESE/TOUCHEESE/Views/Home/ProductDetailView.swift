@@ -362,69 +362,73 @@ fileprivate struct CalendarView: View {
                         }
                         .padding(.bottom, 20)
                         
-                        HStack {
-                            Text("오전")
-                                .font(.pretendardMedium14)
-                                .foregroundStyle(.tcGray09)
+                        if !productDetailViewModel.businessHourPM.isEmpty {
+                            HStack {
+                                Text("오전")
+                                    .font(.pretendardMedium14)
+                                    .foregroundStyle(.tcGray09)
+                                
+                                Spacer()
+                            }
+                            .padding(.bottom, 4)
                             
-                            Spacer()
-                        }
-                        .padding(.bottom, 4)
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                            ForEach(productDetailViewModel.businessHourAM, id: \.self) { time in
-                                Button {
-                                    if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                        displayTime = time
-                                    }
-                                } label: {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
-                                        .frame(height: 40)
-                                        .frame(idealWidth: 101)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcPrimary06 : .white)
-                                                .overlay {
-                                                    Text(time)
-                                                        .font(.pretendardMedium16)
-                                                        .foregroundStyle(displayTime == time ? .white : .tcGray10)
-                                                }
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                                ForEach(productDetailViewModel.businessHourAM, id: \.self) { time in
+                                    Button {
+                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                            displayTime = time
                                         }
+                                    } label: {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .frame(height: 40)
+                                            .frame(idealWidth: 101)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .overlay {
+                                                        Text(time)
+                                                            .font(.pretendardMedium16)
+                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                    }
+                                            }
+                                    }
                                 }
                             }
+                            .padding(.bottom, 20)
                         }
-                        .padding(.bottom, 20)
                         
-                        HStack {
-                            Text("오후")
-                                .font(.pretendardMedium14)
-                                .foregroundStyle(.tcGray09)
+                        if !productDetailViewModel.businessHourPM.isEmpty {
+                            HStack {
+                                Text("오후")
+                                    .font(.pretendardMedium14)
+                                    .foregroundStyle(.tcGray09)
+                                
+                                Spacer()
+                            }
+                            .padding(.bottom, 4)
                             
-                            Spacer()
-                        }
-                        .padding(.bottom, 4)
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                            ForEach(productDetailViewModel.businessHourPM, id: \.self) { time in
-                                Button {
-                                    if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                        displayTime = time
-                                    }
-                                } label: {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
-                                        .frame(height: 40)
-                                        .frame(idealWidth: 101)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcPrimary06 : .white)
-                                                .overlay {
-                                                    Text(time)
-                                                        .font(.pretendardMedium16)
-                                                        .foregroundStyle(displayTime == time ? .white : .tcGray10)
-                                                }
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                                ForEach(productDetailViewModel.businessHourPM, id: \.self) { time in
+                                    Button {
+                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                            displayTime = time
                                         }
+                                    } label: {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .frame(height: 40)
+                                            .frame(idealWidth: 101)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .overlay {
+                                                        Text(time)
+                                                            .font(.pretendardMedium16)
+                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                    }
+                                            }
+                                    }
                                 }
                             }
                         }
