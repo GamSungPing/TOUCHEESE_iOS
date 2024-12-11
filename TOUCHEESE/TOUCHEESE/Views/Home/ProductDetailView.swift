@@ -446,16 +446,12 @@ fileprivate struct CalendarView: View {
                         isCalendarPresented = false
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(.tcGray03, lineWidth: 1)
                             .frame(height: 64)
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(displayTime == "" ? .tcGray01 : .tcPrimary01)
-                                    .overlay {
-                                        Text("날짜 선택")
-                                            .font(.pretendardBold20)
-                                            .foregroundStyle(.tcGray10)
-                                    }
+                            .foregroundStyle(displayTime == "" ? .tcGray03 : .tcPrimary06)
+                            .overlay {
+                                Text("날짜 선택")
+                                    .font(.pretendardBold20)
+                                    .foregroundStyle(displayTime == "" ?  .tcGray05 : .tcGray10)
                             }
                     }
                     .disabled(displayTime == "" ? true : false)
