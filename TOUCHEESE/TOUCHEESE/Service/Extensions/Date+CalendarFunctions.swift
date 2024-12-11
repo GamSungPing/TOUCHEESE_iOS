@@ -35,9 +35,11 @@ extension Date {
         return Calendar.current.isDateInToday(self)
     }
     
-    /// 해당 Date가 과거 날짜인지 확인하는 변수
+    /// 해당 Date가 과거 날짜인지 확인하는 변수 (오늘 포함)
     var isPast: Bool {
-        return self < Date()
+        let today = Calendar.current.startOfDay(for: Date())
+        let targetDate = Calendar.current.startOfDay(for: self)
+        return targetDate < today
     }
     
     /// 해당 Date가 휴일에 속하는지 확인하는 변수

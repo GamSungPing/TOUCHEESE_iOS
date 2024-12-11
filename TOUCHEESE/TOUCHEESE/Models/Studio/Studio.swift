@@ -101,8 +101,8 @@ extension StudioDetail {
             "https://imgur.com/YJaYOeA.png"
         ],
         reviewCount: 0,
-        openTime: "00:00:00",
-        closeTime: "00:00:00",
+        openTime: "09:00:00",
+        closeTime: "21:00:00",
         holidays: [],
         address: "주소가 표시됩니다.",
         notice: nil,
