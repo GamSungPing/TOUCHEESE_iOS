@@ -355,8 +355,8 @@ fileprivate struct CalendarView: View {
                     VStack {
                         HStack {
                             Text("선택 가능한 시간대")
-                                .font(.system(size: 18))
-                                .fontWeight(.semibold)
+                                .font(.pretendardSemiBold18)
+                                .foregroundStyle(.black)
                             
                             Spacer()
                         }
@@ -364,7 +364,8 @@ fileprivate struct CalendarView: View {
                         
                         HStack {
                             Text("오전")
-                                .font(.system(size: 14))
+                                .font(.pretendardMedium14)
+                                .foregroundStyle(.tcGray09)
                             
                             Spacer()
                         }
@@ -378,16 +379,16 @@ fileprivate struct CalendarView: View {
                                     }
                                 } label: {
                                     RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(.tcLightgray, lineWidth: 1)
+                                        .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
                                         .frame(height: 40)
                                         .frame(idealWidth: 101)
                                         .background {
                                             RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcYellow : .tcBackground)
+                                                .fill(displayTime == time ? .tcPrimary06 : .white)
                                                 .overlay {
                                                     Text(time)
-                                                        .font(.system(size: 16))
-                                                        .foregroundStyle(.black)
+                                                        .font(.pretendardMedium16)
+                                                        .foregroundStyle(displayTime == time ? .white : .tcGray10)
                                                 }
                                         }
                                 }
@@ -397,7 +398,8 @@ fileprivate struct CalendarView: View {
                         
                         HStack {
                             Text("오후")
-                                .font(.system(size: 14))
+                                .font(.pretendardMedium14)
+                                .foregroundStyle(.tcGray09)
                             
                             Spacer()
                         }
@@ -411,16 +413,16 @@ fileprivate struct CalendarView: View {
                                     }
                                 } label: {
                                     RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(.tcLightgray, lineWidth: 1)
+                                        .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
                                         .frame(height: 40)
                                         .frame(idealWidth: 101)
                                         .background {
                                             RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcYellow : .tcBackground)
+                                                .fill(displayTime == time ? .tcPrimary06 : .white)
                                                 .overlay {
                                                     Text(time)
-                                                        .font(.system(size: 16))
-                                                        .foregroundStyle(.black)
+                                                        .font(.pretendardMedium16)
+                                                        .foregroundStyle(displayTime == time ? .white : .tcGray10)
                                                 }
                                         }
                                 }
@@ -440,16 +442,15 @@ fileprivate struct CalendarView: View {
                         isCalendarPresented = false
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(.tcLightgray, lineWidth: 1)
+                            .strokeBorder(.tcGray03, lineWidth: 1)
                             .frame(height: 64)
                             .background {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(displayTime == "" ? .tcLightgray : .tcBackground)
+                                    .fill(displayTime == "" ? .tcGray01 : .tcPrimary01)
                                     .overlay {
                                         Text("날짜 선택")
-                                            .font(.system(size: 20))
-                                            .fontWeight(.bold)
-                                            .foregroundStyle(.black)
+                                            .font(.pretendardBold20)
+                                            .foregroundStyle(.tcGray10)
                                     }
                             }
                     }
@@ -481,7 +482,7 @@ fileprivate struct CustomCalendar: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .frame(width: 24, height: 24)
-                        .foregroundStyle(.tcYellow)
+                        .foregroundStyle(.tcPrimary06)
                         .padding(.leading, 8)
                 }
                 
@@ -489,8 +490,8 @@ fileprivate struct CustomCalendar: View {
                 
                 // 현재 표시되는 날짜
                 Text("\(displayDate.toString(format: .yearMonth))")
-                    .font(.system(size: 16))
-                    .fontWeight(.semibold)
+                    .font(.pretendardSemiBold16)
+                    .foregroundStyle(.tcGray10)
                 
                 Spacer()
                 
@@ -500,7 +501,7 @@ fileprivate struct CustomCalendar: View {
                 } label: {
                     Image(systemName: "chevron.right")
                         .frame(width: 24, height: 24)
-                        .foregroundStyle(.tcYellow)
+                        .foregroundStyle(.tcPrimary06)
                         .padding(.trailing, 8)
                 }
             }
@@ -511,7 +512,8 @@ fileprivate struct CustomCalendar: View {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { weekday in
                     Text(weekday)
                         .frame(idealWidth: 50, idealHeight: 40)
-                        .font(.system(size: 14))
+                        .font(.pretendardMedium14)
+                        .foregroundStyle(.tcGray10)
                 }
                 
                 // 빈칸 표시
@@ -530,15 +532,15 @@ fileprivate struct CustomCalendar: View {
                         displayDate = date
                     } label: {
                         Text("\(date.dayNumber)")
-                            .font(.system(size: isSelected ? 16 : 14))
+                            .font(isSelected ? .pretendardSemiBold14 : .pretendardMedium14)
                             .fontWeight(isSelected ? .semibold : .medium)
                             .foregroundStyle(
-                                isSelected ? Color.white : (isHoliday || date.isPast ? Color.tcLightgray : Color.black))
+                                isSelected ? Color.white : (isHoliday || date.isPast ? .tcGray04 : .tcGray06))
                             .frame(idealWidth: 50, idealHeight: 40)
                             .background(
                                 Circle()
                                     .fill(
-                                        (isHoliday && isSelected) ? .tcLightgray : (isSelected ? .tcYellow : .clear)
+                                        (isHoliday && isSelected) ? .tcPrimary06 : (isSelected ? .tcYellow : .clear)
                                     )
                                     .frame(width: 38, height: 38)
                             )
