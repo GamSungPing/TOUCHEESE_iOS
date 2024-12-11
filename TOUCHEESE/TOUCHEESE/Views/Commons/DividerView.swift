@@ -22,7 +22,7 @@ struct DividerView: View {
         Rectangle()
             .frame(maxWidth: .infinity)
             .frame(height: height ?? 1.0)
-            .foregroundStyle(color ?? .tcLightgray)
+            .foregroundStyle(color ?? .tcGray02)
             .padding(.horizontal, horizontalPadding ?? 0)
     }
 }
