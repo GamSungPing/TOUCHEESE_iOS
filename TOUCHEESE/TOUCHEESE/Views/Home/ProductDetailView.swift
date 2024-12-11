@@ -35,8 +35,8 @@ struct ProductDetailView: View {
                             .padding(.bottom, 10)
                         
                         // 리뷰로 이동하는 버튼
-//                        reviewButtonView(reviewCount: product.reviewCount)
-//                            .padding(.bottom, 10)
+                        //                        reviewButtonView(reviewCount: product.reviewCount)
+                        //                            .padding(.bottom, 10)
                         
                         // 가격 정보
                         priceView(productPrice: product.price)
