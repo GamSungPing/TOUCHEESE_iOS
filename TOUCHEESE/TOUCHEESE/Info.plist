@@ -9,5 +9,17 @@
 	</dict>
 	<key>SERVER_URL</key>
 	<string>$(SERVER_URL)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Pretendard-Black.otf</string>
+		<string>Pretendard-Bold.oft</string>
+		<string>Pretendard-ExtraBold.oft</string>
+		<string>Pretendard-ExtraLight.oft</string>
+		<string>Pretendard-Light.oft</string>
+		<string>Pretendard-Medium.oft</string>
+		<string>Pretendard-Regular.oft</string>
+		<string>Pretendard-SemiBold.oft</string>
+		<string>Pretendard-Thin.oft</string>
+	</array>
 </dict>
 </plist>
