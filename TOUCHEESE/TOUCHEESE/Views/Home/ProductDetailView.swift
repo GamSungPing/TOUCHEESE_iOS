@@ -736,74 +736,80 @@ fileprivate struct CalendarView: View {
                     VStack {
                         HStack {
                             Text("선택 가능한 시간대")
-                                .font(.system(size: 18))
-                                .fontWeight(.semibold)
+                                .font(.pretendardSemiBold18)
+                                .foregroundStyle(.black)
                             
                             Spacer()
                         }
                         .padding(.bottom, 20)
                         
-                        HStack {
-                            Text("오전")
-                                .font(.system(size: 14))
+                        if !productDetailViewModel.businessHourPM.isEmpty {
+                            HStack {
+                                Text("오전")
+                                    .font(.pretendardMedium14)
+                                    .foregroundStyle(.tcGray09)
+                                
+                                Spacer()
+                            }
+                            .padding(.bottom, 4)
                             
-                            Spacer()
-                        }
-                        .padding(.bottom, 4)
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                            ForEach(productDetailViewModel.businessHourAM, id: \.self) { time in
-                                Button {
-                                    if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                        displayTime = time
-                                    }
-                                } label: {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(.tcLightgray, lineWidth: 1)
-                                        .frame(height: 40)
-                                        .frame(idealWidth: 101)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcYellow : .tcBackground)
-                                                .overlay {
-                                                    Text(time)
-                                                        .font(.system(size: 16))
-                                                        .foregroundStyle(.black)
-                                                }
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                                ForEach(productDetailViewModel.businessHourAM, id: \.self) { time in
+                                    Button {
+                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                            displayTime = time
                                         }
+                                    } label: {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .frame(height: 40)
+                                            .frame(idealWidth: 101)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .overlay {
+                                                        Text(time)
+                                                            .font(.pretendardMedium16)
+                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                    }
+                                            }
+                                    }
                                 }
                             }
+                            .padding(.bottom, 20)
                         }
-                        .padding(.bottom, 20)
                         
-                        HStack {
-                            Text("오후")
-                                .font(.system(size: 14))
+                        if !productDetailViewModel.businessHourPM.isEmpty {
+                            HStack {
+                                Text("오후")
+                                    .font(.pretendardMedium14)
+                                    .foregroundStyle(.tcGray09)
+                                
+                                Spacer()
+                            }
+                            .padding(.bottom, 4)
                             
-                            Spacer()
-                        }
-                        .padding(.bottom, 4)
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                            ForEach(productDetailViewModel.businessHourPM, id: \.self) { time in
-                                Button {
-                                    if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                        displayTime = time
-                                    }
-                                } label: {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(.tcLightgray, lineWidth: 1)
-                                        .frame(height: 40)
-                                        .frame(idealWidth: 101)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(displayTime == time ? .tcYellow : .tcBackground)
-                                                .overlay {
-                                                    Text(time)
-                                                        .font(.system(size: 16))
-                                                        .foregroundStyle(.black)
-                                                }
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                                ForEach(productDetailViewModel.businessHourPM, id: \.self) { time in
+                                    Button {
+                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
+                                            displayTime = time
                                         }
+                                    } label: {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .frame(height: 40)
+                                            .frame(idealWidth: 101)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .overlay {
+                                                        Text(time)
+                                                            .font(.pretendardMedium16)
+                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                    }
+                                            }
+                                    }
                                 }
                             }
                         }
@@ -821,17 +827,12 @@ fileprivate struct CalendarView: View {
                         isCalendarPresented = false
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(.tcLightgray, lineWidth: 1)
                             .frame(height: 64)
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(displayTime == "" ? .tcLightgray : .tcBackground)
-                                    .overlay {
-                                        Text("날짜 선택")
-                                            .font(.system(size: 20))
-                                            .fontWeight(.bold)
-                                            .foregroundStyle(.black)
-                                    }
+                            .foregroundStyle(displayTime == "" ? .tcGray03 : .tcPrimary06)
+                            .overlay {
+                                Text("날짜 선택")
+                                    .font(.pretendardBold20)
+                                    .foregroundStyle(displayTime == "" ?  .tcGray05 : .tcGray10)
                             }
                     }
                     .disabled(displayTime == "" ? true : false)
@@ -862,7 +863,7 @@ fileprivate struct CustomCalendar: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .frame(width: 24, height: 24)
-                        .foregroundStyle(.tcYellow)
+                        .foregroundStyle(.tcPrimary06)
                         .padding(.leading, 8)
                 }
                 
@@ -870,8 +871,8 @@ fileprivate struct CustomCalendar: View {
                 
                 // 현재 표시되는 날짜
                 Text("\(displayDate.toString(format: .yearMonth))")
-                    .font(.system(size: 16))
-                    .fontWeight(.semibold)
+                    .font(.pretendardSemiBold16)
+                    .foregroundStyle(.tcGray10)
                 
                 Spacer()
                 
@@ -881,7 +882,7 @@ fileprivate struct CustomCalendar: View {
                 } label: {
                     Image(systemName: "chevron.right")
                         .frame(width: 24, height: 24)
-                        .foregroundStyle(.tcYellow)
+                        .foregroundStyle(.tcPrimary06)
                         .padding(.trailing, 8)
                 }
             }
@@ -892,7 +893,8 @@ fileprivate struct CustomCalendar: View {
                 ForEach(["일", "월", "화", "수", "목", "금", "토"], id: \.self) { weekday in
                     Text(weekday)
                         .frame(idealWidth: 50, idealHeight: 40)
-                        .font(.system(size: 14))
+                        .font(.pretendardMedium14)
+                        .foregroundStyle(.tcGray10)
                 }
                 
                 // 빈칸 표시
@@ -911,15 +913,15 @@ fileprivate struct CustomCalendar: View {
                         displayDate = date
                     } label: {
                         Text("\(date.dayNumber)")
-                            .font(.system(size: isSelected ? 16 : 14))
+                            .font(isSelected ? .pretendardSemiBold14 : .pretendardMedium14)
                             .fontWeight(isSelected ? .semibold : .medium)
                             .foregroundStyle(
-                                isSelected ? Color.white : (isHoliday || date.isPast ? Color.tcLightgray : Color.black))
+                                isSelected ? Color.white : (isHoliday || date.isPast ? .tcGray04 : .tcGray06))
                             .frame(idealWidth: 50, idealHeight: 40)
                             .background(
                                 Circle()
                                     .fill(
-                                        (isHoliday && isSelected) ? .tcLightgray : (isSelected ? .tcYellow : .clear)
+                                        (isHoliday && isSelected) ? .tcPrimary06 : (isSelected ? .tcYellow : .clear)
                                     )
                                     .frame(width: 38, height: 38)
                             )
