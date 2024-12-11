@@ -77,6 +77,18 @@ extension AppDelegate: MessagingDelegate {
     ) {
         let deviceToken:[String: String] = ["token": fcmToken ?? ""]
         print("Device token: ", deviceToken)
+        
+        // TODO: 추후 서버와 테스트 필요
+        /*
+        Task {
+            try await NetworkManager.shared.postDeviceTokenRegistrationData(
+                deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
+                    memberId: 1,
+                    deviceToken: fcmToken ?? ""
+                )
+            )
+        }
+         */
     }
 }
 

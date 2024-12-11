@@ -211,4 +211,21 @@ class NetworkManager {
         
         return reservationCancelResponseData
     }
+    
+    /// Push Provider에게 Device Token을 등록하는 함수
+    /// - Parameter deviceTokenRegistrationRequest: Device Token 등록에 필요한 정보를 담은 구조체. 구조체의 속성으로 memberId(Int)와 deviceToken(String)이 필요하다.
+    @discardableResult
+    func postDeviceTokenRegistrationData(
+        deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest
+    ) async throws -> DeviceTokenRegistrationResponse {
+        let fetchRequest = Network.deviceTokenRegistrationRequest(
+            deviceTokenRegistrationRequest
+        )
+        let deviceTokenRegistrationResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: DeviceTokenRegistrationResponseData.self
+        )
+        
+        return deviceTokenRegistrationResponseData.data
+    }
 }
