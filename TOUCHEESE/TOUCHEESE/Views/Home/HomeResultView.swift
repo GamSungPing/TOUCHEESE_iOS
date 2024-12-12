@@ -11,6 +11,7 @@ struct HomeResultView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
+    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
     
     let concept: StudioConcept
     

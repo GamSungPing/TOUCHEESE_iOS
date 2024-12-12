@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     private let conceptCards: [ConceptCard] = [
         ConceptCard(imageString: "flashIdol", concept: .flashIdol),

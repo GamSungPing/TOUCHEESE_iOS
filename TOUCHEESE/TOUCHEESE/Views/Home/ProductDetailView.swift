@@ -301,6 +301,7 @@ fileprivate struct ReservationView: View {
 fileprivate struct BottomView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
         HStack(spacing: 12) {
