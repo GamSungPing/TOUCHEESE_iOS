@@ -26,4 +26,24 @@ extension Font {
     // Regular
     static let pretendardRegular14: Font = .custom("Pretendard-Regular", size: 14)
     static let pretendardRegular16: Font = .custom("Pretendard-Regular", size: 16)
+    
+    // Pretendard-Bold 폰트
+    static func pretendardBold(_ size: CGFloat) -> Font {
+        return .custom("Pretendard-Bold", size: size)
+    }
+
+    // Pretendard-SemiBold 폰트
+    static func pretendardSemiBold(_ size: CGFloat) -> Font {
+        return .custom("Pretendard-SemiBold", size: size)
+    }
+    
+    // Pretendard-Medium 폰트
+    static func pretendardMedium(_ size: CGFloat) -> Font {
+        return .custom("Pretendard-Medium", size: size)
+    }
+    
+    // Pretendard-Regular 폰트
+    static func pretendardRegular(_ size: CGFloat) -> Font {
+        return .custom("Pretendard-Regular", size: size)
+    }
 }

@@ -23,12 +23,12 @@ enum ReservationStatus: String {
         }
     }
     
-    var color: (font: Color, background: Color) {
+    var color: (font: Color, background: Color, stroke: Color) {
         switch self {
-        case .waiting: (.black, .tcLightgray)
-        case .confirm: (.white, .green)
-        case .complete: (.black, .tcLightgray)
-        case .cancel: (.white, .red)
+        case .waiting: (.tcGray09, .tcGray03, .tcGray03)
+        case .confirm: (.tcPrimary07, .clear, .tcPrimary07)
+        case .complete: (.tcGray09, .tcPrimary05, .tcPrimary05)
+        case .cancel: (.tcError, .clear, .tcError)
         }
     }
 }

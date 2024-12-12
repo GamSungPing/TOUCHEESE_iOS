@@ -14,36 +14,65 @@ struct ReservationRow: View {
     }
     
     var body: some View {
-        HStack(alignment: .top, spacing: 15) {
-            ProfileImageView(imageURL: reservation.studioProfileImageURL, size: 40)
+        HStack(alignment: .center, spacing: 12) {
+            RoundedRectangleProfileImageView(
+                imageURL: reservation.studioProfileImageURL,
+                size: 74,
+                cornerRadius: 6,
+                downsamplingSize: 150
+            )
             
-            VStack(alignment: .leading) {
-                Text(reservation.studioName)
-                    .fontWeight(.bold)
-                
-                Label(reservation.reservationDate, systemImage: "calendar")
-                
-                Label(reservation.reservationTimeString, systemImage: "clock")
-            }
-            
-            Spacer()
-            
-            Text(status.description)
-                .foregroundStyle(status.color.font)
-                .fontWeight(.bold)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(status.color.background)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(reservation.studioName)
+                        .font(.pretendardSemiBold16)
+                        .foregroundStyle(.tcGray10)
+                    
+                    Spacer()
+                    
+                    ReservationStatusView(status)
                 }
+                
+                Spacer()
+                
+                HStack {
+                    Text("예약 날짜")
+                        .font(.pretendardRegular14)
+                        .foregroundStyle(.tcGray05)
+                    
+                    Spacer()
+                    
+                    Text(reservation.reservationDate?.toReservationDateType)
+                        .font(.pretendardMedium(13))
+                        .foregroundStyle(.tcGray08)
+                }
+                
+                HStack {
+                    Text("예약 시간")
+                        .font(.pretendardRegular14)
+                        .foregroundStyle(.tcGray05)
+                    
+                    Spacer()
+                    
+                    Text(reservation.reservationTimeString)
+                        .font(.pretendardMedium(13))
+                        .foregroundStyle(.tcGray08)
+                }
+            }
+            .frame(height: 74)
         }
-        .padding()
+        .padding(.vertical, 16)
+        .padding(.horizontal, 12)
         .background {
-            RoundedRectangle(cornerRadius: 15)
-                .fill(.tcLightyellow)
-                .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 5)
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.white)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.tcGray03, lineWidth: 1)
+                }
+            
         }
+        .frame(height: 106)
     }
 }
 
@@ -53,5 +82,6 @@ struct ReservationRow: View {
         ReservationRow(reservation: Reservation.sample)
         ReservationRow(reservation: Reservation.sample)
     }
+    .padding()
     .background(Color.tcGray01)
 }
