@@ -10,7 +10,7 @@ import Foundation
 struct DeviceTokenRegistrationResponseData: Codable {
     let statusCode: Int
     let msg: String
-    let data: DeviceTokenRegistrationResponse
+    let data: DeviceTokenRegistrationResponse?
 }
 
 

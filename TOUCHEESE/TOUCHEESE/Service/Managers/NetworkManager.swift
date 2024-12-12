@@ -217,7 +217,7 @@ class NetworkManager {
     @discardableResult
     func postDeviceTokenRegistrationData(
         deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest
-    ) async throws -> DeviceTokenRegistrationResponse {
+    ) async throws -> DeviceTokenRegistrationResponse? {
         let fetchRequest = Network.deviceTokenRegistrationRequest(
             deviceTokenRegistrationRequest
         )
