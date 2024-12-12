@@ -48,5 +48,10 @@ struct ReservationRow: View {
 }
 
 #Preview {
-    ReservationRow(reservation: Reservation.sample)
+    VStack(spacing: 8) {
+        ReservationRow(reservation: Reservation.sample)
+        ReservationRow(reservation: Reservation.sample)
+        ReservationRow(reservation: Reservation.sample)
+    }
+    .background(Color.tcGray01)
 }

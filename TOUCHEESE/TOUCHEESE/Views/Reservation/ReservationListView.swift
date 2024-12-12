@@ -47,6 +47,11 @@ struct ReservationListView: View {
             }
         }
         .padding(.horizontal)
+        .customNavigationBar {
+            Text("예약 내역")
+                .font(.pretendardBold20)
+                .frame(height: 56)
+        }
         .navigationDestination(for: Reservation.self) { reservation in
             ReservationDetailView(
                 viewModel: ReservationDetailViewModel(reservation: reservation)
@@ -55,6 +60,7 @@ struct ReservationListView: View {
         .onAppear {
             tabbarManager.isHidden = false
         }
+        .background(.tcGray01)
     }
     
     private func reservationEmptyView(description: String) -> some View {
