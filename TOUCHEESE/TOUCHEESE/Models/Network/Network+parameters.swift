@@ -66,6 +66,13 @@ extension Network {
             return params
         case .reservationCancelRequest(_, let memberID):
             return ["memberId": memberID]
+        case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest):
+            var params: Parameters = [:]
+            
+            params["memberId"] = deviceTokenRegistrationRequest.memberId
+            params["deviceToken"] = deviceTokenRegistrationRequest.deviceToken
+            
+            return params
         }
     }
 }
