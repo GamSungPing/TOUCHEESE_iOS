@@ -96,6 +96,7 @@ struct TOUCHEESEApp: App {
     @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var tabbarManager = TabbarManager()
     @StateObject private var navigationManager = NavigationManager()
+    @StateObject private var tempNavigationManager = TempNavigationManager()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -110,6 +111,7 @@ struct TOUCHEESEApp: App {
                 .environmentObject(tabbarManager)
                 .environmentObject(reservationListViewModel)
                 .environmentObject(navigationManager)
+                .environmentObject(tempNavigationManager)
         }
     }
 }

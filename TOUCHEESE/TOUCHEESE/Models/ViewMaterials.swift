@@ -7,18 +7,20 @@
 
 import Foundation
 
-struct HomeResultViewMaterial {
+protocol ViewMaterial { }
+
+struct HomeResultViewMaterial: ViewMaterial {
     var concept: StudioConcept
 }
 
-struct StudioDetailViewMaterial {
+struct StudioDetailViewMaterial: ViewMaterial {
     var viewModel: StudioDetailViewModel
 }
 
-struct ProductDetailViewMaterial {
+struct ProductDetailViewMaterial: ViewMaterial {
     var viewModel: ProductDetailViewModel
 }
 
-struct ReservationConfirmViewMaterial {
+struct ReservationConfirmViewMaterial: ViewMaterial {
     var viewModel: TempReservationViewModel
 }
