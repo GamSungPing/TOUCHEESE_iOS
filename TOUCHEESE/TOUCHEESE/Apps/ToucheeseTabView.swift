@@ -9,27 +9,16 @@ import SwiftUI
 
 struct ToucheeseTabView: View {
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
-        TabView(selection: $navigationManager.tabNumber) {
-            NavigationStack(path: $navigationManager.viewStack) {
+        TabView(selection: $tempNavigationManager.tabNumber) {
+            NavigationStack(path: $tempNavigationManager.homePath) {
                 HomeConceptView()
                     .navigationDestination(for: ViewType.self) { viewType in
-                        switch viewType {
-                        case .homeResultView:
-                            ViewFactory().manufactureHomeResultView(material: navigationManager.homeResultViewMaterial!)
-                        case .studioDetailView:
-                            ViewFactory().manufactureStudioDetailView(material: navigationManager.studioDetailViewMaterial!)
-                        case .productDetailView:
-                            ViewFactory().manufactureProductDetailView(material: navigationManager.productDetailViewMaterial!)
-                        case .reservationConfirmView:
-                            ViewFactory().manufactureRservationConfirmView(material: navigationManager.reservationConfirmViewMaterial!)
-                        case .reservationCompleteView:
-                            ViewFactory().manufactureReservationCompeteView()
-                        }
+                        tempNavigationManager.buildView(viewType: viewType)
                     }
             }
-        
             .tint(Color.black)
             .tabItem {
                 Image(systemName: "house")
@@ -63,6 +52,7 @@ struct ToucheeseTabView: View {
         }
     }
 }
+
 
 #Preview {
     ToucheeseTabView()

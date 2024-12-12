@@ -301,6 +301,7 @@ fileprivate struct ReservationView: View {
 fileprivate struct BottomView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
         HStack(spacing: 12) {
@@ -320,7 +321,21 @@ fileprivate struct BottomView: View {
             }
             
             Button {
-                navigationManager.goReservationConfirmView(material: ReservationConfirmViewMaterial(viewModel: TempReservationViewModel(studio: productDetailViewModel.studio, studioDetail: productDetailViewModel.studioDetail, product: productDetailViewModel.product, productDetail: productDetailViewModel.productDetail, productOptions: productDetailViewModel.selectedProductOptionArray, reservationDate: productDetailViewModel.reservationDate ?? Date(), totalPrice: productDetailViewModel.totalPrice)))
+                tempNavigationManager
+                    .appendPath(
+                        viewType: .reservationConfirmView,
+                        viewMaterial: ReservationConfirmViewMaterial(
+                            viewModel: TempReservationViewModel(
+                                studio: productDetailViewModel.studio,
+                                studioDetail: productDetailViewModel.studioDetail,
+                                product: productDetailViewModel.product,
+                                productDetail: productDetailViewModel.productDetail,
+                                productOptions: productDetailViewModel.selectedProductOptionArray,
+                                reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                totalPrice: productDetailViewModel.totalPrice
+                            )
+                        )
+                    )
             } label: {
                 RoundedRectangle(cornerRadius: 20)
                     .frame(maxWidth: .infinity)

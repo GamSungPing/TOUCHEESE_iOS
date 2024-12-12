@@ -185,6 +185,7 @@ fileprivate struct RoundedCornersShape: Shape {
 
 fileprivate struct ProductListView: View {
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
     let studioDetail: StudioDetail
     let studio: Studio
     
@@ -195,7 +196,7 @@ fileprivate struct ProductListView: View {
             
             ForEach(studioDetail.products, id: \.self) { product in
                 Button {
-                    navigationManager.goProductDetailView(material: ProductDetailViewMaterial(viewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product)))
+                    tempNavigationManager.appendPath(viewType: .productDetailView, viewMaterial: ProductDetailViewMaterial(viewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product)))
                 } label: {
                     HStack(spacing: 15) {
                         KFImage(product.imageURL)
