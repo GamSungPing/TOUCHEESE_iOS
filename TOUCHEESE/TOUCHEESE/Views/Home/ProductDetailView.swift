@@ -469,6 +469,7 @@ fileprivate struct CustomCalendar: View {
     
     // 캘린더 상단에 표시되는 기준 날짜
     @Binding var displayDate: Date
+    @State private var displayMonth = Date()
     
     // 현재 날짜의 정보를 가져오는 계산 속성
     private var calendar: Calendar { Calendar.current }
@@ -478,7 +479,7 @@ fileprivate struct CustomCalendar: View {
             HStack {
                 // 이전 달 버튼
                 Button {
-                    displayDate = calendar.date(byAdding: .month, value: -1, to: displayDate) ?? Date()
+                    displayMonth = calendar.date(byAdding: .month, value: -1, to: displayMonth) ?? Date()
                 } label: {
                     Image(systemName: "chevron.left")
                         .frame(width: 24, height: 24)
@@ -489,7 +490,7 @@ fileprivate struct CustomCalendar: View {
                 Spacer()
                 
                 // 현재 표시되는 날짜
-                Text("\(displayDate.toString(format: .yearMonth))")
+                Text("\(displayMonth.toString(format: .yearMonth))")
                     .font(.pretendardSemiBold16)
                     .foregroundStyle(.tcGray10)
                 
@@ -497,7 +498,7 @@ fileprivate struct CustomCalendar: View {
                 
                 // 다음 달 버튼
                 Button {
-                    displayDate = calendar.date(byAdding: .month, value: +1, to: displayDate) ?? Date()
+                    displayMonth = calendar.date(byAdding: .month, value: +1, to: displayMonth) ?? Date()
                 } label: {
                     Image(systemName: "chevron.right")
                         .frame(width: 24, height: 24)
@@ -517,13 +518,13 @@ fileprivate struct CustomCalendar: View {
                 }
                 
                 // 빈칸 표시
-                ForEach(0..<displayDate.firstWeekday - 1, id: \.self) { _ in
+                ForEach(0..<displayMonth.firstWeekday - 1, id: \.self) { _ in
                     Text("")
                         .frame(idealWidth: 50, idealHeight: 40)
                 }
                 
                 // 날짜 표시
-                ForEach(displayDate.daysInMonth, id: \.self) { date in
+                ForEach(displayMonth.daysInMonth, id: \.self) { date in
                     let isHoliday = date.isHoliday(holidays: productDetailViewModel.studioDetail.holidays)
                     
                     let isSelected = calendar.isDate(date, inSameDayAs: displayDate)
@@ -550,7 +551,7 @@ fileprivate struct CustomCalendar: View {
             }
         }
         .onAppear {
-            displayDate = productDetailViewModel.selectedDate
+            displayMonth = productDetailViewModel.selectedDate
         }
     }
 }
