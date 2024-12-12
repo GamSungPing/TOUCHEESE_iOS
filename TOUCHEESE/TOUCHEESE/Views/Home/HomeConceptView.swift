@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeConceptView: View {
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     private let conceptCards: [ConceptCard] = [
         ConceptCard(imageString: "flashIdol", concept: .flashIdol),
@@ -28,7 +29,7 @@ struct HomeConceptView: View {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(conceptCards) { conceptCard in
                     Button {
-                        navigationManager.goHomeResultView(material: HomeResultViewMaterial(concept: conceptCard.concept))
+                        tempNavigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: conceptCard.concept))
                     } label: {
                         conceptCardView(conceptCard)
                     }

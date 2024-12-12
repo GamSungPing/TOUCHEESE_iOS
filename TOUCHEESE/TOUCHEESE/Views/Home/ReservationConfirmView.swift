@@ -10,6 +10,7 @@ import SwiftUI
 struct ReservationConfirmView: View {
     // MARK: - TempDatas
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     @StateObject var tempReservationViewModel: TempReservationViewModel
     
     var body: some View {
@@ -63,7 +64,7 @@ struct ReservationConfirmView: View {
             Button {
                 Task {
                     await tempReservationViewModel.requestStudioReservation()
-                    navigationManager.goReservationCompleteView()
+                    tempNavigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 16)
