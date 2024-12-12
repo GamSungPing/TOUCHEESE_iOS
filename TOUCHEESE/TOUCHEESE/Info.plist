@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -12,14 +14,19 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Black.otf</string>
-		<string>Pretendard-Bold.oft</string>
-		<string>Pretendard-ExtraBold.oft</string>
-		<string>Pretendard-ExtraLight.oft</string>
-		<string>Pretendard-Light.oft</string>
-		<string>Pretendard-Medium.oft</string>
-		<string>Pretendard-Regular.oft</string>
-		<string>Pretendard-SemiBold.oft</string>
-		<string>Pretendard-Thin.oft</string>
+		<string>Pretendard-Bold.otf</string>
+		<string>Pretendard-ExtraBold.otf</string>
+		<string>Pretendard-ExtraLight.otf</string>
+		<string>Pretendard-Light.otf</string>
+		<string>Pretendard-Medium.otf</string>
+		<string>Pretendard-Regular.otf</string>
+		<string>Pretendard-SemiBold.otf</string>
+		<string>Pretendard-Thin.otf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

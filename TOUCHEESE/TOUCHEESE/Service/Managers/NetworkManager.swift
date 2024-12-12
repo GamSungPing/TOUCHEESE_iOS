@@ -16,7 +16,7 @@ class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-        print(url)
+        //print(url)
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -31,7 +31,7 @@ class NetworkManager {
         
         switch response.result {
         case .success(let data):
-            print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+            // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
             let decoder = JSONDecoder()
             do {
                 return try decoder.decode(T.self, from: data)
@@ -210,5 +210,22 @@ class NetworkManager {
         let reservationCancelResponseData = try await performRequest(fetchRequest, decodingType: ReservationCancelResponseData.self)
         
         return reservationCancelResponseData
+    }
+    
+    /// Push Provider에게 Device Token을 등록하는 함수
+    /// - Parameter deviceTokenRegistrationRequest: Device Token 등록에 필요한 정보를 담은 구조체. 구조체의 속성으로 memberId(Int)와 deviceToken(String)이 필요하다.
+    @discardableResult
+    func postDeviceTokenRegistrationData(
+        deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest
+    ) async throws -> DeviceTokenRegistrationResponse? {
+        let fetchRequest = Network.deviceTokenRegistrationRequest(
+            deviceTokenRegistrationRequest
+        )
+        let deviceTokenRegistrationResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: DeviceTokenRegistrationResponseData.self
+        )
+        
+        return deviceTokenRegistrationResponseData.data
     }
 }

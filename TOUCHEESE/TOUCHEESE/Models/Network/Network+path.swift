@@ -57,13 +57,13 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest:
             return ""
         case .reservationListRequest(let memberID, let isPast):
             var path = "/member/\(memberID)"
             
             if isPast {
-                path += "/completed"
+                path += "/completed-cancelled"
             }
             
             return path
