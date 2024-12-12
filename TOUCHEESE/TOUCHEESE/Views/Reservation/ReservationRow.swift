@@ -42,7 +42,7 @@ struct ReservationRow: View {
                     
                     Spacer()
                     
-                    Text(reservation.reservationDate?.toReservationDateType)
+                    Text(reservation.reservationDate.toReservationDateType)
                         .font(.pretendardMedium(13))
                         .foregroundStyle(.tcGray08)
                 }
