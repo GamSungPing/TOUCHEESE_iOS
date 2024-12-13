@@ -21,7 +21,7 @@ struct ReservationListView: View {
                 activeTab: $activeTab
             )
             
-            Spacer(minLength: 0)
+            //Spacer(minLength: 0)
             
             switch activeTab {
             case .reservation:
@@ -67,15 +67,16 @@ struct ReservationListView: View {
         VStack {
             Spacer()
             
-            Image(systemName: "tray")
+            Image(.tcEmptyIcon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100)
-                .foregroundStyle(Color.gray)
+                .frame(width: 84)
+                .foregroundStyle(.tcGray03)
             
             Text("\(description)")
-                .foregroundStyle(Color.gray)
-                .padding(.top, 10)
+                .font(.pretendardMedium(18))
+                .foregroundStyle(.tcGray04)
+                .padding(.top, 18)
             
             Spacer()
         }
@@ -95,9 +96,9 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
         } else {
             ScrollView(.vertical) {
                 Color.clear
-                    .frame(height: 5)
+                    .frame(height: 20)
                 
-                LazyVStack(spacing: 15) {
+                LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         NavigationLink(value: reservation) {
                             ReservationRow(reservation: reservation)

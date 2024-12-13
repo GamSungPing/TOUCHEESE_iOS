@@ -18,7 +18,8 @@ struct ReservationStatusView: View {
         Text(status.description)
             .font(.pretendardMedium(11))
             .foregroundStyle(status.color.font)
-            .padding(6)
+            .padding(.vertical, 5)
+            .padding(.horizontal, 6)
             .background {
                 RoundedRectangle(cornerRadius: 6)
                     .fill(status.color.background)
