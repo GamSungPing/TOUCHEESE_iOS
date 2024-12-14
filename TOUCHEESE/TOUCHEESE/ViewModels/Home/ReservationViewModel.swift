@@ -1,5 +1,5 @@
 //
-//  TempReservationViewModel.swift
+//  ReservationViewModel.swift
 //  TOUCHEESE
 //
 //  Created by Healthy on 12/7/24.
@@ -7,10 +7,8 @@
 
 import Foundation
 
-final class TempReservationViewModel: ObservableObject {
+final class ReservationViewModel: ObservableObject {
     let networkmanager = NetworkManager.shared
-    
-    // MARK: - 받아올 RealDatas
     let studio: Studio
     let studioDetail: StudioDetail
     let product: Product
@@ -18,6 +16,7 @@ final class TempReservationViewModel: ObservableObject {
     let productOptions: [ProductOption]
     let reservationDate: Date
     let totalPrice: Int
+    let addPeopleCount: Int
     
     // MARK: - 멤버 임시 데이터
     let userName = "김마루"
@@ -26,7 +25,29 @@ final class TempReservationViewModel: ObservableObject {
     @Published var userEmail: String = ""
     @Published var userPhone: String = ""
     
-    private(set) var reservationResponseData: ReservationResponse? = nil
+    var isEmailFormat: Bool {
+        userEmail.isEmailFormat
+    }
+    
+    var isPhoneLength: Bool {
+        userPhone.isPhoneLength
+    }
+    
+    var isBottomButtonSelectable: Bool {
+        if userEmail.isEmailFormat || userPhone.isPhoneLength {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var addpeopleTotalPriceString: String {
+        guard let addPeoplePrice = productDetail.addPeoplePrice else { return "error"}
+        return (addPeoplePrice * addPeopleCount).moneyStringFormat
+    }
+    
+    // MARK: - TODO: 추후 응답값에 따라 에러처리 가능
+    private(set) var reservationResponseData: ReservationResponseData? = nil
     
     // MARK: - Init
     init(
@@ -36,7 +57,8 @@ final class TempReservationViewModel: ObservableObject {
         productDetail: ProductDetail,
         productOptions: [ProductOption],
         reservationDate: Date,
-        totalPrice: Int
+        totalPrice: Int,
+        addPeopleCount: Int
     ) {
         self.studio = studio
         self.studioDetail = studioDetail
@@ -45,25 +67,7 @@ final class TempReservationViewModel: ObservableObject {
         self.productOptions = productOptions
         self.reservationDate = reservationDate
         self.totalPrice = totalPrice
-    }
-    
-    /// 사용자가 입력한 정보(이메일, 전화번호)가 유효한지 검사하는 함수
-    func isUserInputInfoValid() -> Bool {
-        var isValid: Bool = true
-        
-        // 사용자가 입력한 이메일이 유효한지 검사
-        if !userEmail.contains("@") {
-            isValid = false
-            return isValid
-        }
-        
-        // 사용자가 입력한 비밀번호가 유효한지 검사
-        if !(userPhone.count == 11) {
-            isValid = false
-            return isValid
-        }
-        
-        return isValid
+        self.addPeopleCount = addPeopleCount
     }
     
     /// 스튜디오 예약 요청을 보내는 함수
@@ -80,8 +84,7 @@ final class TempReservationViewModel: ObservableObject {
         )
                 
         do {
-            reservationResponseData = try await networkmanager.reserveStudio(reservationRequest: reservationRequestType)
-            print("\(reservationResponseData)")
+            reservationResponseData = try await networkmanager.PostStudioReservation(reservationRequest: reservationRequestType)
         } catch {
             print("requestStudioReservation Error: \(error.localizedDescription)")
         }

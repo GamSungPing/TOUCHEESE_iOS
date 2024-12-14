@@ -11,22 +11,22 @@ import Kingfisher
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
     @EnvironmentObject var tempNavigationManager: TempNavigationManager
-    @StateObject var tempReservationViewModel: TempReservationViewModel
+    @StateObject var reservationViewModel: ReservationViewModel
     
     var body: some View {
-        let studioName = tempReservationViewModel.studio.name
-        let address = tempReservationViewModel.studioDetail.address
-        let userName = tempReservationViewModel.userName
-        let productOptions = tempReservationViewModel.productOptions
-        let productName = tempReservationViewModel.product.name
-        let productPriceString = tempReservationViewModel.product.price.moneyStringFormat
-        let totalPriceString = tempReservationViewModel.totalPrice.moneyStringFormat
-        let reservationDateString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoDay)
-        let reservationTimeString = tempReservationViewModel.reservationDate.toString(format: .reservationInfoTime)
-        let addPeopleCount = tempReservationViewModel.addPeopleCount
-        let addPeoplePrice = tempReservationViewModel.productDetail.addPeoplePrice
-        let addpeopleTotalPriceString = tempReservationViewModel.addpeopleTotalPriceString
-        let productImageURL = tempReservationViewModel.product.imageURL
+        let studioName = reservationViewModel.studio.name
+        let address = reservationViewModel.studioDetail.address
+        let userName = reservationViewModel.userName
+        let productOptions = reservationViewModel.productOptions
+        let productName = reservationViewModel.product.name
+        let productPriceString = reservationViewModel.product.price.moneyStringFormat
+        let totalPriceString = reservationViewModel.totalPrice.moneyStringFormat
+        let reservationDateString = reservationViewModel.reservationDate.toString(format: .reservationInfoDay)
+        let reservationTimeString = reservationViewModel.reservationDate.toString(format: .reservationInfoTime)
+        let addPeopleCount = reservationViewModel.addPeopleCount
+        let addPeoplePrice = reservationViewModel.productDetail.addPeoplePrice
+        let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
+        let productImageURL = reservationViewModel.product.imageURL
         
         ScrollView(.vertical) {
             VStack {
@@ -56,10 +56,10 @@ struct ReservationConfirmView: View {
                 
                 // 주문자 정보 입력 뷰
                 UserInfoInputView(
-                    userEmail: $tempReservationViewModel.userEmail,
-                    userPhone: $tempReservationViewModel.userPhone,
-                    isEmailFormat: tempReservationViewModel.isEmailFormat,
-                    isPhoneLength: tempReservationViewModel.isPhoneLength
+                    userEmail: $reservationViewModel.userEmail,
+                    userPhone: $reservationViewModel.userPhone,
+                    isEmailFormat: reservationViewModel.isEmailFormat,
+                    isPhoneLength: reservationViewModel.isPhoneLength
                 )
                 
                 // 주문자 정보 입력 뷰
@@ -76,13 +76,13 @@ struct ReservationConfirmView: View {
                 )
                 .padding(.bottom, 31)
                 
-                BottomButtonView(isSelectable: tempReservationViewModel.isBottomButtonSelectable, title: "예약하기") {
+                BottomButtonView(isSelectable: reservationViewModel.isBottomButtonSelectable, title: "예약하기") {
                     
                     Task {
-                        await tempReservationViewModel.requestStudioReservation()
+                        await reservationViewModel.requestStudioReservation()
                         
                         // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
-                        if tempReservationViewModel.reservationResponseData?.statusCode == 200 {
+                        if reservationViewModel.reservationResponseData?.statusCode == 200 {
                             tempNavigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
                         } else {
                             tempNavigationManager.goFirstView()
@@ -377,7 +377,7 @@ fileprivate struct BottomButtonView: View {
 
 #Preview {
     NavigationStack {
-        ReservationConfirmView(tempReservationViewModel: TempReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
+        ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
             .environmentObject(TempNavigationManager())
     }
 }

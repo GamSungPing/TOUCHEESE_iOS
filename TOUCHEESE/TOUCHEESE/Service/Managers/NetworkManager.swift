@@ -16,7 +16,6 @@ class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-        //print(url)
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -147,9 +146,9 @@ class NetworkManager {
     
     /// 스튜디오에 예약을 요청하는 함수
     /// - Parameter ReservationRequestType: 예약에 필요한 정보를 담은 구조체
-    func reserveStudio(
+    func PostStudioReservation(
         reservationRequest: ReservationRequest
-    ) async throws -> ReservationResponse {
+    ) async throws -> ReservationResponseData {
         let fetchRequest = Network.studioReservationRequest(
             reservationRequest
         )
@@ -159,7 +158,7 @@ class NetworkManager {
             decodingType: ReservationResponseData.self
         )
         
-        return reservationResponseData.data
+        return reservationResponseData
     }
     
     /// 특정 회원의 예약 리스트를 요청하는 함수
