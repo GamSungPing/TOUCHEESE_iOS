@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LeadingTextView: View {
-    let text: Strinßg
+    let text: String
     let font: Font?
     let textColor: Color?
     
