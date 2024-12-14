@@ -25,39 +25,43 @@ struct ReservationDetailView: View {
         ZStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    // TODO: - 공통 뷰 적용 예정
-                    Text("스튜디오 정보")
-                        .fontWeight(.semibold)
-                        .font(.title2)
-                    Text("스튜디오: \(reservation.studioName)")
-                    Text("주소: \(reservationDetail.studioAddress)")
-                        .padding(.bottom)
+                    ReservationInfoView(
+                        studioName: reservation.studioName,
+                        studioAddress: reservationDetail.studioAddress,
+                        reservationStatus: ReservationStatus(rawValue: reservation.reservationStatus) ?? .waiting,
+                        userName: reservationDetail.memberName,
+                        reservationDateString: reservation.reservationDate.toReservationDateType,
+                        reservationTimeString: reservation.reservationTimeString
+                    )
                     
-                    Text("예약 정보")
-                        .fontWeight(.semibold)
-                        .font(.title2)
-                    Text("예약 날짜: \(reservation.reservationDate)")
-                    Text("예약 시간: \(reservation.reservationTimeString)")
-                    Text("예약자 성함: \(reservationDetail.memberName)")
-                    Text("예약자 전화번호: \(reservationDetail.phoneNumber)")
-                    Text("예약자 이메일: \(reservationDetail.memberEmail)")
-                        .padding(.bottom)
+                    // TODO: - 서버에 내용 반영 후 추가 예정
+                    /*
+                    ReservationProductView(
+                        studioName: reservation.studioName,
+                        productName: productName,
+                        productImageURL: productImageURL,
+                        productPriceString: productPriceString,
+                        productOptions: productOptions,
+                        addPeopleCount: addPeopleCount,
+                        addPeoplePrice: addPeoplePrice
+                    )
+                   
+                    DividerView(color: .tcGray01, height: 8)
                     
-                    Text("예약 상품")
-                        .fontWeight(.semibold)
-                        .font(.title2)
-                    ForEach(
-                        reservationDetail.parsedProductOptions.indices,
-                        id: \.self
-                    ) { index in
-                        HStack {
-                            Text("옵션\(index + 1): \(reservationDetail.parsedProductOptions[index].name)")
-                            Text("(\(reservationDetail.parsedProductOptions[index].price)원)")
-                        }
-                    }
-                    Text("결제 예정 금액: \(reservationDetail.totalPrice)원")
+                    // 결제 정보 뷰
+                    PayInfoView(
+                        productName: productName,
+                        productOptions: productOptions,
+                        addPeopleCount: addPeopleCount,
+                        addPeoplePrice: addPeoplePrice,
+                        totalPriceString: totalPriceString,
+                        addPeopleTotalPriceString: addpeopleTotalPriceString
+                    )
+                     */
                     
                     reservationStatusInfoView
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
                     
                     HStack(spacing: 10) {
                         FillBottomButton(isSelectable: true, title: "스튜디오 홈", height: 48) {
@@ -74,11 +78,11 @@ struct ReservationDetailView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 21)
+                    .padding(.horizontal, 16)
                     
                     Color.clear
                         .frame(height: 21)
                 }
-                .padding(.horizontal)
             }
             .customNavigationBar(centerView: {
                 Text("예약 내역")

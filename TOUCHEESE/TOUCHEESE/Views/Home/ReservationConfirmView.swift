@@ -34,6 +34,7 @@ struct ReservationConfirmView: View {
                 ReservationInfoView(
                     studioName: studioName,
                     studioAddress: address,
+                    reservationStatus: .waiting,
                     userName: userName,
                     reservationDateString: reservationDateString,
                     reservationTimeString: reservationTimeString
@@ -99,7 +100,7 @@ struct ReservationConfirmView: View {
     }
 }
 
-fileprivate struct ReservationProductView: View {
+struct ReservationProductView: View {
     let studioName: String
     let productName: String
     let productImageURL: URL
@@ -295,7 +296,7 @@ fileprivate struct UserInfoInputView: View {
     }
 }
 
-fileprivate struct PayInfoView: View {
+struct PayInfoView: View {
     let productName: String
     let productOptions: [ProductOption]
     let addPeopleCount: Int
