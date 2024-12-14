@@ -36,41 +36,39 @@ struct CustomAlertView: View {
                     .font(.pretendardMedium16)
                 
                 switch alertType {
-                    // 버튼의 액션이 필요한 경우
+                // 버튼의 액션이 필요한 경우
                 case .reservationCancel:
                     HStack(spacing: 12) {
-                        // TODO: - 버튼 View 변경 예정
-                        Button {
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "확인",
+                            height: 48
+                        ) {
                             isPresented.toggle()
                             action()
-                        } label: {
-                            Text("확인")
-                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.bordered)
                         
-                        Button {
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "취소",
+                            height: 48,
+                            backgroundColor: .tcGray02
+                        ) {
                             isPresented.toggle()
-                        } label: {
-                            Text("취소")
-                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.bordered)
                     }
-                    // Alert Dismiss만 필요한 경우
+                // Alert Dismiss만 필요한 경우
                 case .reservationCancelComplete:
-                    // TODO: - 버튼 View 변경 예정
-                    Button {
+                    FillBottomButton(
+                        isSelectable: true,
+                        title: "확인",
+                        height: 48
+                    ) {
                         isPresented.toggle()
                         action()
-                    } label: {
-                        Text("확인")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
                 }
             }
-            .frame(width: 305)
             .padding(.horizontal, 16)
             .padding(.top, 32)
             .padding(.bottom, 16)
@@ -78,15 +76,25 @@ struct CustomAlertView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.white)
             )
+            .padding(.horizontal, 44)
         }
     }
 }
 
 #Preview {
-    CustomAlertView(
-        isPresented: .constant(true),
-        alertType: .reservationCancel
-    ) {
-        print("액션")
+    VStack {
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .reservationCancel
+        ) {
+            print("액션")
+        }
+        
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .reservationCancelComplete
+        ) {
+            print("액션")
+        }
     }
 }

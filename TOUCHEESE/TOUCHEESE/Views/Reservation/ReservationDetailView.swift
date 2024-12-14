@@ -59,27 +59,17 @@ struct ReservationDetailView: View {
                     
                     reservationStatusInfoView
                     
-                    // TODO: - 버튼 변경 필요
                     HStack(spacing: 10) {
-                        NavigationLink(value: viewModel.reservedStudio) {
-                            Text("스튜디오 홈")
-                                .padding(10)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color.tcLightgray)
-                                }
+                        FillBottomButton(isSelectable: true, title: "스튜디오 홈", height: 48) {
+                            // TODO: - 네비게이션 Path 추가 필요
                         }
                         
                         if viewModel.isShowingReservationCancelButton() {
-                            Button {
+                            StrokeBottomButton(title: "예약 취소하기") {
                                 withAnimation(.easeOut(duration: 0.15)) {
                                     isShowingReservationCancelAlert.toggle()
                                 }
-                            } label: {
-                                Text("예약 취소하기")
-                                    .foregroundStyle(.red)
                             }
-                            .buttonStyle(.bordered)
                         }
                     }
                     .frame(maxWidth: .infinity)
