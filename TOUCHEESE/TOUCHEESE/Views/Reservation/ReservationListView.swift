@@ -49,8 +49,7 @@ struct ReservationListView: View {
         .padding(.horizontal)
         .customNavigationBar {
             Text("예약 내역")
-                .font(.pretendardBold20)
-                .frame(height: 56)
+                .modifier(NavigationTitleModifier())
         }
         .navigationDestination(for: Reservation.self) { reservation in
             ReservationDetailView(
@@ -94,7 +93,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
         if reservations.isEmpty {
             emptyView
         } else {
-            ScrollView(.vertical) {
+            ScrollView(.vertical, showsIndicators: false) {
                 Color.clear
                     .frame(height: 20)
                 

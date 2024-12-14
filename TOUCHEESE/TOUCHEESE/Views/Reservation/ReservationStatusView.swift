@@ -15,7 +15,7 @@ struct ReservationStatusView: View {
     }
     
     var body: some View {
-        Text(status.description)
+        Text(status.title)
             .font(.pretendardMedium(11))
             .foregroundStyle(status.color.font)
             .padding(.vertical, 5)
