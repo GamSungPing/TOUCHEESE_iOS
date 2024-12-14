@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TrailingTextView: View {
+struct LeadingTextView: View {
     let text: String
     let font: Font?
     let textColor: Color?
@@ -30,5 +30,5 @@ struct TrailingTextView: View {
 }
 
 #Preview {
-    TrailingTextView(text: "예약 정보")
+    LeadingTextView(text: "예약 정보")
 }
