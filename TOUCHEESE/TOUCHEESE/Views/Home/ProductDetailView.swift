@@ -325,14 +325,15 @@ fileprivate struct BottomView: View {
                     .appendPath(
                         viewType: .reservationConfirmView,
                         viewMaterial: ReservationConfirmViewMaterial(
-                            viewModel: TempReservationViewModel(
+                            viewModel: ReservationViewModel(
                                 studio: productDetailViewModel.studio,
                                 studioDetail: productDetailViewModel.studioDetail,
                                 product: productDetailViewModel.product,
                                 productDetail: productDetailViewModel.productDetail,
                                 productOptions: productDetailViewModel.selectedProductOptionArray,
                                 reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                totalPrice: productDetailViewModel.totalPrice
+                                totalPrice: productDetailViewModel.totalPrice,
+                                addPeopleCount: productDetailViewModel.addPeopleCount
                             )
                         )
                     )

@@ -22,5 +22,5 @@ struct ProductDetailViewMaterial: ViewMaterial {
 }
 
 struct ReservationConfirmViewMaterial: ViewMaterial {
-    var viewModel: TempReservationViewModel
+    var viewModel: ReservationViewModel
 }
