@@ -48,7 +48,8 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
             
             content
             
-            Spacer()
+            // CustomNavigationBarModifier 사용 시 레이아웃이 이상해질 경우, 아래 Spacer 주석 풀어보기
+            // Spacer()
         }
         .toolbar(.hidden, for: .navigationBar)
     }

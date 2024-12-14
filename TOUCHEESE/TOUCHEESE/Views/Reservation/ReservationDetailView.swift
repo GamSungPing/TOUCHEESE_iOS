@@ -15,84 +15,107 @@ struct ReservationDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var isShowingReservationCancelAlert = false
+    @State private var isShowingReservationCancelCompleteAlert = false
     @State private var isPushingStudioDetailView = false
     
     var body: some View {
         let reservation = viewModel.reservation
         let reservationDetail = viewModel.reservationDetail
         
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading) {
-                // TODO: - 공통 뷰 적용 예정
-                Text("스튜디오 정보")
-                    .fontWeight(.semibold)
-                    .font(.title2)
-                Text("스튜디오: \(reservation.studioName)")
-                Text("주소: \(reservationDetail.studioAddress)")
-                    .padding(.bottom)
-                
-                Text("예약 정보")
-                    .fontWeight(.semibold)
-                    .font(.title2)
-                Text("예약 날짜: \(reservation.reservationDate)")
-                Text("예약 시간: \(reservation.reservationTimeString)")
-                Text("예약자 성함: \(reservationDetail.memberName)")
-                Text("예약자 전화번호: \(reservationDetail.phoneNumber)")
-                Text("예약자 이메일: \(reservationDetail.memberEmail)")
-                    .padding(.bottom)
-                
-                Text("예약 상품")
-                    .fontWeight(.semibold)
-                    .font(.title2)
-                ForEach(
-                    reservationDetail.parsedProductOptions.indices,
-                    id: \.self
-                ) { index in
-                    HStack {
-                        Text("옵션\(index + 1): \(reservationDetail.parsedProductOptions[index].name)")
-                        Text("(\(reservationDetail.parsedProductOptions[index].price)원)")
-                    }
-                }
-                Text("결제 예정 금액: \(reservationDetail.totalPrice)원")
-                
-                reservationStatusInfoView
-                
-                // TODO: - 버튼 변경 필요
-                HStack(spacing: 10) {
-                    NavigationLink(value: viewModel.reservedStudio) {
-                        Text("스튜디오 홈")
-                            .padding(10)
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color.tcLightgray)
-                            }
-                    }
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    // TODO: - 공통 뷰 적용 예정
+                    Text("스튜디오 정보")
+                        .fontWeight(.semibold)
+                        .font(.title2)
+                    Text("스튜디오: \(reservation.studioName)")
+                    Text("주소: \(reservationDetail.studioAddress)")
+                        .padding(.bottom)
                     
-                    if viewModel.isShowingReservationCancelButton() {
-                        Button {
-                            isShowingReservationCancelAlert.toggle()
-                        } label: {
-                            Text("예약 취소하기")
-                                .foregroundStyle(.red)
+                    Text("예약 정보")
+                        .fontWeight(.semibold)
+                        .font(.title2)
+                    Text("예약 날짜: \(reservation.reservationDate)")
+                    Text("예약 시간: \(reservation.reservationTimeString)")
+                    Text("예약자 성함: \(reservationDetail.memberName)")
+                    Text("예약자 전화번호: \(reservationDetail.phoneNumber)")
+                    Text("예약자 이메일: \(reservationDetail.memberEmail)")
+                        .padding(.bottom)
+                    
+                    Text("예약 상품")
+                        .fontWeight(.semibold)
+                        .font(.title2)
+                    ForEach(
+                        reservationDetail.parsedProductOptions.indices,
+                        id: \.self
+                    ) { index in
+                        HStack {
+                            Text("옵션\(index + 1): \(reservationDetail.parsedProductOptions[index].name)")
+                            Text("(\(reservationDetail.parsedProductOptions[index].price)원)")
                         }
-                        .buttonStyle(.bordered)
+                    }
+                    Text("결제 예정 금액: \(reservationDetail.totalPrice)원")
+                    
+                    reservationStatusInfoView
+                    
+                    // TODO: - 버튼 변경 필요
+                    HStack(spacing: 10) {
+                        NavigationLink(value: viewModel.reservedStudio) {
+                            Text("스튜디오 홈")
+                                .padding(10)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.tcLightgray)
+                                }
+                        }
+                        
+                        if viewModel.isShowingReservationCancelButton() {
+                            Button {
+                                withAnimation(.easeOut(duration: 0.15)) {
+                                    isShowingReservationCancelAlert.toggle()
+                                }
+                            } label: {
+                                Text("예약 취소하기")
+                                    .foregroundStyle(.red)
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 21)
+                }
+                .padding(.horizontal)
+            }
+            .customNavigationBar(centerView: {
+                Text("예약 내역")
+                    .modifier(NavigationTitleModifier())
+            }, leftView: {
+                Button {
+                    dismiss()
+                } label: {
+                    NavigationBackButtonView()
+                }
+            })
+            
+            if isShowingReservationCancelAlert {
+                CustomAlertView(isPresented: $isShowingReservationCancelAlert, alertType: .reservationCancel) {
+                    isShowingReservationCancelCompleteAlert.toggle()
+                    
+                    Task {
+                        await viewModel.cancelReservation(reservationID: reservation.id)
+                        await reservationListViewModel.fetchReservations()
+                        await reservationListViewModel.fetchPastReservations()
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 21)
             }
-            .padding(.horizontal)
+            
+            if isShowingReservationCancelCompleteAlert {
+                CustomAlertView(isPresented: $isShowingReservationCancelCompleteAlert, alertType: .reservationCancelComplete) {
+                    dismiss()
+                }
+            }
         }
-        .customNavigationBar(centerView: {
-            Text("예약 내역")
-                .modifier(NavigationTitleModifier())
-        }, leftView: {
-            Button {
-                dismiss()
-            } label: {
-                NavigationBackButtonView()
-            }
-        })
         .ignoresSafeArea(edges: .bottom)
         .background(.tcGray01)
         .navigationDestination(for: Studio.self) { studio in
@@ -104,26 +127,11 @@ struct ReservationDetailView: View {
         .onAppear {
             tabbarManager.isHidden = true
         }
-        .alert(
-            "예약을 취소하시겠습니까?",
-            isPresented: $isShowingReservationCancelAlert
-        ) {
-            Button(role: .destructive) {
-                dismiss()
-                
-                Task {
-                    await viewModel.cancelReservation(reservationID: reservation.id)
-                    await reservationListViewModel.fetchReservations()
-                }
-            } label: {
-                Text("취소하기")
-            }
-        }
     }
     
     private var reservationStatusInfoView: some View {
         VStack {
-            Text(" ※ 예약 상태는 아래와 같습니다.")
+            Text("※ 예약 상태는 아래와 같습니다.")
                 .foregroundStyle(.tcBlue)
                 .font(.pretendardSemiBold16)
             
