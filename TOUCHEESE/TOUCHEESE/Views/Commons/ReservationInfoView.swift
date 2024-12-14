@@ -17,7 +17,7 @@ struct ReservationInfoView: View {
     var body: some View {
             VStack {
                 VStack {
-                    TrailingTextView(text: "예약 정보")
+                    LeadingTextView(text: "예약 정보")
                         .padding(.bottom, 15)
                     
                     RoundedRectangle(cornerRadius: 8)

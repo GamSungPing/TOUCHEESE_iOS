@@ -90,7 +90,7 @@ final class ReservationViewModel: ObservableObject {
         )
         
         do {
-            reservationResponseData = try await networkmanager.PostStudioReservation(reservationRequest: reservationRequestType)
+            reservationResponseData = try await networkmanager.postStudioReservation(reservationRequest: reservationRequestType)
         } catch {
             print("requestStudioReservation Error: \(error.localizedDescription)")
         }

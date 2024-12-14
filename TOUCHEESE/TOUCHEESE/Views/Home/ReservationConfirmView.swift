@@ -110,7 +110,7 @@ fileprivate struct ReservationProductView: View {
     var body: some View {
         VStack {
             VStack {
-                TrailingTextView(text: "주문 상품")
+                LeadingTextView(text: "주문 상품")
                     .padding(.bottom, 16)
                 
                 HStack {
@@ -127,7 +127,7 @@ fileprivate struct ReservationProductView: View {
                         .padding(.trailing, 12)
                     
                     VStack {
-                        TrailingTextView(text: studioName, font: .pretendardSemiBold16)
+                        LeadingTextView(text: studioName, font: .pretendardSemiBold16)
                             .padding(.bottom, 6)
                         
                         HStack {
@@ -213,7 +213,7 @@ fileprivate struct UserInfoInputView: View {
     
     var body: some View {
         VStack {
-            TrailingTextView(text: "주문자 정보")
+            LeadingTextView(text: "주문자 정보")
                 .padding(.bottom, 16)
             
             VStack {
@@ -240,7 +240,7 @@ fileprivate struct UserInfoInputView: View {
                     HStack {
                         Spacer()
                         
-                        TrailingTextView(
+                        LeadingTextView(
                             text: "이메일 형식에 맞게 입력해주세요.",
                             font: .pretendardRegular14,
                             textColor: .tcTempError
@@ -276,7 +276,7 @@ fileprivate struct UserInfoInputView: View {
                     HStack {
                         Spacer()
                         
-                        TrailingTextView(
+                        LeadingTextView(
                             text: "올바른 전화번호를 입력해주세요.",
                             font: .pretendardRegular14,
                             textColor: .tcTempError
@@ -304,10 +304,10 @@ fileprivate struct PayInfoView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TrailingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
+            LeadingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
                 .padding(.bottom, 16)
             
-            TrailingTextView(text: productName, font: .pretendardSemiBold16, textColor: .tcGray10)
+            LeadingTextView(text: productName, font: .pretendardSemiBold16, textColor: .tcGray10)
                 .padding(.bottom, 8)
             
             VStack {
