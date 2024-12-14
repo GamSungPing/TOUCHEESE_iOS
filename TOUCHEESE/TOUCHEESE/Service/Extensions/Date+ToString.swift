@@ -12,6 +12,9 @@ extension Date {
     func toString(format: DateFormat) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format.rawValue
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.amSymbol = "오전"
+        dateFormatter.pmSymbol = "오후"
         return dateFormatter.string(from: self)
     }
 }
