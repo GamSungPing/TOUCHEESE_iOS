@@ -17,6 +17,7 @@ final class ReservationViewModel: ObservableObject {
     let reservationDate: Date
     let totalPrice: Int
     let addPeopleCount: Int
+    private(set) var isReserving: Bool = false
     
     // MARK: - 멤버 임시 데이터
     let userName = "김마루"
@@ -34,7 +35,7 @@ final class ReservationViewModel: ObservableObject {
     }
     
     var isBottomButtonSelectable: Bool {
-        if userEmail.isEmailFormat || userPhone.isPhoneLength {
+        if userEmail.isEmailFormat || userPhone.isPhoneLength || !isReserving {
             return true
         } else {
             return false
@@ -70,6 +71,11 @@ final class ReservationViewModel: ObservableObject {
         self.addPeopleCount = addPeopleCount
     }
     
+    // MARK: - Logic
+    func setIsReserving() {
+        isReserving = true
+    }
+    
     /// 스튜디오 예약 요청을 보내는 함수
     func requestStudioReservation() async {
         let reservationRequestType = ReservationRequest(
@@ -82,9 +88,9 @@ final class ReservationViewModel: ObservableObject {
             phoneNumber: userPhone,
             email: userEmail
         )
-                
+        
         do {
-            reservationResponseData = try await networkmanager.PostStudioReservation(reservationRequest: reservationRequestType)
+            reservationResponseData = try await networkmanager.postStudioReservation(reservationRequest: reservationRequestType)
         } catch {
             print("requestStudioReservation Error: \(error.localizedDescription)")
         }

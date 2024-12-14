@@ -77,15 +77,18 @@ struct ReservationConfirmView: View {
                 .padding(.bottom, 31)
                 
                 BottomButtonView(isSelectable: reservationViewModel.isBottomButtonSelectable, title: "예약하기") {
-                    
-                    Task {
-                        await reservationViewModel.requestStudioReservation()
+                    if !reservationViewModel.isReserving {
+                        reservationViewModel.setIsReserving()
                         
-                        // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
-                        if reservationViewModel.reservationResponseData?.statusCode == 200 {
-                            tempNavigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
-                        } else {
-                            tempNavigationManager.goFirstView()
+                        Task {
+                            await reservationViewModel.requestStudioReservation()
+                            
+                            // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
+                            if reservationViewModel.reservationResponseData?.statusCode == 200 {
+                                tempNavigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
+                            } else {
+                                tempNavigationManager.goFirstView()
+                            }
                         }
                     }
                 }
@@ -107,7 +110,7 @@ fileprivate struct ReservationProductView: View {
     var body: some View {
         VStack {
             VStack {
-                TrailingTextView(text: "주문 상품")
+                LeadingTextView(text: "주문 상품")
                     .padding(.bottom, 16)
                 
                 HStack {
@@ -124,7 +127,7 @@ fileprivate struct ReservationProductView: View {
                         .padding(.trailing, 12)
                     
                     VStack {
-                        TrailingTextView(text: studioName, font: .pretendardSemiBold16)
+                        LeadingTextView(text: studioName, font: .pretendardSemiBold16)
                             .padding(.bottom, 6)
                         
                         HStack {
@@ -210,7 +213,7 @@ fileprivate struct UserInfoInputView: View {
     
     var body: some View {
         VStack {
-            TrailingTextView(text: "주문자 정보")
+            LeadingTextView(text: "주문자 정보")
                 .padding(.bottom, 16)
             
             VStack {
@@ -226,15 +229,23 @@ fileprivate struct UserInfoInputView: View {
                     
                     Spacer()
                     
-                    TextFieldView(inputValue: $userEmail, placeHolder: "이메일을 입력해주세요.", keyboardType: .emailAddress)
+                    TextFieldView(
+                        inputValue: $userEmail,
+                        placeHolder: "이메일을 입력해주세요.",
+                        keyboardType: .emailAddress
+                    )
                 }
                 
                 if !userEmail.isEmpty && !isEmailFormat {
                     HStack {
                         Spacer()
                         
-                        TrailingTextView(text: "이메일 형식에 맞게 입력해주세요.", font: .pretendardRegular14, textColor: .tcTempError)
-                            .frame(width: 253)
+                        LeadingTextView(
+                            text: "이메일 형식에 맞게 입력해주세요.",
+                            font: .pretendardRegular14,
+                            textColor: .tcTempError
+                        )
+                        .frame(width: 253)
                     }
                 }
             }
@@ -253,15 +264,24 @@ fileprivate struct UserInfoInputView: View {
                     
                     Spacer()
                     
-                    TextFieldView(inputValue: $userPhone, placeHolder: "전화번호를 입력해주세요.", isError: !isUserPhoneCorrect, keyboardType: .numberPad)
+                    TextFieldView(
+                        inputValue: $userPhone,
+                        placeHolder: "전화번호를 입력해주세요.",
+                        isError: !isUserPhoneCorrect,
+                        keyboardType: .numberPad
+                    )
                 }
                 
                 if !userPhone.isEmpty && !isPhoneLength {
                     HStack {
                         Spacer()
                         
-                        TrailingTextView(text: "올바른 전화번호를 입력해주세요.", font: .pretendardRegular14, textColor: .tcTempError)
-                            .frame(width: 253)
+                        LeadingTextView(
+                            text: "올바른 전화번호를 입력해주세요.",
+                            font: .pretendardRegular14,
+                            textColor: .tcTempError
+                        )
+                        .frame(width: 253)
                     }
                 }
             }
@@ -284,10 +304,10 @@ fileprivate struct PayInfoView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TrailingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
+            LeadingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
                 .padding(.bottom, 16)
             
-            TrailingTextView(text: productName, font: .pretendardSemiBold16, textColor: .tcGray10)
+            LeadingTextView(text: productName, font: .pretendardSemiBold16, textColor: .tcGray10)
                 .padding(.bottom, 8)
             
             VStack {
