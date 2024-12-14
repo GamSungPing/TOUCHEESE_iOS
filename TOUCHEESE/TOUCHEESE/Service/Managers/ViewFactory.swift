@@ -26,7 +26,7 @@ struct ViewFactory {
     
     @ViewBuilder
     func manufactureRservationConfirmView(material: ReservationConfirmViewMaterial) -> some View {
-        ReservationConfirmView(tempReservationViewModel: material.viewModel)
+        ReservationConfirmView(reservationViewModel: material.viewModel)
     }
     
     @ViewBuilder
