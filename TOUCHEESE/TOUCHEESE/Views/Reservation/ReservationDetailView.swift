@@ -84,6 +84,9 @@ struct ReservationDetailView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 21)
+                    
+                    Color.clear
+                        .frame(height: 21)
                 }
                 .padding(.horizontal)
             }
