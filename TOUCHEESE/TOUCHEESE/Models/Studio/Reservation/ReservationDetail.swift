@@ -17,23 +17,28 @@ struct ReservationDetailData: Codable {
 struct ReservationDetail: Codable {
     let id: Int
     let studioId: Int
-    let memberName, memberEmail, phoneNumber: String
-    let productOption: String
-    let totalPrice: Int
     let studioAddress: String
+    let memberName, memberEmail, phoneNumber: String
+    let productImage, productName, productOption: String
+    let productPrice, totalPrice: Int
+    let addPeopleCnt: Int
 }
 
 
 extension ReservationDetail {
     static let sample = ReservationDetail(
-        id: 0,
+        id: 1,
         studioId: 1,
+        studioAddress: "스튜디오의 주소",
         memberName: "김마루",
-        memberEmail: "sjybext@naver.com",
+        memberEmail: "toucheese@naver.com",
         phoneNumber: "01011112222",
+        productImage: "https://imgur.com/YJaYOeA.png",
+        productName: "증명사진",
         productOption: "고화질 원본 전체:2000@보정본 추가:10000",
+        productPrice: 100_000,
         totalPrice: 230_000,
-        studioAddress: "서울 강남구 강남대로120길 76 2층"
+        addPeopleCnt: 0
     )
     
     var parsedProductOptions: [ProductOption] {
@@ -51,6 +56,10 @@ extension ReservationDetail {
                 
                 return ProductOption(id: index, name: components[0], price: price)
             }
+    }
+    
+    var productImageURL: URL {
+        URL(string: productImage) ?? .defaultImageURL
     }
 }
 

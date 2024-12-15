@@ -58,8 +58,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        #if DEBUG
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        // print(deviceTokenString)
+        print(deviceTokenString)
+        #endif
         
         // APN 토큰을 명시적으로 FCM 등록 토큰에 매핑하는 코드
         Messaging.messaging().apnsToken = deviceToken
@@ -75,8 +77,10 @@ extension AppDelegate: MessagingDelegate {
         _ messaging: Messaging,
         didReceiveRegistrationToken fcmToken: String?
     ) {
+        #if DEBUG
         let deviceToken:[String: String] = ["token": fcmToken ?? ""]
-        // print("Device token: ", deviceToken)
+        print("Device token: ", deviceToken)
+        #endif
         
         Task {
             try await NetworkManager.shared.postDeviceTokenRegistrationData(
