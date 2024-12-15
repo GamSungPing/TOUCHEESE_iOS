@@ -34,6 +34,7 @@ struct ReservationConfirmView: View {
                 ReservationInfoView(
                     studioName: studioName,
                     studioAddress: address,
+                    reservationStatus: .waiting,
                     userName: userName,
                     reservationDateString: reservationDateString,
                     reservationTimeString: reservationTimeString
@@ -76,7 +77,7 @@ struct ReservationConfirmView: View {
                 )
                 .padding(.bottom, 31)
                 
-                BottomButtonView(isSelectable: reservationViewModel.isBottomButtonSelectable, title: "예약하기") {
+                FillBottomButton(isSelectable: reservationViewModel.isBottomButtonSelectable, title: "예약하기") {
                     if !reservationViewModel.isReserving {
                         reservationViewModel.setIsReserving()
                         
@@ -92,13 +93,14 @@ struct ReservationConfirmView: View {
                         }
                     }
                 }
+                .padding(.horizontal, 16)
             }
         }
         .onAppear(perform : UIApplication.shared.hideKeyboard)
     }
 }
 
-fileprivate struct ReservationProductView: View {
+struct ReservationProductView: View {
     let studioName: String
     let productName: String
     let productImageURL: URL
@@ -294,7 +296,7 @@ fileprivate struct UserInfoInputView: View {
     }
 }
 
-fileprivate struct PayInfoView: View {
+struct PayInfoView: View {
     let productName: String
     let productOptions: [ProductOption]
     let addPeopleCount: Int
@@ -365,33 +367,6 @@ fileprivate struct PayInfoView: View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 16)
-    }
-}
-
-fileprivate struct BottomButtonView: View {
-    var isSelectable: Bool
-    let title: String
-    let action: () -> Void
-    
-    var body: some View {
-        VStack {
-            Button {
-                action()
-            } label: {
-                RoundedRectangle(cornerRadius: 8)
-                    .foregroundStyle(isSelectable ? .tcPrimary06 : .tcGray03)
-                    .frame(height: 64)
-                    .overlay {
-                        Text(title)
-                            .font(.pretendardSemiBold18)
-                            .foregroundStyle(isSelectable ? .tcGray10 : .tcGray05)
-                    }
-                
-            }
-            .disabled(!isSelectable)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-        }
     }
 }
 

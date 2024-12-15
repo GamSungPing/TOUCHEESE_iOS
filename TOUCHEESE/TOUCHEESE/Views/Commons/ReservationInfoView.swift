@@ -10,6 +10,7 @@ import SwiftUI
 struct ReservationInfoView: View {
     let studioName: String
     let studioAddress: String
+    let reservationStatus: ReservationStatus
     let userName: String
     let reservationDateString: String
     let reservationTimeString: String
@@ -33,7 +34,7 @@ struct ReservationInfoView: View {
                                     
                                     Spacer()
                                     
-                                    ReservationStatusBadge(reservationStatus: .waiting)
+                                    ReservationStatusView(reservationStatus)
                                 }
                                 .padding(.bottom, 8)
                                 
@@ -92,5 +93,12 @@ struct ReservationInfoView: View {
 }
 
 #Preview {
-    ReservationInfoView(studioName: "유프스튜디오", studioAddress: "서울 성동구 아차산로 97", userName: "김마루", reservationDateString: "2024년 12월 13일", reservationTimeString: "오후 01:00")
+    ReservationInfoView(
+        studioName: "유프스튜디오",
+        studioAddress: "서울 성동구 아차산로 97",
+        reservationStatus: .waiting,
+        userName: "김마루",
+        reservationDateString: "2024년 12월 13일",
+        reservationTimeString: "오후 01:00"
+    )
 }

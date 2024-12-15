@@ -12,16 +12,19 @@ struct ReservationListView: View {
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
     @State private var selectedIndex = 0
+    @State private var activeTab: SegmentedTab = .reservation
     
     var body: some View {
         VStack {
-            Picker("ReservationList", selection: $selectedIndex) {
-                Text("예약 일정").tag(0)
-                Text("지난 내역").tag(1)
-            }
-            .pickerStyle(.segmented)
+            ReservationCustomSegmentedControl(
+                tabs: SegmentedTab.allCases,
+                activeTab: $activeTab
+            )
             
-            if selectedIndex == 0 {
+            //Spacer(minLength: 0)
+            
+            switch activeTab {
+            case .reservation:
                 FilteredReservationListView(
                     reservations: viewModel.reservations
                 ) {
@@ -31,7 +34,7 @@ struct ReservationListView: View {
                         await viewModel.fetchReservations()
                     }
                 }
-            } else {
+            case .history:
                 FilteredReservationListView(
                     reservations: viewModel.pastReservations
                 ) {
@@ -44,6 +47,10 @@ struct ReservationListView: View {
             }
         }
         .padding(.horizontal)
+        .customNavigationBar {
+            Text("예약 내역")
+                .modifier(NavigationTitleModifier())
+        }
         .navigationDestination(for: Reservation.self) { reservation in
             ReservationDetailView(
                 viewModel: ReservationDetailViewModel(reservation: reservation)
@@ -52,21 +59,23 @@ struct ReservationListView: View {
         .onAppear {
             tabbarManager.isHidden = false
         }
+        .background(.tcGray01)
     }
     
     private func reservationEmptyView(description: String) -> some View {
         VStack {
             Spacer()
             
-            Image(systemName: "tray")
+            Image(.tcEmptyIcon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100)
-                .foregroundStyle(Color.gray)
+                .frame(width: 84)
+                .foregroundStyle(.tcGray03)
             
             Text("\(description)")
-                .foregroundStyle(Color.gray)
-                .padding(.top, 10)
+                .font(.pretendardMedium(18))
+                .foregroundStyle(.tcGray04)
+                .padding(.top, 18)
             
             Spacer()
         }
@@ -84,11 +93,11 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
         if reservations.isEmpty {
             emptyView
         } else {
-            ScrollView(.vertical) {
+            ScrollView(.vertical, showsIndicators: false) {
                 Color.clear
-                    .frame(height: 5)
+                    .frame(height: 20)
                 
-                LazyVStack(spacing: 15) {
+                LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         NavigationLink(value: reservation) {
                             ReservationRow(reservation: reservation)
@@ -103,6 +112,48 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
         }
     }
 }
+
+
+fileprivate struct ReservationCustomSegmentedControl: View {
+    var tabs: [SegmentedTab]
+    @Binding var activeTab: SegmentedTab
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(tabs, id: \.rawValue) { tab in
+                Text(tab.rawValue)
+                    .font(Font.pretendardSemiBold14)
+                    .foregroundStyle(activeTab == tab ? .tcGray10 : .tcGray05)
+                    .animation(.snappy, value: activeTab)
+                    .frame(maxWidth: .infinity, maxHeight: 44)
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        withAnimation(.interactiveSpring()) {
+                            activeTab = tab
+                        }
+                    }
+                    .background(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(activeTab == tab ? .white  : .tcGray02)
+                    }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.tcGray02)
+        }
+    }
+}
+
+
+fileprivate enum SegmentedTab: String, CaseIterable {
+    case reservation = "예약 일정"
+    case history = "이전 내역"
+}
+
 
 #Preview {
     ReservationListView()

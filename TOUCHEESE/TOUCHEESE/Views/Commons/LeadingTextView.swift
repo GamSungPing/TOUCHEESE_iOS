@@ -21,7 +21,7 @@ struct LeadingTextView: View {
     var body: some View {
         HStack {
             Text(text)
-                .font(font ?? .pretendardBold18)
+                .font(font ?? .pretendardSemiBold18)
                 .foregroundStyle(textColor ?? .tcGray10)
 
             Spacer()
