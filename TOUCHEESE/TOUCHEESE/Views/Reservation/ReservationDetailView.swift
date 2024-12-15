@@ -25,6 +25,7 @@ struct ReservationDetailView: View {
         ZStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
+                    // 예약 정보
                     ReservationInfoView(
                         studioName: reservation.studioName,
                         studioAddress: reservationDetail.studioAddress,
@@ -34,37 +35,43 @@ struct ReservationDetailView: View {
                         reservationTimeString: reservation.reservationTimeString
                     )
                     
-                    // TODO: - 서버에 내용 반영 후 추가 예정
-                    /*
+                    // 주문 상품
                     ReservationProductView(
                         studioName: reservation.studioName,
-                        productName: productName,
-                        productImageURL: productImageURL,
-                        productPriceString: productPriceString,
-                        productOptions: productOptions,
-                        addPeopleCount: addPeopleCount,
-                        addPeoplePrice: addPeoplePrice
+                        productName: reservationDetail.productName,
+                        productImageURL: reservationDetail.productImageURL,
+                        productPriceString: reservationDetail.productPrice.moneyStringFormat,
+                        productOptions: reservationDetail.parsedProductOptions,
+                        addPeopleCount: reservationDetail.addPeopleCnt,
+                        addPeoplePrice: nil
                     )
-                   
-                    DividerView(color: .tcGray01, height: 8)
                     
-                    // 결제 정보 뷰
-                    PayInfoView(
-                        productName: productName,
-                        productOptions: productOptions,
-                        addPeopleCount: addPeopleCount,
-                        addPeoplePrice: addPeoplePrice,
-                        totalPriceString: totalPriceString,
-                        addPeopleTotalPriceString: addpeopleTotalPriceString
+                    // 예약자 정보
+                    userInfoView(
+                        userEmail: reservationDetail.memberEmail,
+                        userPhoneNumber: reservationDetail.phoneNumber.phoneNumberString
                     )
-                     */
+                    
+                    // 결제 정보
+                    PayInfoView(
+                        productName: reservationDetail.productName,
+                        productOptions: reservationDetail.parsedProductOptions,
+                        addPeopleCount: reservationDetail.addPeopleCnt,
+                        addPeoplePrice: nil,
+                        totalPriceString: reservationDetail.totalPrice.moneyStringFormat,
+                        addPeopleTotalPriceString: ""
+                    )
                     
                     reservationStatusInfoView
                         .padding(.top, 8)
                         .padding(.horizontal, 16)
                     
                     HStack(spacing: 10) {
-                        FillBottomButton(isSelectable: true, title: "스튜디오 홈", height: 48) {
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "스튜디오 홈",
+                            height: 48
+                        ) {
                             // TODO: - 네비게이션 Path 추가 필요
                         }
                         
@@ -96,7 +103,10 @@ struct ReservationDetailView: View {
             })
             
             if isShowingReservationCancelAlert {
-                CustomAlertView(isPresented: $isShowingReservationCancelAlert, alertType: .reservationCancel) {
+                CustomAlertView(
+                    isPresented: $isShowingReservationCancelAlert,
+                    alertType: .reservationCancel
+                ) {
                     isShowingReservationCancelCompleteAlert.toggle()
                     
                     Task {
@@ -108,7 +118,10 @@ struct ReservationDetailView: View {
             }
             
             if isShowingReservationCancelCompleteAlert {
-                CustomAlertView(isPresented: $isShowingReservationCancelCompleteAlert, alertType: .reservationCancelComplete) {
+                CustomAlertView(
+                    isPresented: $isShowingReservationCancelCompleteAlert,
+                    alertType: .reservationCancelComplete
+                ) {
                     dismiss()
                 }
             }
@@ -157,6 +170,45 @@ struct ReservationDetailView: View {
                         .stroke(.tcGray03, lineWidth: 0.92)
                 }
         }
+    }
+    
+    private func userInfoView(
+        userEmail: String,
+        userPhoneNumber: String
+    ) -> some View {
+        VStack {
+            LeadingTextView(text: "주문자 정보")
+                .padding(.bottom, 16)
+            
+            VStack(spacing: 8) {
+                HStack {
+                    Text("이메일")
+                        .font(.pretendardRegular14)
+                        .foregroundStyle(.tcGray06)
+                    
+                    Spacer()
+                    
+                    Text(userEmail)
+                        .font(.pretendardSemiBold14)
+                        .foregroundStyle(.tcGray09)
+                }
+                
+                HStack {
+                    Text("휴대폰")
+                        .font(.pretendardRegular14)
+                        .foregroundStyle(.tcGray06)
+                    
+                    Spacer()
+                    
+                    Text(userPhoneNumber)
+                        .font(.pretendardSemiBold14)
+                        .foregroundStyle(.tcGray09)
+                }
+            }
+        }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 16)
+        .background(.white)
     }
 }
 

@@ -191,8 +191,9 @@ struct ReservationProductView: View {
                 }
             }
             .padding(.vertical, 24)
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)
+        .background(.white)
     }
 }
 
@@ -367,6 +368,7 @@ struct PayInfoView: View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 16)
+        .background(.white)
     }
 }
 
