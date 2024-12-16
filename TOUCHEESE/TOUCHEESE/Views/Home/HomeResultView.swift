@@ -99,7 +99,7 @@ struct HomeResultView: View {
     }
     
     private var filtersView: some View {
-        HStack {
+        HStack(spacing: 6) {
             Button {
                 toggleFilter(&isShowingPriceFilterOptionView)
             } label: {
@@ -108,6 +108,7 @@ struct HomeResultView: View {
                     isFiltering: studioListViewModel.isFilteringByPrice
                 )
             }
+            .buttonStyle(.plain)
             
             Button {
                 toggleFilter(&isShowingRegionFilterOptionView)
@@ -117,6 +118,7 @@ struct HomeResultView: View {
                     isFiltering: studioListViewModel.isFilteringByRegion
                 )
             }
+            .buttonStyle(.plain)
             
             Button {
                 studioListViewModel.toggleStudioRatingFilter()
@@ -129,6 +131,7 @@ struct HomeResultView: View {
                     isFiltering: studioListViewModel.isFilteringByRating
                 )
             }
+            .buttonStyle(.plain)
             
             Spacer()
             
@@ -145,6 +148,7 @@ struct HomeResultView: View {
                         .frame(height: 20)
                         .foregroundStyle(Color.black)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
