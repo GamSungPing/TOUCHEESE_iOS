@@ -11,6 +11,7 @@ import Kingfisher
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
+    @Environment(\.dismiss) private var dismiss
     @StateObject var reservationViewModel: ReservationViewModel
     
     var body: some View {
@@ -52,7 +53,7 @@ struct ReservationConfirmView: View {
                     addPeoplePrice: addPeoplePrice
                 )
                 
-               
+                
                 DividerView(color: .tcGray01, height: 8)
                 
                 // 주문자 정보 입력 뷰
@@ -97,6 +98,23 @@ struct ReservationConfirmView: View {
             }
         }
         .onAppear(perform : UIApplication.shared.hideKeyboard)
+        .customNavigationBar(
+            backgroundColor: .white,
+            centerView: {
+                Text(
+                    "주문/예약"
+                )
+                .modifier(
+                    NavigationTitleModifier()
+                )
+            },
+            leftView: {
+            Button {
+                dismiss()
+            } label: {
+                NavigationBackButtonView()
+            }
+        })
     }
 }
 
