@@ -17,7 +17,7 @@ struct FillBottomButton: View {
     init(
         isSelectable: Bool,
         title: String,
-        height: CGFloat = 64,
+        height: CGFloat = 48,
         backgroundColor: Color = .tcPrimary06,
         action: @escaping () -> Void
     ) {

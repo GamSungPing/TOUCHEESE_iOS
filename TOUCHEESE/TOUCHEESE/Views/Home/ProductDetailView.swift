@@ -461,7 +461,7 @@ fileprivate struct CalendarView: View {
                         isCalendarPresented = false
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
-                            .frame(height: 64)
+                            .frame(height: 48)
                             .foregroundStyle(displayTime == "" ? .tcGray03 : .tcPrimary06)
                             .overlay {
                                 Text("날짜 선택")
