@@ -8,9 +8,13 @@
 import Foundation
 
 enum ViewType: Hashable {
+    // home
     case homeResultView
     case studioDetailView
     case productDetailView
     case reservationConfirmView
     case reservationCompleteView
+    
+    // reservation
+    case reservationDetailView
 }

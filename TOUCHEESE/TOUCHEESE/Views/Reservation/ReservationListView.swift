@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReservationListView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
+    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
     @State private var selectedIndex = 0
@@ -20,8 +21,6 @@ struct ReservationListView: View {
                 tabs: SegmentedTab.allCases,
                 activeTab: $activeTab
             )
-            
-            //Spacer(minLength: 0)
             
             switch activeTab {
             case .reservation:
@@ -50,11 +49,6 @@ struct ReservationListView: View {
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
-        }
-        .navigationDestination(for: Reservation.self) { reservation in
-            ReservationDetailView(
-                viewModel: ReservationDetailViewModel(reservation: reservation)
-            )
         }
         .onAppear {
             tabbarManager.isHidden = false
@@ -85,6 +79,8 @@ struct ReservationListView: View {
 
 
 fileprivate struct FilteredReservationListView<Content>: View where Content: View {
+    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
+    
     var reservations: [Reservation]
     @ViewBuilder let emptyView: Content
     let refreshAction: () -> Void
@@ -99,7 +95,9 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                 
                 LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
-                        NavigationLink(value: reservation) {
+                        Button {
+                            tempNavigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
+                        } label: {
                             ReservationRow(reservation: reservation)
                         }
                     }

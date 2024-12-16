@@ -26,8 +26,11 @@ struct ToucheeseTabView: View {
             }
             .tag(0)
             
-            NavigationStack {
+            NavigationStack(path: $tempNavigationManager.reservationPath) {
                 ReservationListView()
+                    .navigationDestination(for: ViewType.self) { viewType in
+                        tempNavigationManager.buildView(viewType: viewType)
+                    }
             }
             .tint(Color.black)
             .tabItem {

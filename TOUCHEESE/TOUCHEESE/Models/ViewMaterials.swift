@@ -24,3 +24,7 @@ struct ProductDetailViewMaterial: ViewMaterial {
 struct ReservationConfirmViewMaterial: ViewMaterial {
     var viewModel: ReservationViewModel
 }
+
+struct ReservationDetailViewMaterial: ViewMaterial {
+    var viewModel: ReservationDetailViewModel
+}

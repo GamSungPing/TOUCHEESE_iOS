@@ -10,12 +10,15 @@ import SwiftUI
 
 class TempNavigationManager: ObservableObject {
     @Published var homePath: [ViewType] = []
+    @Published var reservationPath: [ViewType] = []
     @Published var tabNumber: Int = 0
     
     private(set) var homeResultViewMaterial: HomeResultViewMaterial?
     private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
     private(set) var productDetailViewMaterial: ProductDetailViewMaterial?
     private(set) var reservationConfirmViewMaterial: ReservationConfirmViewMaterial?
+    
+    private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
     func goFirstView() {
         homePath.removeAll()
@@ -39,6 +42,9 @@ class TempNavigationManager: ObservableObject {
             ReservationConfirmView(reservationViewModel: self.reservationConfirmViewMaterial!.viewModel)
         case .reservationCompleteView:
             ReservationCompleteView()
+            
+        case .reservationDetailView:
+            ReservationDetailView(viewModel: self.reservationDetailViewMaterial!.viewModel)
         }
     }
     
@@ -49,15 +55,35 @@ class TempNavigationManager: ObservableObject {
             homePath.append(.homeResultView)
         case .studioDetailView:
             self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
-            homePath.append(.studioDetailView)
+            switch tabNumber {
+            case 0: homePath.append(.studioDetailView)
+            case 1: reservationPath.append(.studioDetailView)
+            default:
+                break
+            }
         case .productDetailView:
             self.productDetailViewMaterial = viewMaterial as? ProductDetailViewMaterial
-            homePath.append(.productDetailView)
+            switch tabNumber {
+            case 0: homePath.append(.productDetailView)
+            case 1: reservationPath.append(.productDetailView)
+            default: break
+            }
         case .reservationConfirmView:
             self.reservationConfirmViewMaterial = viewMaterial as? ReservationConfirmViewMaterial
-            homePath.append(.reservationConfirmView)
+            switch tabNumber {
+            case 0: homePath.append(.reservationConfirmView)
+            case 1: reservationPath.append(.reservationConfirmView)
+            default: break
+            }
         case .reservationCompleteView:
-            homePath.append(.reservationCompleteView)
+            switch tabNumber {
+            case 0: homePath.append(.reservationCompleteView)
+            case 1: reservationPath.append(.reservationCompleteView)
+            default: break
+            }
+        case .reservationDetailView:
+            self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
+            reservationPath.append(.reservationDetailView)
         }
     }
 }
