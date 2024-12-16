@@ -86,7 +86,8 @@ final class ReservationViewModel: ObservableObject {
             productOptions: productOptions,
             totalPrice: totalPrice,
             phoneNumber: userPhone,
-            email: userEmail
+            email: userEmail,
+            addPeopleCnt: addPeopleCount
         )
         
         do {
