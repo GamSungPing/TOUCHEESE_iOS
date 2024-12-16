@@ -63,17 +63,12 @@ struct ReservationDetailView: View {
                         addPeopleTotalPriceString: ""
                     )
                     
-                    reservationStatusInfoView
-                        .padding(.top, 8)
-                        .padding(.horizontal, 16)
-                    
                     HStack(spacing: 10) {
                         FillBottomButton(
                             isSelectable: true,
                             title: "스튜디오 홈",
                             height: 48
                         ) {
-                            // TODO: - 네비게이션 Path 추가 필요
                             navigationManager.appendPath(
                                 viewType: .studioDetailView,
                                 viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio))
@@ -92,8 +87,11 @@ struct ReservationDetailView: View {
                     .padding(.vertical, 21)
                     .padding(.horizontal, 16)
                     
+                    reservationStatusInfoView
+                        .padding(.horizontal, 16)
+                    
                     Color.clear
-                        .frame(height: 21)
+                        .frame(height: 50)
                 }
             }
             .customNavigationBar(centerView: {
@@ -133,11 +131,6 @@ struct ReservationDetailView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .background(.tcGray01)
-        //        .navigationDestination(for: Studio.self) { studio in
-        //            StudioDetailView(
-        //                viewModel: StudioDetailViewModel(studio: studio)
-        //            )
-        //        }
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
             tabbarManager.isHidden = true
