@@ -17,6 +17,7 @@ struct ReservationRequest {
     let totalPrice: Int
     let phoneNumber: String
     let email: String
+    let addPeopleCnt: Int
 
     var reservationDateString: String {
         reservationDate.toString(format: .requestYearMonthDay)
@@ -42,7 +43,8 @@ struct ReservationRequest {
         productOptions: [ProductOption],
         totalPrice: Int,
         phoneNumber: String,
-        email: String
+        email: String,
+        addPeopleCnt: Int
     ) {
         self.memberId = memberId
         self.studioId = studioId
@@ -52,6 +54,7 @@ struct ReservationRequest {
         self.totalPrice = totalPrice
         self.phoneNumber = phoneNumber
         self.email = email
+        self.addPeopleCnt = addPeopleCnt
     }
 }
 
