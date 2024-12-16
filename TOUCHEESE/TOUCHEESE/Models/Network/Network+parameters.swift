@@ -48,8 +48,32 @@ extension Network {
             if let page { params["page"] = page }
             
             return params
-        case .studioDetailRequest, .reviewDetailRequest, .productDetailRequest:
+        case .studioDetailRequest, .studioRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest:
             return [:]
+        case .studioReservationRequest(let reservationRequestType):
+            var params: Parameters = [:]
+            
+            params["memberId"] = reservationRequestType.memberId
+            params["studioId"] = reservationRequestType.studioId
+            params["reservationDate"] = reservationRequestType.reservationDateString
+            params["reservationTime"] = reservationRequestType.reservationTimeString
+            params["productId"] = reservationRequestType.productId
+            params["productOption"] = reservationRequestType.productOptionString
+            params["totalPrice"] = reservationRequestType.totalPrice
+            params["phoneNumber"] = reservationRequestType.phoneNumberString
+            params["email"] = reservationRequestType.email
+            params["addPeopleCnt"] = reservationRequestType.addPeopleCnt
+            
+            return params
+        case .reservationCancelRequest(_, let memberID):
+            return ["memberId": memberID]
+        case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest):
+            var params: Parameters = [:]
+            
+            params["memberId"] = deviceTokenRegistrationRequest.memberId
+            params["deviceToken"] = deviceTokenRegistrationRequest.deviceToken
+            
+            return params
         }
     }
 }

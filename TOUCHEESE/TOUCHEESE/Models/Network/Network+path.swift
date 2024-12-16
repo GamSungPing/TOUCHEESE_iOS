@@ -43,6 +43,8 @@ extension Network {
             return path
         case .studioDetailRequest(let id):
             return "/detail/\(id)"
+        case .studioRequest(let id):
+            return "/\(id)"
             
         case .reviewListRequest(let studioID, let productID, _):
             var path = "/\(studioID)"
@@ -55,6 +57,20 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
+        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+            return ""
+        case .reservationListRequest(let memberID, let isPast):
+            var path = "/member/\(memberID)"
+            
+            if isPast {
+                path += "/completed-cancelled"
+            }
+            
+            return path
+        case .reservationDetailRequest(let id):
+            return "/\(id)"
+        case .reservationCancelRequest(let reservationID, _):
+            return "/\(reservationID)/cancel"
         }
     }
 }

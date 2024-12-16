@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct ToucheeseTabView: View {
-    @State var initPageNumber: Int = 0
+    @EnvironmentObject var navigationManager: NavigationManager
     
     var body: some View {
-        TabView(selection: $initPageNumber) {
-            NavigationStack {
+        TabView(selection: $navigationManager.tabNumber) {
+            NavigationStack(path: $navigationManager.homePath) {
                 HomeConceptView()
+                    .navigationDestination(for: ViewType.self) { viewType in
+                        navigationManager.buildView(viewType: viewType)
+                    }
             }
             .tint(Color.black)
             .tabItem {
@@ -22,12 +25,18 @@ struct ToucheeseTabView: View {
             }
             .tag(0)
             
-            TestView()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("예약일정")
-                }
-                .tag(1)
+            NavigationStack(path: $navigationManager.reservationPath) {
+                ReservationListView()
+                    .navigationDestination(for: ViewType.self) { viewType in
+                        navigationManager.buildView(viewType: viewType)
+                    }
+            }
+            .tint(Color.black)
+            .tabItem {
+                Image(systemName: "calendar.badge.clock")
+                Text("예약일정")
+            }
+            .tag(1)
             
             TestView2()
                 .tabItem {
@@ -46,6 +55,8 @@ struct ToucheeseTabView: View {
     }
 }
 
+
 #Preview {
     ToucheeseTabView()
+        .environmentObject(NavigationManager())
 }

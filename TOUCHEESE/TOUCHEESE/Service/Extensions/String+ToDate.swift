@@ -21,4 +21,31 @@ extension String {
         formatter.timeZone = TimeZone.current // 로컬 시간대로 간주
         return formatter.date(from: self)
     }
+//    func toReservationDateType(_ dateString: String) -> String {
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        
+//        if let date = dateFormatter.date(from: dateString) {
+//            dateFormatter.dateFormat = "yyyy년 M월 d일"
+//            let outputDateString = dateFormatter.string(from: date)
+//            
+//            return outputDateString
+//        } else {
+//            return ""
+//        }
+//    }
+    
+    var toReservationDateType: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        if let date = dateFormatter.date(from: self) {
+            dateFormatter.dateFormat = "yyyy년 M월 d일"
+            let outputDateString = dateFormatter.string(from: date)
+            
+            return outputDateString
+        } else {
+            return ""
+        }
+    }
 }

@@ -23,7 +23,8 @@ final class ProductDetailViewModel: ObservableObject {
     @Published private(set) var totalPrice: Int = 0
     
     // 영업 시간 배열
-    @Published private(set) var businessHour: [String] = []
+    @Published private(set) var businessHourAM: [String] = []
+    @Published private(set) var businessHourPM: [String] = []
     
     // 추가 인원 변수
     @Published private(set) var addPeopleCount: Int = 0 {
@@ -31,7 +32,7 @@ final class ProductDetailViewModel: ObservableObject {
             calTotalPrice()
         }
     }
-
+  
     // 선택된 옵션의 ID Set
     private var selectedOptionIDArray: Set<Int> = [] {
         didSet {
@@ -40,14 +41,15 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     // 선택된 시간
-    private(set) var selectedTime: Date? {
-        didSet {
-            calReservationDate()
-        }
-    }
+    @Published var selectedTime: Date?
     
     // 선택된 날짜
-    private(set) var selectedDate: Date = Date()
+    @Published var selectedDate: Date = Date()
+    
+    // 선택된 옵션 배열
+    var selectedProductOptionArray: [ProductOption] {
+        productDetail.parsedProductOptions.filter { selectedOptionIDArray.contains($0.id) }
+    }
     
     // MARK: - Init
     init(studio: Studio, studioDetails: StudioDetail, product: Product) {
@@ -131,27 +133,69 @@ final class ProductDetailViewModel: ObservableObject {
         self.totalPrice = totalPrice
     }
     
-    /// 영업 시간을 계산하는 함수
     private func calBusinessHour() {
         let calendar = Calendar.current
         
         guard let openTime = studioDetail.openTimeString.toDate(dateFormat: .hourMinute) else { return }
-        guard let closeTime = studioDetail.closeTimeString.toDate(dateFormat: .hourMinute) else { return }
-        guard let hourDifference = calendar.dateComponents([.hour], from: openTime, to: closeTime).hour else { return }
         
-        var times: [String] = []
+        // closeTime 처리: "24:00:00", "24:30:00" 등을 변환
+        var closeTime: Date
+        if studioDetail.closeTimeString.hasPrefix("24:") {
+            // "24:"을 "00:"으로 변경하고 다음 날로 계산
+            let adjustedTimeString = studioDetail.closeTimeString.replacingOccurrences(of: "24:", with: "00:")
+            if let adjustedCloseTime = adjustedTimeString.toDate(dateFormat: .hourMinute),
+               let nextDay = calendar.date(byAdding: .day, value: 1, to: openTime) {
+                closeTime = calendar.date(bySettingHour: calendar.component(.hour, from: adjustedCloseTime),
+                                          minute: calendar.component(.minute, from: adjustedCloseTime),
+                                          second: 0,
+                                          of: nextDay) ?? adjustedCloseTime
+            } else {
+                return
+            }
+        } else {
+            guard let parsedCloseTime = studioDetail.closeTimeString.toDate(dateFormat: .hourMinute) else { return }
+            closeTime = parsedCloseTime
+        }
         
-        for index in 0...(hourDifference - 1) {
-            if let nextTime = calendar.date(byAdding: .hour, value: index, to: openTime) {
-                times.append(DateFormat.hourMinute.toDateFormatter().string(from: nextTime))
+        var amTimes: [String] = []
+        var pmTimes: [String] = []
+        var currentTime = openTime
+        
+        while currentTime < closeTime {
+            // 종료 시간이 1시간 미만으로 남았는지 확인
+            if let remainingMinutes = calendar.dateComponents([.minute], from: currentTime, to: closeTime).minute, remainingMinutes < 60 {
+                break
+            }
+            
+            // 현재 시간을 포맷에 맞게 변환
+            let timeString = DateFormat.hourMinute.toDateFormatter().string(from: currentTime)
+            
+            // 오전/오후로 나누기
+            let hour = calendar.component(.hour, from: currentTime)
+            if hour < 12 {
+                amTimes.append(timeString)
+            } else {
+                pmTimes.append(timeString)
+            }
+            
+            // 1시간씩 추가
+            if let nextTime = calendar.date(byAdding: .hour, value: 1, to: currentTime) {
+                currentTime = nextTime
+            } else {
+                break
             }
         }
         
-        businessHour = times
+        // 결과 할당
+        businessHourAM = amTimes
+        businessHourPM = pmTimes
     }
+
+
+
     
     /// 총 예약 가격을 계산하는 함수
-    private func calReservationDate() {
+    func calReservationDate() {
         guard let selectedTime else { return }
         
         let calendar = Calendar.current
@@ -165,7 +209,7 @@ final class ProductDetailViewModel: ObservableObject {
         reservationDate.day = dateComponents.day
         reservationDate.hour = timeComponents.hour
         reservationDate.minute = timeComponents.minute
-                
+      
         self.reservationDate = calendar.date(from: reservationDate)
     }
 }

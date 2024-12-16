@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeConceptView: View {
+    @EnvironmentObject var navigationManager: NavigationManager
+    
     private let conceptCards: [ConceptCard] = [
         ConceptCard(imageString: "flashIdol", concept: .flashIdol),
         ConceptCard(imageString: "liveliness", concept: .liveliness),
@@ -25,7 +27,9 @@ struct HomeConceptView: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(conceptCards) { conceptCard in
-                    NavigationLink(value: conceptCard) {
+                    Button {
+                        navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: conceptCard.concept))
+                    } label: {
                         conceptCardView(conceptCard)
                     }
                 }
@@ -33,9 +37,6 @@ struct HomeConceptView: View {
             .padding(.vertical, 5)
         }
         .background(.tcLightyellow)
-        .navigationDestination(for: ConceptCard.self) { conceptCard in
-            HomeResultView(concept: conceptCard.concept)
-        }
         .navigationTitle("TOUCHEESE")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -76,4 +77,5 @@ fileprivate struct ConceptCard: Identifiable, Hashable {
         HomeConceptView()
     }
     .environmentObject(StudioListViewModel())
+    .environmentObject(NavigationManager())
 }

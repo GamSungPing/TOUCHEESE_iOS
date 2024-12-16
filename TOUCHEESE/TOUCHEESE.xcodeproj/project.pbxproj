@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD321362D02D40F00C513F3 /* FirebaseCore */; };
 		3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8DE2CE47321000C30B7 /* Alamofire */; };
 		3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8E12CE47330000C30B7 /* Kingfisher */; };
+		42C9AD542D0805BD00241597 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 42C9AD532D0805BD00241597 /* FirebaseAnalytics */; };
+		42C9AD562D0805BD00241597 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 42C9AD552D0805BD00241597 /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +46,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */,
+				3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */,
+				42C9AD562D0805BD00241597 /* FirebaseMessaging in Frameworks */,
+				42C9AD542D0805BD00241597 /* FirebaseAnalytics in Frameworks */,
 				3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,10 +56,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3BD321352D02D40F00C513F3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3BFBE87C2CE47261000C30B7 = {
 			isa = PBXGroup;
 			children = (
 				3BFBE8872CE47261000C30B7 /* TOUCHEESE */,
+				3BD321352D02D40F00C513F3 /* Frameworks */,
 				3BFBE8862CE47261000C30B7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +102,9 @@
 			packageProductDependencies = (
 				3BFBE8DE2CE47321000C30B7 /* Alamofire */,
 				3BFBE8E12CE47330000C30B7 /* Kingfisher */,
+				3BD321362D02D40F00C513F3 /* FirebaseCore */,
+				42C9AD532D0805BD00241597 /* FirebaseAnalytics */,
+				42C9AD552D0805BD00241597 /* FirebaseMessaging */,
 			);
 			productName = TOUCHEESE;
 			productReference = 3BFBE8852CE47261000C30B7 /* TOUCHEESE.app */;
@@ -120,6 +137,7 @@
 			packageReferences = (
 				3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				3BFBE8E02CE47330000C30B7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3BFBE8862CE47261000C30B7 /* Products */;
@@ -278,6 +296,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TOUCHEESE/TOUCHEESE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TOUCHEESE/Preview Content\"";
@@ -285,6 +304,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TOUCHEESE/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -315,6 +335,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TOUCHEESE/TOUCHEESE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TOUCHEESE/Preview Content\"";
@@ -322,6 +343,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TOUCHEESE/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -369,6 +391,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.6.0;
+			};
+		};
 		3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -388,6 +418,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3BD321362D02D40F00C513F3 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
 		3BFBE8DE2CE47321000C30B7 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */;
@@ -397,6 +432,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3BFBE8E02CE47330000C30B7 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		42C9AD532D0805BD00241597 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		42C9AD552D0805BD00241597 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

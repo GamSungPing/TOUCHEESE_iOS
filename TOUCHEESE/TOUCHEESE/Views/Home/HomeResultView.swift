@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeResultView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var navigationManager: NavigationManager
     
     let concept: StudioConcept
     
@@ -29,7 +30,9 @@ struct HomeResultView: View {
                     ScrollView {
                         LazyVStack(spacing: 20) {
                             ForEach(studioListViewModel.studios) { studio in
-                                NavigationLink(value: studio) {
+                                Button {
+                                    navigationManager.appendPath(viewType: .studioDetailView, viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio)))
+                                } label: {
                                     StudioRow(studio: studio)
                                 }
                             }
@@ -236,4 +239,5 @@ struct HomeResultView: View {
     }
     .environmentObject(StudioListViewModel())
     .environmentObject(TabbarManager())
+    .environmentObject(NavigationManager())
 }

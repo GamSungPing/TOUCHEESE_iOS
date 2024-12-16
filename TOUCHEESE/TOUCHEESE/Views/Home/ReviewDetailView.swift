@@ -61,7 +61,7 @@ struct ReviewDetailView: View {
     
     private func reviewContentView(reviewDetail: ReviewDetail) -> some View {
         VStack(alignment: .leading) {
-            Text("\(reviewDetail.content)")
+            Text("\(reviewDetail.content ?? "")")
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 10)
             

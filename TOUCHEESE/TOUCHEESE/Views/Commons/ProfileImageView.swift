@@ -20,7 +20,6 @@ struct ProfileImageView: View {
             .fade(duration: 0.25)
             .aspectRatio(contentMode: .fill)
             .frame(width: size, height: size)
-            .foregroundStyle(Color.black)
             .clipShape(.circle)
             .overlay {
                 Circle()
