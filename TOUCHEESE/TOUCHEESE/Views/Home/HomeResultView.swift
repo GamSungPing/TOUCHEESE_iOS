@@ -12,6 +12,8 @@ struct HomeResultView: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
     
+    @Environment(\.dismiss) private var dismiss
+    
     let concept: StudioConcept
     
     @State private var isShowingPriceFilterOptionView: Bool = false
@@ -28,6 +30,9 @@ struct HomeResultView: View {
                     studioEmptyView
                 } else {
                     ScrollView {
+                        Color.clear
+                            .frame(height: 12)
+                        
                         LazyVStack(spacing: 20) {
                             ForEach(studioListViewModel.studios) { studio in
                                 Button {
@@ -61,8 +66,16 @@ struct HomeResultView: View {
                 }
             }
         }
-        .navigationTitle("\(concept.title)")
-        .navigationBarTitleDisplayMode(.inline)
+        .customNavigationBar(centerView: {
+            Text("\(concept.title)")
+                .modifier(NavigationTitleModifier())
+        }, leftView: {
+            Button {
+                dismiss()
+            } label: {
+                NavigationBackButtonView()
+            }
+        })
         .toolbarRole(.editor)
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
@@ -70,6 +83,7 @@ struct HomeResultView: View {
             
             tabbarManager.isHidden = false
         }
+        .background(.tcGray01)
     }
     
     private var studioEmptyView: some View {
@@ -146,7 +160,7 @@ struct HomeResultView: View {
                     Image(systemName: "arrow.clockwise")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 20)
+                        .frame(height: 15)
                         .foregroundStyle(Color.black)
                 }
                 .buttonStyle(.plain)
