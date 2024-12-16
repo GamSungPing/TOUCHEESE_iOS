@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReservationDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
-    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
+    @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
     @StateObject var viewModel: ReservationDetailViewModel
     
@@ -74,7 +74,7 @@ struct ReservationDetailView: View {
                             height: 48
                         ) {
                             // TODO: - 네비게이션 Path 추가 필요
-                            tempNavigationManager.appendPath(
+                            navigationManager.appendPath(
                                 viewType: .studioDetailView,
                                 viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio))
                             )
@@ -225,5 +225,6 @@ struct ReservationDetailView: View {
             )
         )
         .environmentObject(TabbarManager())
+        .environmentObject(NavigationManager())
     }
 }

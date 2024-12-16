@@ -11,7 +11,6 @@ struct HomeResultView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
-    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
     
     let concept: StudioConcept
     
@@ -32,7 +31,7 @@ struct HomeResultView: View {
                         LazyVStack(spacing: 20) {
                             ForEach(studioListViewModel.studios) { studio in
                                 Button {
-                                    tempNavigationManager.appendPath(viewType: .studioDetailView, viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio)))
+                                    navigationManager.appendPath(viewType: .studioDetailView, viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio)))
                                 } label: {
                                     StudioRow(studio: studio)
                                 }

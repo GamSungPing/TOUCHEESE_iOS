@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReservationListView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
-    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
+    @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
     @State private var selectedIndex = 0
@@ -79,7 +79,7 @@ struct ReservationListView: View {
 
 
 fileprivate struct FilteredReservationListView<Content>: View where Content: View {
-    @EnvironmentObject private var tempNavigationManager: TempNavigationManager
+    @EnvironmentObject private var navigationManager: NavigationManager
     
     var reservations: [Reservation]
     @ViewBuilder let emptyView: Content
@@ -96,7 +96,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                 LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         Button {
-                            tempNavigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
+                            navigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
                         } label: {
                             ReservationRow(reservation: reservation)
                         }

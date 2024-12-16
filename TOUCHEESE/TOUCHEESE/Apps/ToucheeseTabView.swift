@@ -9,14 +9,13 @@ import SwiftUI
 
 struct ToucheeseTabView: View {
     @EnvironmentObject var navigationManager: NavigationManager
-    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
-        TabView(selection: $tempNavigationManager.tabNumber) {
-            NavigationStack(path: $tempNavigationManager.homePath) {
+        TabView(selection: $navigationManager.tabNumber) {
+            NavigationStack(path: $navigationManager.homePath) {
                 HomeConceptView()
                     .navigationDestination(for: ViewType.self) { viewType in
-                        tempNavigationManager.buildView(viewType: viewType)
+                        navigationManager.buildView(viewType: viewType)
                     }
             }
             .tint(Color.black)
@@ -26,10 +25,10 @@ struct ToucheeseTabView: View {
             }
             .tag(0)
             
-            NavigationStack(path: $tempNavigationManager.reservationPath) {
+            NavigationStack(path: $navigationManager.reservationPath) {
                 ReservationListView()
                     .navigationDestination(for: ViewType.self) { viewType in
-                        tempNavigationManager.buildView(viewType: viewType)
+                        navigationManager.buildView(viewType: viewType)
                     }
             }
             .tint(Color.black)
