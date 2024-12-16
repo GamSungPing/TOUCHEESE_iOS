@@ -35,6 +35,7 @@ struct HomeResultView: View {
                                 } label: {
                                     StudioRow(studio: studio)
                                 }
+                                .buttonStyle(.plain)
                             }
                             
                             Color.clear
