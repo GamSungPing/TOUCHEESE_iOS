@@ -32,14 +32,12 @@ struct Studio: Codable, Identifiable, Hashable {
     let name: String
     let profilePrice: Int
     let rating: Double
+    let reviewCount: Int
     let profileImageString: String
     let portfolioImageStrings: [String]
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case profilePrice
-        case rating
+        case id, name, profilePrice, rating, reviewCount
         case profileImageString = "profileURL"
         case portfolioImageStrings = "portfolioUrls"
     }
@@ -73,6 +71,7 @@ extension Studio {
         name: "마루 스튜디오",
         profilePrice: 99_000,
         rating: 3.2,
+        reviewCount: 0,
         profileImageString: "https://i.imgur.com/Uw5nNHQ.png",
         portfolioImageStrings: ["https://i.imgur.com/Uw5nNHQ.png", "https://i.imgur.com/Uw5nNHQ.png"]
     )
