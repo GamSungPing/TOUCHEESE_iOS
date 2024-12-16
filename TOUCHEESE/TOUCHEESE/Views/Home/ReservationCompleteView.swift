@@ -81,7 +81,10 @@ struct ReservationCompleteView: View {
             .padding(.vertical, 8)
             .padding(.horizontal, 55.5)
         }
-        .navigationBarBackButtonHidden(true)
+        .customNavigationBar(backgroundColor: .white, centerView: {
+            Text("예약 확정")
+                .modifier(NavigationTitleModifier())
+        })
     }
     
     private func attributedString(string: String, targetString: String) -> AttributedString {

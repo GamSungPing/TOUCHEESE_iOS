@@ -9,6 +9,7 @@ import SwiftUI
 
 extension View {
     func customNavigationBar<C>(
+        backgroundColor: Color? = .tcGray01,
         centerView: @escaping (() -> C)
     ) -> some View where C: View {
         modifier (
@@ -19,11 +20,13 @@ extension View {
                 },
                 rightView: {
                     EmptyView()
-                })
+                },
+                navigationBackgroundColor: backgroundColor ?? .tcGray01)
         )
     }
     
     func customNavigationBar<C, L>(
+        backgroundColor: Color? = .tcGray01,
         centerView: @escaping (() -> C),
         leftView: @escaping (() -> L)
     ) -> some View where C: View, L: View {
@@ -33,11 +36,13 @@ extension View {
                 leftView: leftView,
                 rightView: {
                     EmptyView()
-                })
+                },
+                navigationBackgroundColor: backgroundColor ?? .tcGray01)
         )
     }
     
     func customNavigationBar<C, L, R>(
+        backgroundColor: Color? = .tcGray01,
         centerView: @escaping (() -> C),
         leftView: @escaping (() -> L),
         rightView: @escaping (() -> R)
@@ -46,7 +51,8 @@ extension View {
             CustomNavigationBarModifier(
                 centerView: centerView,
                 leftView: leftView,
-                rightView: rightView
+                rightView: rightView,
+                navigationBackgroundColor: backgroundColor ?? .tcGray01
             )
         )
     }

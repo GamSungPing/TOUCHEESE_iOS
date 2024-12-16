@@ -11,15 +11,18 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
     let centerView: (() -> C)?
     let leftView: (() -> L)?
     let rightView: (() -> R)?
+    let navigationBackgroundColor: Color
     
     init(
         centerView: (() -> C)? = nil,
         leftView: (() -> L)? = nil,
-        rightView:(() -> R)? = nil
+        rightView:(() -> R)? = nil,
+        navigationBackgroundColor: Color
     ) {
         self.centerView = centerView
         self.leftView = leftView
         self.rightView = rightView
+        self.navigationBackgroundColor = navigationBackgroundColor
     }
     
     func body(content: Content) -> some View {
@@ -44,7 +47,7 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
                     Spacer()
                 }
             }
-            .background(Color.tcGray01.ignoresSafeArea(.all, edges: .top))
+            .background(navigationBackgroundColor.ignoresSafeArea(.all, edges: .top))
             
             content
             
