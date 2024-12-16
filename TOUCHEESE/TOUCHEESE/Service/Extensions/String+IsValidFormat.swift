@@ -15,6 +15,6 @@ extension String {
     }
     
     var isPhoneLength: Bool {
-        return self.count == 10 || self.count == 11
+        return self.count == 11
     }
 }

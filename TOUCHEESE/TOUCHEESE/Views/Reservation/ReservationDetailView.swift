@@ -44,23 +44,24 @@ struct ReservationDetailView: View {
                         productPriceString: reservationDetail.productPrice.moneyStringFormat,
                         productOptions: reservationDetail.parsedProductOptions,
                         addPeopleCount: reservationDetail.addPeopleCnt,
-                        addPeoplePrice: nil
+                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat
                     )
                     
                     // 예약자 정보
                     userInfoView(
                         userEmail: reservationDetail.memberEmail,
-                        userPhoneNumber: reservationDetail.phoneNumber.phoneNumberString
+                        userPhoneNumber: reservationDetail.phoneNumber
                     )
                     
                     // 결제 정보
                     PayInfoView(
                         productName: reservationDetail.productName,
+                        productPrice: reservationDetail.productPrice.moneyStringFormat,
                         productOptions: reservationDetail.parsedProductOptions,
                         addPeopleCount: reservationDetail.addPeopleCnt,
-                        addPeoplePrice: nil,
+                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat,
                         totalPriceString: reservationDetail.totalPrice.moneyStringFormat,
-                        addPeopleTotalPriceString: ""
+                        addPeopleTotalPriceString: reservationDetail.addPeoplePrice.moneyStringFormat
                     )
                     
                     HStack(spacing: 10) {

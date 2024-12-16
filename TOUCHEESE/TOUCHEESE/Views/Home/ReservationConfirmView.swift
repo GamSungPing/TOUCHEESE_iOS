@@ -11,6 +11,7 @@ import Kingfisher
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
     @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var reservationListViewModel: ReservationListViewModel
     @Environment(\.dismiss) private var dismiss
     @StateObject var reservationViewModel: ReservationViewModel
     
@@ -29,7 +30,7 @@ struct ReservationConfirmView: View {
         let addpeopleTotalPriceString = reservationViewModel.addpeopleTotalPriceString
         let productImageURL = reservationViewModel.product.imageURL
         
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack {
                 // 예약 정보 뷰
                 ReservationInfoView(
@@ -50,7 +51,7 @@ struct ReservationConfirmView: View {
                     productPriceString: productPriceString,
                     productOptions: productOptions,
                     addPeopleCount: addPeopleCount,
-                    addPeoplePrice: addPeoplePrice
+                    addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원"
                 )
                 
                 
@@ -70,9 +71,10 @@ struct ReservationConfirmView: View {
                 // 결제 정보 뷰
                 PayInfoView(
                     productName: productName,
+                    productPrice: productPriceString,
                     productOptions: productOptions,
                     addPeopleCount: addPeopleCount,
-                    addPeoplePrice: addPeoplePrice,
+                    addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원",
                     totalPriceString: totalPriceString,
                     addPeopleTotalPriceString: addpeopleTotalPriceString
                 )
@@ -87,6 +89,7 @@ struct ReservationConfirmView: View {
                             
                             // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
                             if reservationViewModel.reservationResponseData?.statusCode == 200 {
+                                await reservationListViewModel.fetchReservations()
                                 navigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
                             } else {
                                 navigationManager.goFirstView()
@@ -125,7 +128,7 @@ struct ReservationProductView: View {
     let productPriceString: String
     let productOptions: [ProductOption]
     let addPeopleCount: Int
-    let addPeoplePrice: Int?
+    let addPeoplePriceString: String
     
     var body: some View {
         VStack {
@@ -147,9 +150,6 @@ struct ReservationProductView: View {
                         .padding(.trailing, 12)
                     
                     VStack {
-                        LeadingTextView(text: studioName, font: .pretendardSemiBold16)
-                            .padding(.bottom, 6)
-                        
                         HStack {
                             Text(productName)
                                 .font(.pretendardSemiBold14)
@@ -317,9 +317,10 @@ fileprivate struct UserInfoInputView: View {
 
 struct PayInfoView: View {
     let productName: String
+    let productPrice: String
     let productOptions: [ProductOption]
     let addPeopleCount: Int
-    let addPeoplePrice: Int?
+    let addPeoplePriceString: String
     let totalPriceString: String
     let addPeopleTotalPriceString: String
 
@@ -328,8 +329,18 @@ struct PayInfoView: View {
             LeadingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
                 .padding(.bottom, 16)
             
-            LeadingTextView(text: productName, font: .pretendardSemiBold16, textColor: .tcGray10)
-                .padding(.bottom, 8)
+            HStack {
+                Text(productName)
+                    .font(.pretendardSemiBold16)
+                    .foregroundStyle(.tcGray10)
+                
+                Spacer()
+                
+                Text(productPrice)
+                    .font(.pretendardBold(16))
+                    .foregroundStyle(.tcGray10)
+            }
+            .padding(.bottom, 8)
             
             VStack {
                 ForEach(productOptions.indices, id: \.self) { index in
