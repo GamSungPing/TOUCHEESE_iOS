@@ -57,7 +57,7 @@ extension Network {
             params["studioId"] = reservationRequestType.studioId
             params["reservationDate"] = reservationRequestType.reservationDateString
             params["reservationTime"] = reservationRequestType.reservationTimeString
-            params["productName"] = reservationRequestType.productName
+            params["productId"] = reservationRequestType.productId
             params["productOption"] = reservationRequestType.productOptionString
             params["totalPrice"] = reservationRequestType.totalPrice
             params["phoneNumber"] = reservationRequestType.phoneNumberString

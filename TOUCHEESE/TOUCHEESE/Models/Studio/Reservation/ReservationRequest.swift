@@ -12,7 +12,7 @@ struct ReservationRequest {
     let memberId: Int
     let studioId: Int
     let reservationDate: Date
-    let productName: String
+    let productId: Int
     let productOptions: [ProductOption]
     let totalPrice: Int
     let phoneNumber: String
@@ -38,7 +38,7 @@ struct ReservationRequest {
         memberId: Int,
         studioId: Int,
         reservationDate: Date,
-        productName: String,
+        productId: Int,
         productOptions: [ProductOption],
         totalPrice: Int,
         phoneNumber: String,
@@ -47,10 +47,17 @@ struct ReservationRequest {
         self.memberId = memberId
         self.studioId = studioId
         self.reservationDate = reservationDate
-        self.productName = productName
+        self.productId = productId
         self.productOptions = productOptions
         self.totalPrice = totalPrice
         self.phoneNumber = phoneNumber
         self.email = email
     }
 }
+
+//struct ReservationTime {
+//    var hour: Int
+//    var minute: Int
+//    let second = 0
+//    var nano = 0
+//}
