@@ -62,6 +62,7 @@ extension Network {
             params["totalPrice"] = reservationRequestType.totalPrice
             params["phoneNumber"] = reservationRequestType.phoneNumberString
             params["email"] = reservationRequestType.email
+            params["addPeopleCnt"] = reservationRequestType.addPeopleCnt
             
             return params
         case .reservationCancelRequest(_, let memberID):
