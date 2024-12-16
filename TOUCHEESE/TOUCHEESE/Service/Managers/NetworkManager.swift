@@ -16,6 +16,7 @@ class NetworkManager {
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
+
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -93,7 +94,8 @@ class NetworkManager {
             fetchRequest,
             decodingType: SingleStudioData.self
         )
-        
+        let reviewData: ReviewData = try await performRequest(fetchRequest, decodingType: ReviewData.self)
+      
         return singleStudioData.data
     }
     
@@ -124,7 +126,6 @@ class NetworkManager {
             fetchRequest,
             decodingType: ProductDetailData.self
         )
-        
         return productDetailData.data
     }
     

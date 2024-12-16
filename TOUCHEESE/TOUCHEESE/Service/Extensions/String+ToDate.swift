@@ -21,7 +21,6 @@ extension String {
         formatter.timeZone = TimeZone.current // 로컬 시간대로 간주
         return formatter.date(from: self)
     }
-    
 //    func toReservationDateType(_ dateString: String) -> String {
 //        let dateFormatter = DateFormatter()
 //        dateFormatter.dateFormat = "yyyy-MM-dd"

@@ -42,6 +42,11 @@ struct HomeResultView: View {
                                     studioListViewModel.loadMoreStudios()
                                 }
                         }
+                        .navigationDestination(for: Studio.self) { studio in
+                            StudioDetailView(
+                                viewModel: StudioDetailViewModel(studio: studio)
+                            )
+                        }
                     }
                     .scrollIndicators(.never)
                 }

@@ -32,7 +32,7 @@ final class ProductDetailViewModel: ObservableObject {
             calTotalPrice()
         }
     }
-    
+  
     // 선택된 옵션의 ID Set
     private var selectedOptionIDArray: Set<Int> = [] {
         didSet {
@@ -209,7 +209,7 @@ final class ProductDetailViewModel: ObservableObject {
         reservationDate.day = dateComponents.day
         reservationDate.hour = timeComponents.hour
         reservationDate.minute = timeComponents.minute
-        
+      
         self.reservationDate = calendar.date(from: reservationDate)
     }
 }
