@@ -44,28 +44,25 @@ struct ReservationDetailView: View {
                         productPriceString: reservationDetail.productPrice.moneyStringFormat,
                         productOptions: reservationDetail.parsedProductOptions,
                         addPeopleCount: reservationDetail.addPeopleCnt,
-                        addPeoplePrice: nil
+                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat
                     )
                     
                     // 예약자 정보
                     userInfoView(
                         userEmail: reservationDetail.memberEmail,
-                        userPhoneNumber: reservationDetail.phoneNumber.phoneNumberString
+                        userPhoneNumber: reservationDetail.phoneNumber
                     )
                     
                     // 결제 정보
                     PayInfoView(
                         productName: reservationDetail.productName,
+                        productPrice: reservationDetail.productPrice.moneyStringFormat,
                         productOptions: reservationDetail.parsedProductOptions,
                         addPeopleCount: reservationDetail.addPeopleCnt,
-                        addPeoplePrice: nil,
+                        addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat,
                         totalPriceString: reservationDetail.totalPrice.moneyStringFormat,
-                        addPeopleTotalPriceString: ""
+                        addPeopleTotalPriceString: reservationDetail.addPeoplePrice.moneyStringFormat
                     )
-                    
-                    reservationStatusInfoView
-                        .padding(.top, 8)
-                        .padding(.horizontal, 16)
                     
                     HStack(spacing: 10) {
                         FillBottomButton(
@@ -73,7 +70,6 @@ struct ReservationDetailView: View {
                             title: "스튜디오 홈",
                             height: 48
                         ) {
-                            // TODO: - 네비게이션 Path 추가 필요
                             navigationManager.appendPath(
                                 viewType: .studioDetailView,
                                 viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio))
@@ -92,8 +88,11 @@ struct ReservationDetailView: View {
                     .padding(.vertical, 21)
                     .padding(.horizontal, 16)
                     
+                    reservationStatusInfoView
+                        .padding(.horizontal, 16)
+                    
                     Color.clear
-                        .frame(height: 21)
+                        .frame(height: 50)
                 }
             }
             .customNavigationBar(centerView: {
@@ -133,11 +132,6 @@ struct ReservationDetailView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .background(.tcGray01)
-        //        .navigationDestination(for: Studio.self) { studio in
-        //            StudioDetailView(
-        //                viewModel: StudioDetailViewModel(studio: studio)
-        //            )
-        //        }
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
             tabbarManager.isHidden = true

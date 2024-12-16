@@ -114,6 +114,7 @@ struct TOUCHEESEApp: App {
                 .environmentObject(tabbarManager)
                 .environmentObject(reservationListViewModel)
                 .environmentObject(navigationManager)
+                .preferredColorScheme(.light)
         }
     }
 }

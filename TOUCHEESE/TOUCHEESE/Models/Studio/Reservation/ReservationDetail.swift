@@ -22,6 +22,7 @@ struct ReservationDetail: Codable {
     let productImage, productName, productOption: String
     let productPrice, totalPrice: Int
     let addPeopleCnt: Int
+    let addPeoplePrice: Int
 }
 
 
@@ -38,7 +39,8 @@ extension ReservationDetail {
         productOption: "고화질 원본 전체:2000@보정본 추가:10000",
         productPrice: 100_000,
         totalPrice: 230_000,
-        addPeopleCnt: 0
+        addPeopleCnt: 0,
+        addPeoplePrice: 0
     )
     
     var parsedProductOptions: [ProductOption] {
