@@ -10,7 +10,7 @@ import Kingfisher
 
 struct ReservationConfirmView: View {
     // MARK: - RealDatas
-    @EnvironmentObject var tempNavigationManager: TempNavigationManager
+    @EnvironmentObject var navigationManager: NavigationManager
     @StateObject var reservationViewModel: ReservationViewModel
     
     var body: some View {
@@ -86,9 +86,9 @@ struct ReservationConfirmView: View {
                             
                             // MARK: - TODO: 응답 코드에 따라 에러 뷰로 전환해야 함
                             if reservationViewModel.reservationResponseData?.statusCode == 200 {
-                                tempNavigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
+                                navigationManager.appendPath(viewType: .reservationCompleteView, viewMaterial: nil)
                             } else {
-                                tempNavigationManager.goFirstView()
+                                navigationManager.goFirstView()
                             }
                         }
                     }
@@ -375,6 +375,6 @@ struct PayInfoView: View {
 #Preview {
     NavigationStack {
         ReservationConfirmView(reservationViewModel: ReservationViewModel(studio: Studio.sample, studioDetail: StudioDetail.sample, product: Product.sample1, productDetail: ProductDetail.sample1, productOptions: [ProductOption.sample1, ProductOption.sample2], reservationDate: Date(), totalPrice: 130000, addPeopleCount: 3))
-            .environmentObject(TempNavigationManager())
+            .environmentObject(NavigationManager())
     }
 }

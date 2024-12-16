@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReservationCompleteView: View {
-    @EnvironmentObject var navigationManager: TempNavigationManager
+    @EnvironmentObject var navigationManager: NavigationManager
     
     var body: some View {
         let confirmMessage = "예약 신청이 완료되었습니다!"

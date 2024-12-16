@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReservationDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
+    @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
     @StateObject var viewModel: ReservationDetailViewModel
     
@@ -73,6 +74,10 @@ struct ReservationDetailView: View {
                             height: 48
                         ) {
                             // TODO: - 네비게이션 Path 추가 필요
+                            navigationManager.appendPath(
+                                viewType: .studioDetailView,
+                                viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: viewModel.reservedStudio))
+                            )
                         }
                         
                         if viewModel.isShowingReservationCancelButton() {
@@ -128,11 +133,11 @@ struct ReservationDetailView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .background(.tcGray01)
-        .navigationDestination(for: Studio.self) { studio in
-            StudioDetailView(
-                viewModel: StudioDetailViewModel(studio: studio)
-            )
-        }
+        //        .navigationDestination(for: Studio.self) { studio in
+        //            StudioDetailView(
+        //                viewModel: StudioDetailViewModel(studio: studio)
+        //            )
+        //        }
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
             tabbarManager.isHidden = true
@@ -220,5 +225,6 @@ struct ReservationDetailView: View {
             )
         )
         .environmentObject(TabbarManager())
+        .environmentObject(NavigationManager())
     }
 }
