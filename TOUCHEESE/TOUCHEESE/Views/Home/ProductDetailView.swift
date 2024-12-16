@@ -301,7 +301,6 @@ fileprivate struct ReservationView: View {
 fileprivate struct BottomView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     @EnvironmentObject var navigationManager: NavigationManager
-    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
         HStack(spacing: 12) {
@@ -941,6 +940,5 @@ fileprivate struct CustomCalendar: View {
 #Preview {
     NavigationStack {
         ProductDetailView(productDetailViewModel: ProductDetailViewModel(studio: Studio.sample, studioDetails: StudioDetail.sample, product: Product.sample1))
-            .environmentObject(NavigationManager())
     }
 }

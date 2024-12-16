@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ToucheeseTabView: View {
     @EnvironmentObject var navigationManager: NavigationManager
-    @EnvironmentObject var tempNavigationManager: TempNavigationManager
     
     var body: some View {
         TabView(selection: $navigationManager.tabNumber) {
