@@ -82,7 +82,7 @@ final class ReservationViewModel: ObservableObject {
             memberId: memberId,
             studioId: studio.id,
             reservationDate: reservationDate,
-            productName: product.name,
+            productId: product.id,
             productOptions: productOptions,
             totalPrice: totalPrice,
             phoneNumber: userPhone,
