@@ -46,6 +46,14 @@ final class ProductDetailViewModel: ObservableObject {
     // 선택된 날짜
     @Published var selectedDate: Date = Date()
     
+    var isReservationDate: Bool {
+        if reservationDate == nil {
+            false
+        } else {
+            true
+        }
+    }
+    
     // 선택된 옵션 배열
     var selectedProductOptionArray: [ProductOption] {
         productDetail.parsedProductOptions.filter { selectedOptionIDArray.contains($0.id) }
@@ -97,7 +105,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     // MARK: - Output
     /// 인원 추가 가격을 문자열로 리턴하는 함수
-    func getAddPeoplePrice() -> String {
+    func getAddPeoplePriceString() -> String {
         guard let addPeoplePrice = productDetail.addPeoplePrice?.moneyStringFormat else { return "" }
         return addPeoplePrice
     }

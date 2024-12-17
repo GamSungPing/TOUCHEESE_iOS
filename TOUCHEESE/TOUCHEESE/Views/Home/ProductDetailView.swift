@@ -9,6 +9,9 @@ import SwiftUI
 import Kingfisher
 
 struct ProductDetailView: View {
+    @EnvironmentObject var navigationManager: NavigationManager
+    @Environment(\.dismiss) private var dismiss
+    
     @StateObject var productDetailViewModel: ProductDetailViewModel
     
     // 캘린더 시트 트리거
@@ -17,221 +20,221 @@ struct ProductDetailView: View {
     var body: some View {
         let product = productDetailViewModel.product
         let productDetail = productDetailViewModel.productDetail
+        let addPeoplePriceString = productDetailViewModel.getAddPeoplePriceString()
+        let basePeopleCnt = productDetail.basePeopleCnt ?? 1
+        let isBottomButtonSelectable = productDetailViewModel.isReservationDate
         
-        ZStack {
-            VStack {
-                Color.tcBackground
-                    .frame(width: .screenWidth, height: 370)
-                    .ignoresSafeArea()
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 0) {
+                // 상품 정보 뷰(상품 사진, 이름, 설명)
+                infoView(product: product)
+                
+                // 상품 옵션 선택 뷰
+                OptionView()
+                
+                // 상품 단체 옵션 선택 뷰
+                GroupOptionView(
+                    basePeopleCount: basePeopleCnt,
+                    addPeoplePriceString: addPeoplePriceString
+                )
+                
+                // 총 가격 뷰
+                TotalPriceView()
+                
+                // 촬영 날짜 예약 뷰
+                ReservationView(isCalendarPresented: $isCalendarPresented)
                 
                 Spacer()
-            }
-            
-            VStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        // 상단 상품 이미지 및 설명
-                        infoView(product: product)
-                            .padding(.bottom, 10)
-                        
-                        // 리뷰로 이동하는 버튼
-                        //                        reviewButtonView(reviewCount: product.reviewCount)
-                        //                            .padding(.bottom, 10)
-                        
-                        // 가격 정보
-                        priceView(productPrice: product.price)
-                            .padding(.bottom, 6)
-                        
-                        // 구분선
-                        myDivider
-                            .padding(.bottom, 10)
-                        
-                        if productDetail.isGroup {
-                            // 기준 인원 뷰
-                            baseGuestCountView(baseGuestCount: productDetail.basePeopleCnt ?? 0)
-                                .padding(.bottom, 6)
-                            
-                            // 구분선
-                            myDivider
-                                .padding(.bottom, 10)
-                            
-                            // 단체 인원 뷰
-                            AddPeopleView()
-                                .padding(.bottom, 6)
-                            
-                            // 구분선
-                            myDivider
-                                .padding(.bottom, 10)
-                        }
-                        
-                        if !productDetail.parsedProductOptions.isEmpty {
-                            // 상품 옵션 설정 뷰
-                            productOptionView(productDetail: productDetail)
-                                .padding(.bottom, 12)
-                            
-                            // 구분선
-                            myDivider
-                                .padding(.bottom, 10)
-                        }
-                        
-                        // 촬영 날짜 예약 뷰
-                        ReservationView(isCalendarPresented: $isCalendarPresented)
-                    }
+                
+                FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
+                    navigationManager
+                        .appendPath(
+                            viewType: .reservationConfirmView,
+                            viewMaterial: ReservationConfirmViewMaterial(
+                                viewModel: ReservationViewModel(
+                                    studio: productDetailViewModel.studio,
+                                    studioDetail: productDetailViewModel.studioDetail,
+                                    product: productDetailViewModel.product,
+                                    productDetail: productDetailViewModel.productDetail,
+                                    productOptions: productDetailViewModel.selectedProductOptionArray,
+                                    reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                    totalPrice: productDetailViewModel.totalPrice,
+                                    addPeopleCount: productDetailViewModel.addPeopleCount
+                                )
+                            )
+                        )
                 }
-                // 하단 장바구니, 주문 뷰
-                BottomView()
-            }
-            .toolbarRole(.editor)
-            .environmentObject(productDetailViewModel)
-            .sheet(isPresented: $isCalendarPresented) {
-                // 예약할 날짜를 선택하는 캘린더 뷰
-                CalendarView(isCalendarPresented: $isCalendarPresented, displayTime: productDetailViewModel.selectedTime?.toString(format: .hourMinute) ?? "", displayDate: productDetailViewModel.selectedDate)
-                    .presentationDetents([.fraction(0.9)])
-                    .presentationDragIndicator(.hidden)
-                    .environmentObject(productDetailViewModel)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
             }
         }
-    }
-    
-    private var myDivider: some View {
-        Rectangle()
-            .frame(maxWidth: .infinity)
-            .frame(height: 2.0)
-            .foregroundStyle(.tcLightgray)
-            .padding(.horizontal, 26)
+        .environmentObject(productDetailViewModel)
+        .customNavigationBar(
+            backgroundColor: .white,
+            centerView: {
+                Text(
+                    "주문/예약"
+                )
+                .modifier(
+                    NavigationTitleModifier()
+                )
+            },
+            leftView: {
+                Button {
+                    dismiss()
+                } label: {
+                    NavigationBackButtonView()
+                }
+            })
+        .sheet(isPresented: $isCalendarPresented) {
+            // 예약할 날짜를 선택하는 캘린더 뷰
+            CalendarView(isCalendarPresented: $isCalendarPresented, displayTime: productDetailViewModel.selectedTime?.toString(format: .hourMinute) ?? "", displayDate: productDetailViewModel.selectedDate)
+                .presentationDetents([.fraction(0.9)])
+                .presentationDragIndicator(.hidden)
+                .environmentObject(productDetailViewModel)
+        }
     }
     
     @ViewBuilder
     private func infoView(product: Product) -> some View {
-        // 이미지 넓이 값
-        let imageWidth: CGFloat = 150
-        // 이미지 넓이 - 높이 비율
-        let imageScale: CGFloat = 1.5
+        // 이미지 프레임 값
+        let imageFrame: CGFloat = 144
         
         VStack {
-            KFImage(product.imageURL)
-                .placeholder { ProgressView() }
-                .resizable()
-                .cancelOnDisappear(true)
-                .fade(duration: 0.25)
-                .aspectRatio(contentMode: .fit)
-                .frame(width: imageWidth, height: imageWidth * imageScale)
-            
-            Text(product.name)
-                .font(.largeTitle)
-            
-            Text(product.description)
-                .font(.footnote)
-                .frame(width: 280)
-                .padding(.bottom, 30)
+            VStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(.tcGray03, lineWidth: 1)
+                    .frame(width: imageFrame, height: imageFrame)
+                    .background {
+                        KFImage(product.imageURL)
+                            .placeholder { ProgressView() }
+                            .resizable()
+                            .cancelOnDisappear(true)
+                            .fade(duration: 0.25)
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    .padding(.bottom, 12)
+                
+                Text(product.name)
+                    .font(.pretendardSemiBold22)
+                    .foregroundStyle(.tcGray10)
+                    .padding(.bottom, 10)
+                
+                Text(product.description)
+                    .multilineTextAlignment(.center)
+                    .font(.pretendardRegular13)
+                    .foregroundStyle(.tcGray08)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 12)
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(.tcGray02, lineWidth: 1)
+                            .background {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundStyle(.white)
+                            }
+                    }
+            }
+            .padding(.vertical, 26)
+            .padding(.horizontal, 29)
         }
-        .frame(width: .screenWidth)
-        .background(.tcBackground)
+        .frame(minHeight: 274)
+        .frame(maxWidth: .infinity)
+        .background(.tcGray01)
     }
+}
+
+fileprivate struct OptionView: View {
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
-    @ViewBuilder
-    private func reviewButtonView(reviewCount: Int) -> some View {
-        if reviewCount != 0 {
-            HStack {
-                Button {
-                    print("리뷰 보러가기 동작")
-                } label: {
-                    Text("리뷰 \(reviewCount)개 보러가기 >")
-                        .foregroundStyle(.black)
-                        .font(.footnote)
+    var body: some View {
+        let parsedProductOptions = productDetailViewModel.productDetail.parsedProductOptions
+        
+        if !parsedProductOptions.isEmpty {
+            VStack {
+                VStack {
+                    LeadingTextView(text: "추가 구매", font: .pretendardSemiBold18, textColor: .tcGray10)
+                        .padding(.bottom, 10)
+                    
+                    VStack(spacing: 10) {
+                        ForEach(parsedProductOptions) { option in
+                            OptionItemView(productOption: option)
+                        }
+                    }
                 }
-                .padding(.leading, 22)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 30)
                 
-                Spacer()
+                DividerView(horizontalPadding: 16, color: .tcGray02)
             }
-        }
-    }
-    
-    private func priceView(productPrice: Int) -> some View {
-        HStack {
-            Text("가 격")
-            
-            Spacer()
-            
-            Text("\(productPrice.moneyStringFormat)")
-        }
-        .font(.headline)
-        .fontWeight(.semibold)
-        .padding(.horizontal, 45)
-    }
-    
-    private func baseGuestCountView(baseGuestCount: Int) -> some View {
-        HStack {
-            Text("기준 인원")
-            
-            Spacer()
-            
-            Text("\(baseGuestCount) 명")
-        }
-        .font(.headline)
-        .fontWeight(.semibold)
-        .padding(.horizontal, 45)
-    }
-    
-    @ViewBuilder
-    private func productOptionView(productDetail: ProductDetail) -> some View {
-        VStack {
-            HStack {
-                Text("추가 구매")
-                    .font(.footnote)
-                    .padding(.leading, 22)
-                
-                Spacer()
-            }
-            
-            ForEach(productDetail.parsedProductOptions) { option in
-                OptionItemView(productOption: option)
-            }
+            .background(.white)
         }
     }
 }
 
-fileprivate struct AddPeopleView: View {
+
+fileprivate struct GroupOptionView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
     
+    let basePeopleCount: Int
+    let addPeoplePriceString: String
+    
     var body: some View {
-        let addPeoplePrice = productDetailViewModel.getAddPeoplePrice()
-        
-        HStack {
-            Text("추가 인원 (\(addPeoplePrice))")
-            
-            Spacer()
-            
-            Button {
-                productDetailViewModel.decreaseAddPeopleCount()
-            } label: {
-                Image(systemName: "minus.square.fill")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.black, Color.gray)
+        if productDetailViewModel.productDetail.isGroup {
+            VStack {
+                VStack {
+                    HStack {
+                        Text("기준 인원")
+                        
+                        Spacer()
+                        
+                        Text("\(basePeopleCount)명")
+                    }
+                    .font(.pretendardSemiBold18)
+                    .foregroundStyle(.tcGray10)
+                    .padding(.bottom, 30)
+                    
+                    HStack {
+                        Text("추가 인원 (\(addPeoplePriceString))")
+                        
+                        Spacer()
+                        
+                        Button {
+                            productDetailViewModel.decreaseAddPeopleCount()
+                        } label: {
+                            Image(.tcMinusButton)
+                        }
+                        .frame(width: 36, height: 36)
+                        
+                        Text("\(productDetailViewModel.addPeopleCount)명")
+                            .frame(minWidth: 40)
+                            .padding(.horizontal, 0)
+                        
+                        Button {
+                            productDetailViewModel.increaseAddPeopleCount()
+                        } label: {
+                            Image(.tcPlusButton)
+                        }
+                        .frame(width: 36, height: 36)
+                    }
+                    .font(.pretendardSemiBold18)
+                    .foregroundStyle(.tcGray10)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 30)
+                
+                DividerView(horizontalPadding: 16, color: .tcGray02)
             }
-            
-            Text("\(productDetailViewModel.addPeopleCount) 명")
-            
-            Button {
-                productDetailViewModel.increaseAddPeopleCount()
-            } label: {
-                Image(systemName: "plus.square.fill")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.black, Color.gray)
-            }
-            
+            .background(.white)
         }
-        .font(.headline)
-        .fontWeight(.semibold)
-        .padding(.horizontal, 45)
     }
 }
 
 fileprivate struct OptionItemView: View {
     @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
-    
     @State var isSelected: Bool = false
-    
     let productOption: ProductOption
     
     var body: some View {
@@ -240,24 +243,48 @@ fileprivate struct OptionItemView: View {
                 isSelected.toggle()
                 productDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
             } label: {
-                Circle()
-                    .frame(width: 25)
-                    .foregroundStyle(Color.tcYellow)
-                    .overlay(
-                        Circle()
-                            .frame(width: 15)
-                            .foregroundStyle(isSelected ? Color.blue : Color.clear)
-                    )
+                HStack {
+                    Image(isSelected ? .tcToggleOn : .tcToggleOff)
+                        .frame(width: 24, height: 24)
+                        .padding(.trailing, 10)
+                    
+                    Text("\(productOption.name)")
+                        .font(.pretendardRegular16)
+                        .foregroundStyle(.tcGray10)
+                    
+                    Spacer()
+                    
+                    Text("\(productOption.price.moneyStringFormat)")
+                        .font(.pretendardMedium16)
+                        .foregroundStyle(.tcGray10)
+                }
             }
-            .padding(.trailing, 22)
-            
-            Text("\(productOption.name)")
-            
-            Spacer()
-            
-            Text("\(productOption.price.moneyStringFormat)")
         }
-        .padding(.horizontal, 30)
+    }
+}
+
+fileprivate struct TotalPriceView: View {
+    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text("총 결제 금액")
+                    .font(.pretendardSemiBold18)
+                    .foregroundStyle(.tcGray10)
+                
+                Spacer()
+                
+                Text(productDetailViewModel.totalPrice.moneyStringFormat)
+                    .font(.pretendardBold18)
+                    .foregroundStyle(.tcGray10)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 30)
+            
+            DividerView(color: .tcGray02, height: 8)
+        }
+        .background(.white)
     }
 }
 
@@ -267,87 +294,41 @@ fileprivate struct ReservationView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Text("촬영날짜")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .padding(.leading, 30)
+            VStack {
+                LeadingTextView(text: "촬영날짜", font: .pretendardSemiBold18, textColor: .tcGray10)
+                    .padding(.bottom, 10)
                 
-                Spacer()
-            }
-            
-            Button {
-                isCalendarPresented.toggle()
-            } label: {
-                RoundedRectangle(cornerRadius: 12)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 60)
-                    .foregroundStyle(Color.tcLightgray)
-                    .overlay {
+                Button {
+                    isCalendarPresented.toggle()
+                } label: {
+                    HStack {
                         if productDetailViewModel.reservationDate == nil {
-                            Text("예약하실 날짜를 선택해주세요")
-                                .foregroundStyle(.black)
+                            Text("예약일자 및 시간 선택")
+                                .font(.pretendardMedium16)
+                                .foregroundStyle(.tcGray05)
                         } else {
-                            Text("예약 날짜:  \(productDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
-                                .foregroundStyle(.black)
+                            Text("예약 날짜: \(productDetailViewModel.reservationDate!.toString(format: .monthDayTime))")
+                                .font(.pretendardMedium16)
+                                .foregroundStyle(.tcGray09)
                         }
+                        
+                        Spacer()
+                        
+                        Image(.tcCalendar)
+                            .frame(width: 24, height: 24)
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background {
+                        RoundedRectangle(cornerRadius: 6)
+                            .foregroundStyle(.tcGray02)
+                    }
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 30)
         }
-    }
-}
-
-fileprivate struct BottomView: View {
-    @EnvironmentObject private var productDetailViewModel: ProductDetailViewModel
-    @EnvironmentObject var navigationManager: NavigationManager
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Button {
-                
-            } label: {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 80, height: 40)
-                    .foregroundStyle(Color.tcYellow)
-                    .overlay {
-                        Image(systemName: "cart")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30)
-                            .foregroundStyle(Color.black)
-                    }
-            }
-            
-            Button {
-                navigationManager
-                    .appendPath(
-                        viewType: .reservationConfirmView,
-                        viewMaterial: ReservationConfirmViewMaterial(
-                            viewModel: ReservationViewModel(
-                                studio: productDetailViewModel.studio,
-                                studioDetail: productDetailViewModel.studioDetail,
-                                product: productDetailViewModel.product,
-                                productDetail: productDetailViewModel.productDetail,
-                                productOptions: productDetailViewModel.selectedProductOptionArray,
-                                reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                totalPrice: productDetailViewModel.totalPrice,
-                                addPeopleCount: productDetailViewModel.addPeopleCount
-                            )
-                        )
-                    )
-            } label: {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 40)
-                    .foregroundStyle(Color.tcYellow)
-                    .overlay {
-                        Text("선택 상품 주문 (\(productDetailViewModel.totalPrice.moneyStringFormat))")
-                            .foregroundStyle(.black)
-                    }
-            }
-        }
-        .padding(.horizontal, 30)
+        .background(.white)
     }
 }
 
