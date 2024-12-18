@@ -12,6 +12,8 @@ struct ReservationListView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
+    @Namespace private var namespace
+    
     @State private var selectedIndex = 0
     @State private var activeTab: SegmentedTab = .reservation
     
@@ -19,7 +21,8 @@ struct ReservationListView: View {
         VStack {
             ReservationCustomSegmentedControl(
                 tabs: SegmentedTab.allCases,
-                activeTab: $activeTab
+                activeTab: $activeTab,
+                namespace: namespace
             )
             
             switch activeTab {
@@ -94,6 +97,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
 fileprivate struct ReservationCustomSegmentedControl: View {
     var tabs: [SegmentedTab]
     @Binding var activeTab: SegmentedTab
+    let namespace: Namespace.ID
     
     var body: some View {
         HStack(spacing: 8) {
@@ -110,8 +114,11 @@ fileprivate struct ReservationCustomSegmentedControl: View {
                         }
                     }
                     .background(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(activeTab == tab ? .white  : .tcGray02)
+                        if activeTab == tab {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(activeTab == tab ? .white  : .tcGray02)
+                                .matchedGeometryEffect(id: "rect", in: namespace)
+                        }
                     }
             }
         }
