@@ -228,4 +228,23 @@ class NetworkManager {
         
         return deviceTokenRegistrationResponseData.data
     }
+    
+    /// 특정 날짜의 예약 가능한 시간을 조회하는 함수
+    /// - Parameter studioId: 조회하려는 스튜디오의 ID 값
+    /// - Parameter date: 조회하려는 날짜 값 (yyyy-MM-dd) 형식
+    func getReservableTime(
+        studioId: Int,
+        date: Date
+    ) async throws -> ReservableTimeData {
+        let fetchRequest = Network.reservableTime(
+            studioId: studioId,
+            date: date
+        )
+        let reservableTimeData = try await performRequest(
+            fetchRequest,
+            decodingType: ReservableTimeData.self
+        )
+        
+        return reservableTimeData
+    }
 }

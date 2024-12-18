@@ -146,6 +146,7 @@ struct ReservationProductView: View {
                                 .fade(duration: 0.25)
                                 .resizable()
                                 .scaledToFit()
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         .padding(.trailing, 12)
                     
