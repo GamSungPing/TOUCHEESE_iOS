@@ -131,7 +131,6 @@ struct ReservationDetailView: View {
             }
         }
         .ignoresSafeArea(edges: .bottom)
-        .background(.tcGray01)
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
             tabbarManager.isHidden = true

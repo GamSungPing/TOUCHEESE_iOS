@@ -53,7 +53,6 @@ struct ReservationListView: View {
         .onAppear {
             tabbarManager.isHidden = false
         }
-        .background(.tcGray01)
     }
     
     private func reservationEmptyView(description: String) -> some View {

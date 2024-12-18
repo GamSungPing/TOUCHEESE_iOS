@@ -102,7 +102,6 @@ struct ReservationConfirmView: View {
         }
         .onAppear(perform : UIApplication.shared.hideKeyboard)
         .customNavigationBar(
-            backgroundColor: .white,
             centerView: {
                 Text(
                     "주문/예약"

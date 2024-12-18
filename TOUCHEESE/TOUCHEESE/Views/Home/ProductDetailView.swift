@@ -70,7 +70,6 @@ struct ProductDetailView: View {
         }
         .environmentObject(productDetailViewModel)
         .customNavigationBar(
-            backgroundColor: .white,
             centerView: {
                 Text(
                     "주문/예약"
@@ -142,7 +141,6 @@ struct ProductDetailView: View {
         }
         .frame(minHeight: 274)
         .frame(maxWidth: .infinity)
-        .background(.tcGray01)
     }
 }
 

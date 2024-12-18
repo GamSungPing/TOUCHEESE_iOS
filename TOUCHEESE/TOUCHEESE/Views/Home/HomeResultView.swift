@@ -84,7 +84,6 @@ struct HomeResultView: View {
             
             tabbarManager.isHidden = false
         }
-        .background(.tcGray01)
     }
     
     private var studioEmptyView: some View {
