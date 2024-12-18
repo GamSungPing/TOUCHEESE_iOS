@@ -27,7 +27,7 @@ struct ReservationListView: View {
                 FilteredReservationListView(
                     reservations: viewModel.reservations
                 ) {
-                    reservationEmptyView(description: "예약 일정이 없습니다.")
+                    CustomEmptyView(viewType: .reservation)
                 } refreshAction: {
                     Task {
                         await viewModel.fetchReservations()
@@ -37,7 +37,7 @@ struct ReservationListView: View {
                 FilteredReservationListView(
                     reservations: viewModel.pastReservations
                 ) {
-                    reservationEmptyView(description: "지난 내역이 없습니다.")
+                    CustomEmptyView(viewType: .pastReservation)
                 } refreshAction: {
                     Task {
                         await viewModel.fetchPastReservations()
@@ -53,26 +53,6 @@ struct ReservationListView: View {
         .onAppear {
             tabbarManager.isHidden = false
         }
-    }
-    
-    private func reservationEmptyView(description: String) -> some View {
-        VStack {
-            Spacer()
-            
-            Image(.tcEmptyIcon)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 84)
-                .foregroundStyle(.tcGray03)
-            
-            Text("\(description)")
-                .font(.pretendardMedium(18))
-                .foregroundStyle(.tcGray04)
-                .padding(.top, 18)
-            
-            Spacer()
-        }
-        .padding()
     }
 }
 
