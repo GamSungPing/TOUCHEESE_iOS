@@ -48,19 +48,7 @@ struct ReviewImageGridView: View {
                 }
             }
         } else {
-            VStack(alignment: .center) {
-                Image(systemName: "tray")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100)
-                    .foregroundStyle(Color.gray)
-                
-                Text("해당 스튜디오의 리뷰가 없습니다.")
-                    .foregroundStyle(Color.gray)
-                    .padding(.top, 20)
-            }
-            .frame(width: CGFloat.screenWidth)
-            .padding()
+            CustomEmptyView(viewType: .review)
         }
         
     }

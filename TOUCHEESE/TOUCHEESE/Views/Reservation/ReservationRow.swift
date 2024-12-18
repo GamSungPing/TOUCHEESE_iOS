@@ -83,5 +83,4 @@ struct ReservationRow: View {
         ReservationRow(reservation: Reservation.sample)
     }
     .padding()
-    .background(Color.tcGray01)
 }

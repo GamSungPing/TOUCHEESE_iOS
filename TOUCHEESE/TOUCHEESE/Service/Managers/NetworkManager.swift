@@ -94,7 +94,6 @@ class NetworkManager {
             fetchRequest,
             decodingType: SingleStudioData.self
         )
-        let reviewData: ReviewData = try await performRequest(fetchRequest, decodingType: ReviewData.self)
       
         return singleStudioData.data
     }
