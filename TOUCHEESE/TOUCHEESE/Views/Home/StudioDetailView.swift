@@ -34,28 +34,68 @@ struct StudioDetailView: View {
                     height: 280
                 )
                 
-                // Studio 설명
+                // Studio 설명 View
                 VStack(alignment: .leading, spacing: 6) {
-                    Label(
-                        "\(studio.formattedRating) (리뷰 \(studioDetail.reviewCount)개)",
-                        systemImage: "star"
-                    )
-                    Label(
-                        viewModel.businessHourString,
-                        systemImage: "clock"
-                    )
-                    Label(
-                        "\(studioDetail.address)",
-                        systemImage: "mappin.and.ellipse"
+                    Text(studio.name)
+                        .foregroundStyle(.tcGray10)
+                        .font(.pretendardSemiBold18)
+                        .padding(.bottom, 4)
+                    
+                    HStack(spacing: 4) {
+                        Image(.tcStarFill)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                        
+                        Text(studio.formattedRating)
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardSemiBold16)
+                        
+                        Text("(\(studio.reviewCount))")
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardRegular16)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.tcGray01)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(.tcGray02, lineWidth: 1)
+                            }
                     )
                     
-                    if let notice = studioDetail.notice, notice != "" {
-                        NoticeView(notice: notice, isExpanded: $isExpanded)
-                            .padding(.top, 3)
-                            .padding(.bottom, 2)
+                    HStack(spacing: 4) {
+                        Image(.tcClock)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        
+                        Text(viewModel.businessHourString)
+                            .foregroundStyle(.tcGray08)
+                            .font(.pretendardRegular16)
                     }
+                    
+                    HStack(spacing: 4) {
+                        Image(.tcMapPinFill)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        
+                        Text(studioDetail.address)
+                            .foregroundStyle(.tcGray08)
+                            .font(.pretendardRegular16)
+                    }
+                    
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 16)
+                
+                // Studio 공지 View
+                if let notice = studioDetail.notice, notice != "" {
+                    NoticeView(notice: notice, isExpanded: $isExpanded)
+                        .padding(.top, 3)
+                        .padding(.bottom, 2)
+                        .padding(.horizontal)
+                }
                 
                 CustomSegmentedControl(selectedIndex: $selectedSegmentedControlIndex)
                 

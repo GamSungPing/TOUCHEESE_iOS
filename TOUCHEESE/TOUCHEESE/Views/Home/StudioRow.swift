@@ -40,7 +40,6 @@ struct StudioRow: View {
                             .foregroundStyle(.tcGray10)
                             .font(.pretendardSemiBold14)
                         
-                        // TODO: - 리뷰 개수 추가
                         Text("(\(studio.reviewCount))")
                             .foregroundStyle(.tcGray05)
                             .font(.pretendardRegular14)
