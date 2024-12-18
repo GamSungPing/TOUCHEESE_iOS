@@ -22,9 +22,6 @@ final class ProductDetailViewModel: ObservableObject {
     // 총 가격
     @Published private(set) var totalPrice: Int = 0
     
-    // 영업 시간 배열
-    @Published private(set) var businessHourAM: [String] = []
-    @Published private(set) var businessHourPM: [String] = []
     
     // 추가 인원 변수
     @Published private(set) var addPeopleCount: Int = 0 {
@@ -32,6 +29,15 @@ final class ProductDetailViewModel: ObservableObject {
             calTotalPrice()
         }
     }
+    
+    @Published private(set) var reservableTime: ReservableTime? {
+        didSet {
+            calReservableTime()
+        }
+    }
+    
+    private(set) var businessHourAM: [ReservableTimeSlot] = []
+    private(set) var businessHourPM: [ReservableTimeSlot] = []
   
     // 선택된 옵션의 ID Set
     private var selectedOptionIDArray: Set<Int> = [] {
@@ -44,7 +50,11 @@ final class ProductDetailViewModel: ObservableObject {
     @Published var selectedTime: Date?
     
     // 선택된 날짜
-    @Published var selectedDate: Date = Date()
+    @Published var selectedDate: Date = Date() {
+        didSet {
+            calReservationDate()
+        }
+    }
     
     var isReservationDate: Bool {
         if reservationDate == nil {
@@ -70,7 +80,6 @@ final class ProductDetailViewModel: ObservableObject {
         }
         
         calTotalPrice()
-        calBusinessHour()
     }
     
     // MARK: - Input
@@ -121,6 +130,15 @@ final class ProductDetailViewModel: ObservableObject {
         }
     }
     
+    @MainActor
+    func fetchReservableTime(date: Date) async {
+        do {
+            reservableTime = try await networkManager.getReservableTime(studioId: studio.id, date: date).data
+        } catch {
+            print("Fetch ProductDetail Error: \(error.localizedDescription)")
+        }
+    }
+    
     /// 상품의 총 가격을 계산하는 함수
     private func calTotalPrice() {
         var totalPrice: Int = 0
@@ -141,68 +159,7 @@ final class ProductDetailViewModel: ObservableObject {
         self.totalPrice = totalPrice
     }
     
-    private func calBusinessHour() {
-        let calendar = Calendar.current
-        
-        guard let openTime = studioDetail.openTimeString.toDate(dateFormat: .hourMinute) else { return }
-        
-        // closeTime 처리: "24:00:00", "24:30:00" 등을 변환
-        var closeTime: Date
-        if studioDetail.closeTimeString.hasPrefix("24:") {
-            // "24:"을 "00:"으로 변경하고 다음 날로 계산
-            let adjustedTimeString = studioDetail.closeTimeString.replacingOccurrences(of: "24:", with: "00:")
-            if let adjustedCloseTime = adjustedTimeString.toDate(dateFormat: .hourMinute),
-               let nextDay = calendar.date(byAdding: .day, value: 1, to: openTime) {
-                closeTime = calendar.date(bySettingHour: calendar.component(.hour, from: adjustedCloseTime),
-                                          minute: calendar.component(.minute, from: adjustedCloseTime),
-                                          second: 0,
-                                          of: nextDay) ?? adjustedCloseTime
-            } else {
-                return
-            }
-        } else {
-            guard let parsedCloseTime = studioDetail.closeTimeString.toDate(dateFormat: .hourMinute) else { return }
-            closeTime = parsedCloseTime
-        }
-        
-        var amTimes: [String] = []
-        var pmTimes: [String] = []
-        var currentTime = openTime
-        
-        while currentTime < closeTime {
-            // 종료 시간이 1시간 미만으로 남았는지 확인
-            if let remainingMinutes = calendar.dateComponents([.minute], from: currentTime, to: closeTime).minute, remainingMinutes < 60 {
-                break
-            }
-            
-            // 현재 시간을 포맷에 맞게 변환
-            let timeString = DateFormat.hourMinute.toDateFormatter().string(from: currentTime)
-            
-            // 오전/오후로 나누기
-            let hour = calendar.component(.hour, from: currentTime)
-            if hour < 12 {
-                amTimes.append(timeString)
-            } else {
-                pmTimes.append(timeString)
-            }
-            
-            // 1시간씩 추가
-            if let nextTime = calendar.date(byAdding: .hour, value: 1, to: currentTime) {
-                currentTime = nextTime
-            } else {
-                break
-            }
-        }
-        
-        // 결과 할당
-        businessHourAM = amTimes
-        businessHourPM = pmTimes
-    }
-
-
-
-    
-    /// 총 예약 가격을 계산하는 함수
+    /// 예약 시간을 계산하는 함수
     func calReservationDate() {
         guard let selectedTime else { return }
         
@@ -219,5 +176,42 @@ final class ProductDetailViewModel: ObservableObject {
         reservationDate.minute = timeComponents.minute
       
         self.reservationDate = calendar.date(from: reservationDate)
+    }
+    
+    /// 예약 가능한 시간을 계산하는 함수
+    func calReservableTime() {
+        var amTimeSlots: [ReservableTimeSlot] = []
+        var pmTimeSlots: [ReservableTimeSlot] = []
+        
+        guard let openingTime = reservableTime?.openingTime.toDate(dateFormat: .requestTime),
+              let lastReservationTime = reservableTime?.lastReservationTime.toDate(dateFormat: .requestTime),
+              let reservableTimeArray = reservableTime?.usableReservableTimeArray
+        else {
+            print("가드문 실패!")
+            return
+        }
+        
+        var currentTime = openingTime
+        
+        while currentTime <= lastReservationTime {
+            let timeString = currentTime.toString(format: .hourMinute)
+            let isAvailable = reservableTimeArray.contains(timeString)
+            
+            print("timeString == \(timeString)")
+            print("reservableTimeArray == \(reservableTimeArray)")
+            
+            if let hour = Calendar.current.dateComponents([.hour], from: currentTime).hour {
+                if hour < 12 {
+                    amTimeSlots.append(ReservableTimeSlot(reservableTime: timeString, isAvailable: isAvailable))
+                } else {
+                    pmTimeSlots.append(ReservableTimeSlot(reservableTime: timeString, isAvailable: isAvailable))
+                }
+            }
+            
+            currentTime.addTimeInterval(3600)
+        }
+        
+        businessHourAM = amTimeSlots
+        businessHourPM = pmTimeSlots
     }
 }

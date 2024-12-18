@@ -349,43 +349,31 @@ fileprivate struct CalendarView: View {
                         .padding(.vertical, 8)
                     
                     VStack {
-                        HStack {
-                            Text("선택 가능한 시간대")
-                                .font(.pretendardSemiBold18)
-                                .foregroundStyle(.black)
-                            
-                            Spacer()
-                        }
+                        LeadingTextView(text: "선택 가능한 시간대", font: .pretendardSemiBold18, textColor: .black)
                         .padding(.bottom, 20)
                         
-                        if !productDetailViewModel.businessHourPM.isEmpty {
-                            HStack {
-                                Text("오전")
-                                    .font(.pretendardMedium14)
-                                    .foregroundStyle(.tcGray09)
-                                
-                                Spacer()
-                            }
-                            .padding(.bottom, 4)
+                        if !productDetailViewModel.businessHourAM.isEmpty {
+                            LeadingTextView(text: "오전", font: .pretendardMedium14, textColor: .tcGray09)
+                                .padding(.bottom, 4)
                             
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                                ForEach(productDetailViewModel.businessHourAM, id: \.self) { time in
+                                ForEach(productDetailViewModel.businessHourAM, id: \.self) { reservableTimeSlot in
                                     Button {
                                         if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                            displayTime = time
+                                            displayTime = reservableTimeSlot.reservableTime
                                         }
                                     } label: {
                                         RoundedRectangle(cornerRadius: 12)
-                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .strokeBorder(getStrokeBorderColor(reservableTimeSlot: reservableTimeSlot), lineWidth: 1)
                                             .frame(height: 40)
                                             .frame(idealWidth: 101)
                                             .background {
                                                 RoundedRectangle(cornerRadius: 12)
-                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .fill(getFillColor(reservableTimeSlot: reservableTimeSlot))
                                                     .overlay {
-                                                        Text(time)
+                                                        Text(reservableTimeSlot.reservableTime)
                                                             .font(.pretendardMedium16)
-                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                            .foregroundStyle(getTextColor(reservableTimeSlot: reservableTimeSlot))
                                                     }
                                             }
                                     }
@@ -395,36 +383,31 @@ fileprivate struct CalendarView: View {
                         }
                         
                         if !productDetailViewModel.businessHourPM.isEmpty {
-                            HStack {
-                                Text("오후")
-                                    .font(.pretendardMedium14)
-                                    .foregroundStyle(.tcGray09)
-                                
-                                Spacer()
-                            }
-                            .padding(.bottom, 4)
+                            LeadingTextView(text: "오후", font: .pretendardMedium14, textColor: .tcGray09)
+                                .padding(.bottom, 4)
                             
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
-                                ForEach(productDetailViewModel.businessHourPM, id: \.self) { time in
+                                ForEach(productDetailViewModel.businessHourPM, id: \.self) { reservableTimeSlot in
                                     Button {
                                         if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                            displayTime = time
+                                            displayTime = reservableTimeSlot.reservableTime
                                         }
                                     } label: {
                                         RoundedRectangle(cornerRadius: 12)
-                                            .strokeBorder(displayTime == time ? .clear : .tcGray03, lineWidth: 1)
+                                            .strokeBorder(getStrokeBorderColor(reservableTimeSlot: reservableTimeSlot), lineWidth: 1)
                                             .frame(height: 40)
                                             .frame(idealWidth: 101)
                                             .background {
                                                 RoundedRectangle(cornerRadius: 12)
-                                                    .fill(displayTime == time ? .tcPrimary06 : .white)
+                                                    .fill(getFillColor(reservableTimeSlot: reservableTimeSlot))
                                                     .overlay {
-                                                        Text(time)
+                                                        Text(reservableTimeSlot.reservableTime)
                                                             .font(.pretendardMedium16)
-                                                            .foregroundStyle(displayTime == time ? .white : .tcGray10)
+                                                            .foregroundStyle(getTextColor(reservableTimeSlot: reservableTimeSlot))
                                                     }
                                             }
                                     }
+                                    .disabled(!reservableTimeSlot.isAvailable)
                                 }
                             }
                         }
@@ -435,10 +418,7 @@ fileprivate struct CalendarView: View {
                     
                     Button {
                         productDetailViewModel.selectedTime = displayTime.toDate(dateFormat: .hourMinute)
-                        
                         productDetailViewModel.selectedDate = displayDate
-                        
-                        productDetailViewModel.calReservationDate()
                         isCalendarPresented = false
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
@@ -457,6 +437,36 @@ fileprivate struct CalendarView: View {
         }
         .padding(.horizontal, 16)
         .padding(.top, 32)
+    }
+    
+    private func getStrokeBorderColor(reservableTimeSlot: ReservableTimeSlot) -> Color {
+        if !reservableTimeSlot.isAvailable {
+            return Color.clear
+        } else if displayTime == reservableTimeSlot.reservableTime {
+            return Color.clear
+        } else {
+            return Color.tcGray03
+        }
+    }
+    
+    private func getFillColor(reservableTimeSlot: ReservableTimeSlot) -> Color {
+        if !reservableTimeSlot.isAvailable {
+            return Color.tcGray02
+        } else if displayTime == reservableTimeSlot.reservableTime {
+            return Color.tcPrimary06
+        } else {
+            return Color.white
+        }
+    }
+    
+    private func getTextColor(reservableTimeSlot: ReservableTimeSlot) -> Color {
+        if !reservableTimeSlot.isAvailable {
+            return Color.tcGray05
+        } else if displayTime == reservableTimeSlot.reservableTime {
+            return Color.white
+        } else {
+            return Color.tcGray10
+        }
     }
 }
 
@@ -527,6 +537,10 @@ fileprivate struct CustomCalendar: View {
                     
                     Button {
                         displayDate = date
+                        
+                        Task {
+                            await productDetailViewModel.fetchReservableTime(date: displayDate)
+                        }
                     } label: {
                         Text("\(date.dayNumber)")
                             .font(isSelected ? .pretendardSemiBold14 : .pretendardMedium14)
@@ -548,6 +562,10 @@ fileprivate struct CustomCalendar: View {
         }
         .onAppear {
             displayMonth = productDetailViewModel.selectedDate
+            
+            Task {
+                await productDetailViewModel.fetchReservableTime(date: displayDate)
+            }
         }
     }
 }
