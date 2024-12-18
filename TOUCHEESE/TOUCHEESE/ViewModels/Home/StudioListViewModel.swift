@@ -30,6 +30,8 @@ final class StudioListViewModel: ObservableObject {
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
+    @Published private(set) var tempSelectedPrice: StudioPrice = .all
+    
     private var selectedRegions: Set<StudioRegion> = [.all] {
         didSet { isFilteringByRegion = selectedRegions != [.all] }
     }
@@ -56,10 +58,10 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
-    func resetTempRegionOptions() {
-        tempSelectedRegions = [.all]
+    func applyPriceOptions() {
+        selectedPrice = tempSelectedPrice
+        Task { await fetchStudios() }
     }
-    
     
     // MARK: - Output
     
@@ -74,8 +76,7 @@ final class StudioListViewModel: ObservableObject {
     }
     
     func selectStudioPriceFilter(_ price: StudioPrice) {
-        self.selectedPrice = price
-        Task { await fetchStudios() }
+        self.tempSelectedPrice = price
     }
     
     func toggleStudioRatingFilter() {
@@ -99,6 +100,10 @@ final class StudioListViewModel: ObservableObject {
             tempSelectedRegions = []
             tempSelectedRegions.insert(.all)
         }
+    }
+    
+    func loadPriceOptions() {
+        tempSelectedPrice = selectedPrice
     }
     
     func loadRegionOptions() {

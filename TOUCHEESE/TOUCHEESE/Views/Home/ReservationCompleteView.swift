@@ -81,7 +81,7 @@ struct ReservationCompleteView: View {
             .padding(.vertical, 8)
             .padding(.horizontal, 55.5)
         }
-        .customNavigationBar(backgroundColor: .white, centerView: {
+        .customNavigationBar(centerView: {
             Text("예약 확정")
                 .modifier(NavigationTitleModifier())
         })

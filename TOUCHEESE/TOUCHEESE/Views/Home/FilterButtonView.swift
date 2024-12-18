@@ -14,20 +14,29 @@ struct FilterButtonView: View {
     var body: some View {
         HStack(spacing: 5) {
             Text(filter.title)
+                .font(.pretendardRegular14)
             
             switch filter {
             case .region, .price:
                 Image(systemName: "chevron.down")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 11)
             case .rating:
                 EmptyView()
             }
         }
+        .foregroundStyle(isFiltering ? .tcPrimary06 : .tcGray08)
         .foregroundStyle(.black)
-        .padding(.vertical, 5)
-        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
         .background {
-            RoundedRectangle(cornerRadius: 15)
-                .foregroundStyle(isFiltering ? .tcYellow : .tcLightyellow)
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(isFiltering ? .tcPrimary01 : .clear)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(isFiltering ? .tcPrimary04 : .tcGray03, lineWidth: 1)
         }
     }
 }

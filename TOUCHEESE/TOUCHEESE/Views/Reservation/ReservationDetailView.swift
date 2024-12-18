@@ -36,6 +36,8 @@ struct ReservationDetailView: View {
                         reservationTimeString: reservation.reservationTimeString
                     )
                     
+                    DividerView(color: .tcGray01, height: 8)
+                    
                     // 주문 상품
                     ReservationProductView(
                         studioName: reservation.studioName,
@@ -47,11 +49,15 @@ struct ReservationDetailView: View {
                         addPeoplePriceString: reservationDetail.addPeoplePrice.moneyStringFormat
                     )
                     
+                    DividerView(color: .tcGray01, height: 8)
+                    
                     // 예약자 정보
                     userInfoView(
                         userEmail: reservationDetail.memberEmail,
                         userPhoneNumber: reservationDetail.phoneNumber
                     )
+                    
+                    DividerView(color: .tcGray01, height: 8)
                     
                     // 결제 정보
                     PayInfoView(
@@ -131,7 +137,6 @@ struct ReservationDetailView: View {
             }
         }
         .ignoresSafeArea(edges: .bottom)
-        .background(.tcGray01)
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .onAppear {
             tabbarManager.isHidden = true
