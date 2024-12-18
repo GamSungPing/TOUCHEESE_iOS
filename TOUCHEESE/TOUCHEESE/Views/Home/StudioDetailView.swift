@@ -14,6 +14,8 @@ struct StudioDetailView: View {
     
     @Environment(\.isPresented) var isPresented
     
+    @Namespace private var namespace
+    
     @State private var selectedSegmentedControlIndex = 0
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
@@ -94,10 +96,14 @@ struct StudioDetailView: View {
                     NoticeView(notice: notice, isExpanded: $isExpanded)
                         .padding(.top, 3)
                         .padding(.bottom, 2)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 16)
                 }
                 
-                CustomSegmentedControl(selectedIndex: $selectedSegmentedControlIndex)
+                CustomSegmentedControl(
+                    selectedIndex: $selectedSegmentedControlIndex,
+                    namespace: namespace
+                )
+                .padding(.horizontal, 16)
                 
                 // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
@@ -175,34 +181,42 @@ struct StudioDetailView: View {
 
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
+    let namespace: Namespace.ID
     let options = ["상품", "리뷰"]
     
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(options.indices, id:\.self) { index in
-                ZStack {
-                    RoundedCornersShape(
-                        corners: [.topLeft, .topRight],
-                        radius: 20
-                    )
-                    .fill(.tcLightyellow)
-                    
-                    RoundedCornersShape(
-                        corners: [.topLeft, .topRight],
-                        radius: 20
-                    )
-                    .fill(.tcYellow)
-                    .opacity(selectedIndex == index ? 1 : 0.01)
+            ForEach(options.indices, id:\.self) { index in                ZStack(alignment: .bottom) {
+                Text(options[index])
+                    .font(selectedIndex == index ? .pretendardSemiBold16 : .pretendardRegular16)
+                    .foregroundStyle(selectedIndex == index ? .tcPrimary06 : .tcGray05)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .contentShape(.rect)
                     .onTapGesture {
                         selectedIndex = index
                     }
-                }
-                .overlay {
-                    Text(options[index])
+                
+                if selectedIndex == index {
+                    Rectangle()
+                        .fill(selectedIndex == index ? .tcPrimary06 : .tcGray03)
+                        .frame(height: selectedIndex == index ? 3 : 1.5)
+                        .matchedGeometryEffect(
+                            id: "rect",
+                            in: namespace
+                        )
                 }
             }
+            .animation(.spring(), value: selectedIndex)
+            }
         }
-        .frame(height: 40)
+        .frame(maxWidth: .infinity)
+        .frame(height: 56)
+        .background(alignment: .bottom) {
+            Rectangle()
+                .fill(.tcGray04)
+                .frame(height: 1.5)
+        }
     }
 }
 
