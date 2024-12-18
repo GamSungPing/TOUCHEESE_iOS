@@ -39,6 +39,7 @@ enum Network {
     case reservationListRequest(memberID: Int, isPast: Bool)
     case reservationDetailRequest(id: Int)
     case reservationCancelRequest(reservationID: Int, memberID: Int)
+    case reservableTime(studioId: Int, date: Date)
     
     /// Push Notification
     case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest)

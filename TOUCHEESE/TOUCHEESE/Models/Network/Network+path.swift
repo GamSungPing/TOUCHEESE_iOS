@@ -71,6 +71,8 @@ extension Network {
             return "/\(id)"
         case .reservationCancelRequest(let reservationID, _):
             return "/\(reservationID)/cancel"
+        case .reservableTime(studioId: let studioId, date: let date):
+            return "/\(studioId)/available-slots?"
         }
     }
 }
