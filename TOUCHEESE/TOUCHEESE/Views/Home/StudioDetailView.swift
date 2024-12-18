@@ -31,7 +31,7 @@ struct StudioDetailView: View {
                     imageURLs: studioDetail.detailImageURLs,
                     carouselIndex: $carouselIndex,
                     isShowingImageExtensionView: $isShowingImageExtensionView,
-                    height: 250
+                    height: 280
                 )
                 
                 // Studio 설명
