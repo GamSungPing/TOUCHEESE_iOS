@@ -116,6 +116,22 @@ struct HomeResultView: View {
     
     private var filtersView: some View {
         HStack(spacing: 6) {
+            if studioListViewModel.isShowingResetButton {
+                Button {
+                    isShowingRegionFilterOptionView = false
+                    isShowingPriceFilterOptionView = false
+                    
+                    studioListViewModel.resetFilters()
+                } label: {
+                    Image(.tcRefresh)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 32, height: 32)
+                        .foregroundStyle(Color.black)
+                }
+                .buttonStyle(.plain)
+            }
+            
             Button {
                 toggleFilter(&isShowingPriceFilterOptionView)
             } label: {
@@ -145,23 +161,8 @@ struct HomeResultView: View {
                 }
             
             Spacer()
-            
-            if studioListViewModel.isShowingResetButton {
-                Button {
-                    isShowingRegionFilterOptionView = false
-                    isShowingPriceFilterOptionView = false
-                    
-                    studioListViewModel.resetFilters()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 15)
-                        .foregroundStyle(Color.black)
-                }
-                .buttonStyle(.plain)
-            }
         }
+        .frame(height: 34)
     }
     
     @ViewBuilder
