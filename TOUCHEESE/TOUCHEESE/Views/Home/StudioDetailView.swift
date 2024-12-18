@@ -293,27 +293,38 @@ fileprivate struct NoticeView: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            Image(systemName: "megaphone.fill")
+            Image(.tcSpeaker)
+                .resizable()
+                .frame(width: 24, height: 24)
             
             if let notice {
                 Text("\(notice)")
+                    .font(.pretendardRegular14)
+                    .foregroundStyle(.tcGray07)
+                    .padding(.top, 3)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .lineLimit(isExpanded ? nil : 2)
+                    .lineLimit(isExpanded ? nil : 1)
                     .multilineTextAlignment(.leading)
                 
-                if notice.count > 38 {
+                if notice.count > 26 {
                     Button {
                         isExpanded.toggle()
                     } label: {
-                        Image(systemName: isExpanded ? "arrowtriangle.up" : "arrowtriangle.down")
+                        Image(isExpanded ? .tcTriangleUp : .tcTriangleDown)
+                            .resizable()
+                            .frame(width: 24, height: 24)
                     }
                 }
             }
         }
-        .padding()
+        .padding(24)
         .background {
-            RoundedRectangle(cornerRadius: 15)
-                .fill(.tcLightgray)
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.tcGray01)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(.tcGray02, lineWidth: 1)
+                }
         }
     }
 }
