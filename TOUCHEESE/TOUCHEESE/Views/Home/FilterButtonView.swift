@@ -14,7 +14,6 @@ struct FilterButtonView: View {
     var body: some View {
         HStack(spacing: 5) {
             Text(filter.title)
-                .foregroundStyle(.tcGray08)
                 .font(.pretendardRegular14)
             
             switch filter {
@@ -27,18 +26,17 @@ struct FilterButtonView: View {
                 EmptyView()
             }
         }
+        .foregroundStyle(isFiltering ? .tcPrimary06 : .tcGray08)
         .foregroundStyle(.black)
         .padding(.vertical, 6)
         .padding(.horizontal, 12)
         .background {
             RoundedRectangle(cornerRadius: 20)
-                .foregroundStyle(isFiltering ? .tcPrimary04 : .clear)
+                .foregroundStyle(isFiltering ? .tcPrimary01 : .clear)
         }
         .overlay {
-            if !isFiltering {
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(.tcGray03, lineWidth: 1)
-            }
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(isFiltering ? .tcPrimary04 : .tcGray03, lineWidth: 1)
         }
     }
 }

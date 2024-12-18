@@ -136,18 +136,13 @@ struct HomeResultView: View {
             }
             .buttonStyle(.plain)
             
-            Button {
-                studioListViewModel.toggleStudioRatingFilter()
-                
-                isShowingPriceFilterOptionView = false
-                isShowingRegionFilterOptionView = false
-            } label: {
-                FilterButtonView(
-                    filter: .rating,
-                    isFiltering: studioListViewModel.isFilteringByRating
-                )
-            }
-            .buttonStyle(.plain)
+            FilterButtonView(filter: .rating, isFiltering: studioListViewModel.isFilteringByRating)
+                .onTapGesture {
+                    studioListViewModel.toggleStudioRatingFilter()
+                    
+                    isShowingPriceFilterOptionView = false
+                    isShowingRegionFilterOptionView = false
+                }
             
             Spacer()
             
