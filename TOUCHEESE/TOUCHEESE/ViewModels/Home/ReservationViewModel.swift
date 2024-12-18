@@ -35,7 +35,7 @@ final class ReservationViewModel: ObservableObject {
     }
     
     var isBottomButtonSelectable: Bool {
-        if userEmail.isEmailFormat || userPhone.isPhoneLength || !isReserving {
+        if userEmail.isEmailFormat || userPhone.isPhoneLength {
             return true
         } else {
             return false
