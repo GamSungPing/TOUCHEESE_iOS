@@ -341,7 +341,7 @@ fileprivate struct CalendarView: View {
         VStack {
             ScrollView(showsIndicators: false) {
                 VStack {
-                    CustomCalendar(displayDate: $displayDate)
+                    CustomCalendar(displayDate: $displayDate, displayTime: $displayTime)
                     
                     DividerView()
                         .padding(.vertical, 8)
@@ -473,6 +473,7 @@ fileprivate struct CustomCalendar: View {
     
     // 캘린더 상단에 표시되는 기준 날짜
     @Binding var displayDate: Date
+    @Binding var displayTime: String
     @State private var displayMonth = Date()
     
     // 현재 날짜의 정보를 가져오는 계산 속성
@@ -535,7 +536,7 @@ fileprivate struct CustomCalendar: View {
                     
                     Button {
                         displayDate = date
-                        
+                        displayTime = ""
                         Task {
                             await productDetailViewModel.fetchReservableTime(date: displayDate)
                         }
