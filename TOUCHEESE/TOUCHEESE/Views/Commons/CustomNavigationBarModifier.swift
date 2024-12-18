@@ -26,7 +26,7 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
     }
     
     func body(content: Content) -> some View {
-        VStack {
+        VStack(spacing: 0) {
             ZStack {
                 HStack {
                     leftView?()
