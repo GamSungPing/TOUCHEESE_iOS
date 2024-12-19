@@ -41,12 +41,14 @@ struct HomeResultView: View {
                         
                         LazyVStack(spacing: 20) {
                             ForEach(studioListViewModel.studios) { studio in
-                                Button {
-                                    navigationManager.appendPath(viewType: .studioDetailView, viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio)))
-                                } label: {
-                                    StudioRow(studio: studio)
-                                }
-                                .buttonStyle(.plain)
+                                StudioRow(studio: studio)
+                                    .contentShape(.rect)
+                                    .onTapGesture {
+                                        navigationManager.appendPath(
+                                            viewType: .studioDetailView,
+                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+                                        )
+                                    }
                             }
                             
                             Color.clear
