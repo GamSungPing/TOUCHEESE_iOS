@@ -67,6 +67,9 @@ struct StudioDetailView: View {
                                     .stroke(.tcGray02, lineWidth: 1)
                             }
                     )
+                    .onTapGesture {
+                        selectedSegmentedControlIndex = 1
+                    }
                     
                     HStack(spacing: 4) {
                         Image(.tcClock)
