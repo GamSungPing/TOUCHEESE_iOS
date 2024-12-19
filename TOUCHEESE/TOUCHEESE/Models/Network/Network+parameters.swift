@@ -74,7 +74,7 @@ extension Network {
             params["deviceToken"] = deviceTokenRegistrationRequest.deviceToken
             
             return params
-        case .reservableTime(studioId: let studioId, date: let date):
+        case .reservableTimeRequest(studioId: let studioId, date: let date):
             var params: Parameters = [:]
             
             params["date"] = date.toString(format: .requestYearMonthDay)

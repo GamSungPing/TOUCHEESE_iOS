@@ -101,7 +101,6 @@ extension ProductDetail {
             
             // "name:price" 형식으로 파싱
             guard components.count == 2, let price = Int(components[1]) else {
-                print("Invalid format: \(optionString)")
                 return nil
             }
             
