@@ -106,22 +106,28 @@ struct StudioDetailView: View {
                 
                 CustomSegmentedControl(
                     selectedIndex: $selectedSegmentedControlIndex,
-                    namespace: namespace
+                    namespace: namespace,
+                    options: ["상품", "리뷰(\(studioDetail.reviewCount))"]
                 )
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
                 
                 // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
-                    ProductListView(studioDetail: studioDetail, studio: studio)
-                        .environmentObject(viewModel)
+                    ProductListView(
+                        studioDetail: studioDetail,
+                        studio: studio
+                    )
+                    .environmentObject(viewModel)
+                    .padding(.horizontal, 16)
                 } else {
                     ReviewImageGridView(
                         reviews: studioDetail.reviews.content,
+                        reviewsCount: studioDetail.reviewCount,
                         isPushingDetailView: $isPushingReviewDetailView
                     )
-                    .padding(.top, -13)
                     .environmentObject(viewModel)
+                    .padding(.horizontal, 16)
                 }
             }
         }
@@ -211,7 +217,7 @@ struct StudioDetailView: View {
 fileprivate struct CustomSegmentedControl: View {
     @Binding var selectedIndex: Int
     let namespace: Namespace.ID
-    let options = ["상품", "리뷰"]
+    let options: [String]
     
     var body: some View {
         HStack(spacing: 0) {
@@ -350,7 +356,6 @@ fileprivate struct ProductListView: View {
             Color.clear
                 .frame(height: 30)
         }
-        .padding(.horizontal)
     }
 }
 
