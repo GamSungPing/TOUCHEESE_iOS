@@ -235,7 +235,7 @@ class NetworkManager {
         studioId: Int,
         date: Date
     ) async throws -> ReservableTimeData {
-        let fetchRequest = Network.reservableTime(
+        let fetchRequest = Network.reservableTimeRequest(
             studioId: studioId,
             date: date
         )
