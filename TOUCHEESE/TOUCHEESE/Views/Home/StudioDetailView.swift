@@ -12,7 +12,8 @@ struct StudioDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
     @StateObject var viewModel: StudioDetailViewModel
     
-    @Environment(\.isPresented) var isPresented
+    @Environment(\.isPresented) private var isPresented
+    @Environment(\.dismiss) private var dismiss
     
     @Namespace private var namespace
     
@@ -20,8 +21,8 @@ struct StudioDetailView: View {
     @State private var carouselIndex = 0
     @State private var isShowingImageExtensionView = false
     @State private var isExpanded = false
-    
     @State private var isPushingReviewDetailView = false
+    @State private var isBookmarked = false
     
     var body: some View {
         let studio = viewModel.studio
@@ -122,12 +123,35 @@ struct StudioDetailView: View {
                 }
             }
         }
-        .toolbarRole(.editor)
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
-        .toolbar {
-            leadingToolbarContent(for: studio)
-            trailingToolbarContent
-        }
+        .customNavigationBar(
+            centerView: {
+                EmptyView()
+            },
+            leftView: {
+                HStack(spacing: 0) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        NavigationBackButtonView()
+                    }
+                    .padding(.trailing, 11)
+                    
+                    ProfileImageView(
+                        imageURL: studio.profileImageURL,
+                        size: 36
+                    )
+                    .padding(.trailing, 8)
+                    
+                    Text(studio.name)
+                        .foregroundStyle(.tcGray10)
+                        .font(.pretendardBold20)
+                }
+            },
+            rightView: {
+                BookmarkButton(isBookmarked: $isBookmarked, size: 24)
+            }
+        )
         .animation(.easeInOut, value: isExpanded)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(

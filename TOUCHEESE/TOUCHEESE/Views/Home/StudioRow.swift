@@ -48,25 +48,15 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-                bookmarkButton
+                BookmarkButton(
+                    isBookmarked: $isBookmarked,
+                    size: 30
+                )
             }
             .padding(.horizontal)
             
             portfolioImagesScrollView(portfolioImageURLs)
         }
-    }
-    
-    private var bookmarkButton: some View {
-        Button {
-            isBookmarked.toggle()
-        } label: {
-            Image(isBookmarked ? .tcBookmarkFill : .tcBookmark)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 30, height: 30)
-        }
-        .buttonStyle(.plain)
-        .animation(.spring, value: isBookmarked)
     }
     
     @ViewBuilder
