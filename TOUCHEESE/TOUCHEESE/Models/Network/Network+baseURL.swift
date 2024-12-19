@@ -18,7 +18,7 @@ extension Network {
             return "\(server_url)/api/v1/review/studio"
         case .productDetailRequest:
             return "\(server_url)/api/v1/product"
-        case .studioReservationRequest, .reservationDetailRequest, .reservationListRequest, .reservationCancelRequest, .reservableTime:
+        case .studioReservationRequest, .reservationDetailRequest, .reservationListRequest, .reservationCancelRequest, .reservableTimeRequest:
             return "\(server_url)/api/v1/reservation"
         case .deviceTokenRegistrationRequest:
             return "\(server_url)/api/v1/device/register"
