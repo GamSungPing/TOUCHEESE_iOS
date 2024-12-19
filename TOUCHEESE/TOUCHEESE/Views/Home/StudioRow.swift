@@ -40,7 +40,6 @@ struct StudioRow: View {
                             .foregroundStyle(.tcGray10)
                             .font(.pretendardSemiBold14)
                         
-                        // TODO: - 리뷰 개수 추가
                         Text("(\(studio.reviewCount))")
                             .foregroundStyle(.tcGray05)
                             .font(.pretendardRegular14)
@@ -49,25 +48,15 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-                bookmarkButton
+                BookmarkButton(
+                    isBookmarked: $isBookmarked,
+                    size: 30
+                )
             }
             .padding(.horizontal)
             
             portfolioImagesScrollView(portfolioImageURLs)
         }
-    }
-    
-    private var bookmarkButton: some View {
-        Button {
-            isBookmarked.toggle()
-        } label: {
-            Image(isBookmarked ? .tcBookmarkFill : .tcBookmark)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 30, height: 30)
-        }
-        .buttonStyle(.plain)
-        .animation(.spring, value: isBookmarked)
     }
     
     @ViewBuilder
