@@ -28,14 +28,15 @@ struct StudioDetailView: View {
         let studio = viewModel.studio
         let studioDetail = viewModel.studioDetail
         
-        ScrollView(.vertical) {
-            LazyVStack(alignment: .leading, spacing: 15) {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 ImageCarouselView(
                     imageURLs: studioDetail.detailImageURLs,
                     carouselIndex: $carouselIndex,
                     isShowingImageExtensionView: $isShowingImageExtensionView,
                     height: 280
                 )
+                .padding(.bottom, 16)
                 
                 // Studio 설명 View
                 VStack(alignment: .leading, spacing: 6) {
@@ -94,12 +95,12 @@ struct StudioDetailView: View {
                     
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 24)
                 
                 // Studio 공지 View
                 if let notice = studioDetail.notice, notice != "" {
                     NoticeView(notice: notice, isExpanded: $isExpanded)
-                        .padding(.top, 3)
-                        .padding(.bottom, 2)
+                        .padding(.bottom, 24)
                         .padding(.horizontal, 16)
                 }
                 
@@ -108,6 +109,7 @@ struct StudioDetailView: View {
                     namespace: namespace
                 )
                 .padding(.horizontal, 16)
+                .padding(.bottom, 24)
                 
                 // 상품 또는 리뷰 View
                 if selectedSegmentedControlIndex == 0 {
@@ -270,54 +272,79 @@ fileprivate struct ProductListView: View {
     let studio: Studio
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading, spacing: 16) {
             Text("촬영 상품")
-                .padding(.init(top: 15, leading: 0, bottom: -10, trailing: 0))
+                .foregroundStyle(.tcGray10)
+                .font(.pretendardMedium18)
             
             ForEach(studioDetail.products, id: \.self) { product in
                 Button {
                     navigationManager.appendPath(viewType: .productDetailView, viewMaterial: ProductDetailViewMaterial(viewModel: ProductDetailViewModel(studio: studio, studioDetails: studioDetail, product: product)))
                 } label: {
-                    HStack(spacing: 15) {
+                    HStack(spacing: 13) {
                         KFImage(product.imageURL)
                             .placeholder { ProgressView() }
                             .resizable()
                             .downsampling(size: CGSize(width: 250, height: 250))
                             .fade(duration: 0.25)
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 120, height: 150)
-                            .clipped()
-                            .overlay {
-                                Rectangle()
-                                    .fill(Color.clear)
-                                    .border(Color.black, width: 1)
-                            }
+                            .frame(width: 85, height: 120)
+                            .clipShape(.rect(cornerRadius: 8))
                         
                         VStack(alignment: .leading) {
                             Text(product.name)
-                                .fontWeight(.semibold)
-                                .padding(.bottom, 1)
+                                .foregroundStyle(.tcGray08)
+                                .font(.pretendardSemiBold16)
+                                .padding(.bottom, 4)
                             
                             Text(product.description)
-                                .font(.system(size: 14))
-                                .lineLimit(4)
+                                .foregroundStyle(.tcGray06)
+                                .font(.pretendardRegular13)
+                                .lineLimit(2)
+                                .lineSpacing(0)
                                 .multilineTextAlignment(.leading)
                                 .frame(alignment: .leading)
-                            Text("리뷰 \(product.reviewCount)개")
-                                .font(Font.caption)
-                                .foregroundStyle(Color.gray)
+                            
+                            HStack(spacing: 2) {
+                                Image(.tcReview)
+                                    .resizable()
+                                    .frame(width: 16, height: 16)
+                                
+                                Text("리뷰 \(product.reviewCount)개")
+                                    .foregroundStyle(.tcGray08)
+                                    .font(.pretendardMedium12)
+                            }
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(.tcGray01)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(.tcGray02, lineWidth: 1)
+                                    )
+                            )
                             
                             Spacer()
                             
-                            HStack {
-                                Spacer()
-                                
-                                Text("\(product.price)원")
-                                    .font(.system(size: 18, weight: .bold))
-                            }
+                            Text("\(product.price)원")
+                                .foregroundStyle(.tcGray10)
+                                .font(.pretendardSemiBold18)
                         }
+                        
+                        Spacer()
                     }
+                    .frame(height: 123)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(.tcGray02, lineWidth: 1)
+                    )
+                    .contentShape(.rect)
                 }
+                .buttonStyle(.plain)
+                .padding(.bottom, 4)
             }
             
             Color.clear
