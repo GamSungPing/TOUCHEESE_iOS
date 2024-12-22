@@ -8,6 +8,8 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseMessaging
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -105,6 +107,7 @@ struct TOUCHEESEApp: App {
     
     init() {
         CacheManager.configureKingfisherCache()
+        KakaoSDK.initSDK(appKey: Bundle.main.kakaoNativeAppKey)
     }
     
     init() {
@@ -119,6 +122,11 @@ struct TOUCHEESEApp: App {
                 .environmentObject(reservationListViewModel)
                 .environmentObject(navigationManager)
                 .preferredColorScheme(.light)
+                .onOpenURL(perform: { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                })
         }
     }
 }

@@ -74,10 +74,16 @@ extension Network {
             params["deviceToken"] = deviceTokenRegistrationRequest.deviceToken
             
             return params
-        case .reservableTimeRequest(studioId: let studioId, date: let date):
+        case .reservableTimeRequest(_:_, date: let date):
             var params: Parameters = [:]
             
             params["date"] = date.toString(format: .requestYearMonthDay)
+            
+            return params
+        case .sendSocialIDRequest(_:_, socialType: let socialType):
+            var params: Parameters = [:]
+            
+            params["socialType"] = socialType.rawValue
             
             return params
         }

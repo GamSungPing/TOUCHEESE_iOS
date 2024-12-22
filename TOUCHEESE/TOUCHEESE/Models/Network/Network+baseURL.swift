@@ -22,6 +22,8 @@ extension Network {
             return "\(server_url)/api/v1/reservation"
         case .deviceTokenRegistrationRequest:
             return "\(server_url)/api/v1/device/register"
+        case .sendSocialIDRequest(socialID: let socialID, socialType: let socialType):
+            return "\(server_url)/api/v1/auth/login"
         }
     }
 }
