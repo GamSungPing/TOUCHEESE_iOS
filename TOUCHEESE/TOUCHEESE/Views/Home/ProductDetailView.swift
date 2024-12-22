@@ -275,20 +275,24 @@ fileprivate struct OptionItemView: View {
                 isSelected.toggle()
                 productDetailViewModel.optionChanged(isSelected: isSelected, id: productOption.id)
             } label: {
-                HStack {
+                HStack(alignment: .top) {
                     Image(isSelected ? .tcToggleOn : .tcToggleOff)
                         .frame(width: 24, height: 24)
                         .padding(.trailing, 10)
                     
-                    Text("\(productOption.name)")
-                        .font(.pretendardRegular16)
-                        .foregroundStyle(.tcGray10)
-                    
-                    Spacer()
-                    
-                    Text("\(productOption.price.moneyStringFormat)")
-                        .font(.pretendardMedium16)
-                        .foregroundStyle(.tcGray10)
+                    Group {
+                        Text("\(productOption.name)")
+                            .font(.pretendardRegular16)
+                            .foregroundStyle(.tcGray10)
+                            .multilineTextAlignment(.leading)
+                        
+                        Spacer()
+                        
+                        Text("\(productOption.price.moneyStringFormat)")
+                            .font(.pretendardMedium16)
+                            .foregroundStyle(.tcGray10)
+                    }
+                    .padding(.top, 2)
                 }
             }
         }

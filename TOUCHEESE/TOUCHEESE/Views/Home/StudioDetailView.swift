@@ -382,13 +382,9 @@ fileprivate struct NoticeView: View {
                     .multilineTextAlignment(.leading)
                 
                 if notice.count > 26 {
-                    Button {
-                        isExpanded.toggle()
-                    } label: {
-                        Image(isExpanded ? .tcTriangleUp : .tcTriangleDown)
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                    }
+                    Image(isExpanded ? .tcTriangleUp : .tcTriangleDown)
+                        .resizable()
+                        .frame(width: 24, height: 24)
                 }
             }
         }
@@ -400,6 +396,9 @@ fileprivate struct NoticeView: View {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(.tcGray02, lineWidth: 1)
                 }
+        }
+        .onTapGesture {
+            isExpanded.toggle()
         }
     }
 }
