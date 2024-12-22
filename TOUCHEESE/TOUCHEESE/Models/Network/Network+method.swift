@@ -13,7 +13,7 @@ extension Network {
         switch self {
         case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .reservableTimeRequest:
             return .get
-        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest:
             return .post
         case .reservationCancelRequest:
             return .delete
