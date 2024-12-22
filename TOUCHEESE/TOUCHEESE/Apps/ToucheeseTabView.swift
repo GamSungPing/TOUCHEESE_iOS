@@ -20,18 +20,12 @@ struct ToucheeseTabView: View {
                             navigationManager.buildView(viewType: viewType)
                         }
                 }
-                .onChange(of: navigationManager.homePath) { newPath in
-                    navigationManager.isTabBarHidden = newPath.count >= 2
-                }
             case .reservation:
                 NavigationStack(path: $navigationManager.reservationPath) {
                     ReservationListView()
                         .navigationDestination(for: ViewType.self) { viewType in
                             navigationManager.buildView(viewType: viewType)
                         }
-                }
-                .onChange(of: navigationManager.homePath) { newPath in
-                    navigationManager.isTabBarHidden = newPath.count >= 1
                 }
             case .likedStudios:
                 TestView2()

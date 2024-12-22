@@ -9,8 +9,16 @@ import Foundation
 import SwiftUI
 
 class NavigationManager: ObservableObject {
-    @Published var homePath: [ViewType] = []
-    @Published var reservationPath: [ViewType] = []
+    @Published var homePath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
+    @Published var reservationPath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
     @Published var tabItem: Tab = .home
     @Published var isTabBarHidden: Bool = false
     
@@ -85,6 +93,19 @@ class NavigationManager: ObservableObject {
         case .reservationDetailView:
             self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
             reservationPath.append(.reservationDetailView)
+        }
+    }
+    
+    private func updateTabBarVisibility() {
+        switch tabItem {
+        case .home:
+            isTabBarHidden = homePath.count >= 2
+        case .reservation:
+            isTabBarHidden = reservationPath.count >= 1
+        case .likedStudios:
+            break
+        case .myPage:
+            break
         }
     }
 }
