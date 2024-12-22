@@ -47,7 +47,9 @@ struct LogInView: View {
                         switch result {
                         case .success(let authResults):
                             print("Apple Authorization successful.")
-                            viewModel.handleAuthorization(authResults)
+                            Task {
+                                await viewModel.handleAuthorizationWithApple(authResults)
+                            }
                         case .failure(let error):
                             print("Apple Authorization failed: \(error.localizedDescription)")
                         }
