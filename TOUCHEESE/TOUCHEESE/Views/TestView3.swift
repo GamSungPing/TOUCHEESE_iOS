@@ -12,14 +12,17 @@ struct TestView3: View {
     
     var body: some View {
         VStack {
+            Spacer()
+            
             Button {
                 Task {
                     await networkManager.TempKakaoLogin()
-                    
                 }
             } label: {
                 Text("로귄로귄")
             }
+            
+            Spacer()
         }
     }
 }

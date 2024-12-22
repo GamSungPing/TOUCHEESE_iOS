@@ -9,9 +9,18 @@ import Foundation
 import SwiftUI
 
 class NavigationManager: ObservableObject {
-    @Published var homePath: [ViewType] = []
-    @Published var reservationPath: [ViewType] = []
-    @Published var tabNumber: Int = 0
+    @Published var homePath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
+    @Published var reservationPath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
+    @Published var tabItem: Tab = .home
+    @Published var isTabBarHidden: Bool = false
     
     private(set) var homeResultViewMaterial: HomeResultViewMaterial?
     private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
@@ -26,7 +35,7 @@ class NavigationManager: ObservableObject {
     
     func goFirstViewAndSecondTap() {
         homePath.removeAll()
-        tabNumber = 1
+        tabItem = .reservation
     }
     
     @ViewBuilder
@@ -55,35 +64,48 @@ class NavigationManager: ObservableObject {
             homePath.append(.homeResultView)
         case .studioDetailView:
             self.studioDetailViewMaterial = viewMaterial as? StudioDetailViewMaterial
-            switch tabNumber {
-            case 0: homePath.append(.studioDetailView)
-            case 1: reservationPath.append(.studioDetailView)
+            switch tabItem {
+            case .home: homePath.append(.studioDetailView)
+            case .reservation: reservationPath.append(.studioDetailView)
             default:
                 break
             }
         case .productDetailView:
             self.productDetailViewMaterial = viewMaterial as? ProductDetailViewMaterial
-            switch tabNumber {
-            case 0: homePath.append(.productDetailView)
-            case 1: reservationPath.append(.productDetailView)
+            switch tabItem {
+            case .home: homePath.append(.productDetailView)
+            case .reservation: reservationPath.append(.productDetailView)
             default: break
             }
         case .reservationConfirmView:
             self.reservationConfirmViewMaterial = viewMaterial as? ReservationConfirmViewMaterial
-            switch tabNumber {
-            case 0: homePath.append(.reservationConfirmView)
-            case 1: reservationPath.append(.reservationConfirmView)
+            switch tabItem {
+            case .home: homePath.append(.reservationConfirmView)
+            case .reservation: reservationPath.append(.reservationConfirmView)
             default: break
             }
         case .reservationCompleteView:
-            switch tabNumber {
-            case 0: homePath.append(.reservationCompleteView)
-            case 1: reservationPath.append(.reservationCompleteView)
+            switch tabItem {
+            case .home: homePath.append(.reservationCompleteView)
+            case .reservation: reservationPath.append(.reservationCompleteView)
             default: break
             }
         case .reservationDetailView:
             self.reservationDetailViewMaterial = viewMaterial as? ReservationDetailViewMaterial
             reservationPath.append(.reservationDetailView)
+        }
+    }
+    
+    private func updateTabBarVisibility() {
+        switch tabItem {
+        case .home:
+            isTabBarHidden = homePath.count >= 2
+        case .reservation:
+            isTabBarHidden = reservationPath.count >= 1
+        case .likedStudios:
+            break
+        case .myPage:
+            break
         }
     }
 }

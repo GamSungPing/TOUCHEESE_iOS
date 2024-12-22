@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ReviewDetailView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject var viewModel: StudioDetailViewModel
     
     @Environment(\.dismiss) private var dismiss
@@ -51,16 +50,12 @@ struct ReviewDetailView: View {
                 NavigationBackButtonView()
             }
         }
-        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
                 imageURLs: reviewDetail.imageURLs,
                 currentIndex: $carouselIndex,
                 isShowingImageExtensionView: $isShowingImageExtensionView
             )
-        }
-        .onAppear {
-            tabbarManager.isHidden = true
         }
     }
     
@@ -162,6 +157,5 @@ struct ReviewDetailView: View {
             .environmentObject(
                 StudioDetailViewModel(studio: Studio.sample)
             )
-            .environmentObject(TabbarManager())
     }
 }
