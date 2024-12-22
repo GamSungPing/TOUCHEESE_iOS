@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct StudioDetailView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
+    @EnvironmentObject private var navigationManager: NavigationManager
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) private var isPresented
@@ -83,7 +83,7 @@ struct StudioDetailView: View {
                             .font(.pretendardRegular16)
                     }
                     
-                    HStack(spacing: 4) {
+                    HStack(alignment: .top, spacing: 4) {
                         Image(.tcMapPinFill)
                             .resizable()
                             .frame(width: 18, height: 18)
@@ -91,6 +91,7 @@ struct StudioDetailView: View {
                         Text(studioDetail.address)
                             .foregroundStyle(.tcGray08)
                             .font(.pretendardRegular16)
+                            .multilineTextAlignment(.leading)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -130,7 +131,6 @@ struct StudioDetailView: View {
                 }
             }
         }
-        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .customNavigationBar(
             centerView: {
                 EmptyView()
@@ -170,9 +170,6 @@ struct StudioDetailView: View {
         .navigationDestination(isPresented: $isPushingReviewDetailView) {
             ReviewDetailView()
                 .environmentObject(viewModel)
-        }
-        .onAppear {
-            tabbarManager.isHidden = true
         }
     }
     
@@ -220,28 +217,29 @@ fileprivate struct CustomSegmentedControl: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(options.indices, id:\.self) { index in                ZStack(alignment: .bottom) {
-                Text(options[index])
-                    .font(selectedIndex == index ? .pretendardSemiBold16 : .pretendardRegular16)
-                    .foregroundStyle(selectedIndex == index ? .tcPrimary06 : .tcGray05)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        selectedIndex = index
+            ForEach(options.indices, id:\.self) { index in
+                ZStack(alignment: .bottom) {
+                    Text(options[index])
+                        .font(selectedIndex == index ? .pretendardSemiBold16 : .pretendardRegular16)
+                        .foregroundStyle(selectedIndex == index ? .tcPrimary06 : .tcGray05)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .contentShape(.rect)
+                        .onTapGesture {
+                            selectedIndex = index
+                        }
+                    
+                    if selectedIndex == index {
+                        Rectangle()
+                            .fill(selectedIndex == index ? .tcPrimary06 : .tcGray03)
+                            .frame(height: selectedIndex == index ? 3 : 1.5)
+                            .matchedGeometryEffect(
+                                id: "rect",
+                                in: namespace
+                            )
                     }
-                
-                if selectedIndex == index {
-                    Rectangle()
-                        .fill(selectedIndex == index ? .tcPrimary06 : .tcGray03)
-                        .frame(height: selectedIndex == index ? 3 : 1.5)
-                        .matchedGeometryEffect(
-                            id: "rect",
-                            in: namespace
-                        )
                 }
-            }
-            .animation(.spring(), value: selectedIndex)
+                .animation(.spring(), value: selectedIndex)
             }
         }
         .frame(maxWidth: .infinity)
@@ -406,7 +404,6 @@ fileprivate struct NoticeView: View {
         StudioDetailView(
             viewModel: StudioDetailViewModel(studio: Studio.sample)
         )
-        .environmentObject(TabbarManager())
         .environmentObject(NavigationManager())
     }
 }
