@@ -19,6 +19,7 @@ final class StudioListViewModel: ObservableObject {
         }
     }
     @Published private(set) var studios: [Studio] = []
+    @Published private(set) var studioCount: Int = 0
     
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
@@ -128,13 +129,15 @@ final class StudioListViewModel: ObservableObject {
             Task {
                 do {
                     isStudioLoading = true
-                    studios.append(contentsOf: try await NetworkManager.shared.getStudioListDatas(
-                        concept: concept,
-                        isHighRating: isHighRating,
-                        regionArray: regionArray,
-                        price: price,
-                        page: page
-                    ))
+                    studios.append(
+                        contentsOf: try await NetworkManager.shared.getStudioListDatas(
+                            concept: concept,
+                            isHighRating: isHighRating,
+                            regionArray: regionArray,
+                            price: price,
+                            page: page
+                        ).list
+                    )
                     
                     isStudioLoading = false
                 } catch {
@@ -155,13 +158,15 @@ final class StudioListViewModel: ObservableObject {
         page = 1
         
         do {
-            studios = try await NetworkManager.shared.getStudioListDatas(
+            let studioDatas = try await NetworkManager.shared.getStudioListDatas(
                 concept: concept,
                 isHighRating: isHighRating,
                 regionArray: regionArray,
                 price: price,
                 page: page
             )
+            
+            (studios, studioCount) = (studioDatas.list, studioDatas.count)
             
             isStudioLoading = false
         } catch {
