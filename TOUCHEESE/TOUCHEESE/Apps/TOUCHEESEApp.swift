@@ -16,6 +16,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
+        // MARK: - 로그인 상태 확인
+        let keychainManager = KeychainManager.shared
+        let authManager = AuthenticationManager.shared
+        
+        let isExistingAccessToken = keychainManager.read(forAccount: .accessToken)
+        isExistingAccessToken == nil ? authManager.failedAuthentication() : authManager.successfulAuthentication()
+        
         // MARK: - Firebase 관련 설정
         FirebaseApp.configure()
         Messaging.messaging().delegate = self

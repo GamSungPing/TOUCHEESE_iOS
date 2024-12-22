@@ -12,6 +12,7 @@ final class LogInViewModel {
     
     private let networkManager = NetworkManager.shared
     private let keychainManager = KeychainManager.shared
+    private let authManager = AuthenticationManager.shared
     
     func handleAuthorizationWithApple(_ authResults: ASAuthorization) async {
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
@@ -35,8 +36,11 @@ final class LogInViewModel {
                 accessToken: loginResponseData.accessToken,
                 refreshToken: loginResponseData.refreshToken
             )
+            
+            authManager.successfulAuthentication()
         } catch {
             print("Network Error - postSocialId: \(error.localizedDescription)")
+            authManager.failedAuthentication()
         }
     }
     
