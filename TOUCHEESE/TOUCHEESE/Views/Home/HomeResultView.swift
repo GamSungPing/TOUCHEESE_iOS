@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct HomeResultView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
     
@@ -72,11 +71,6 @@ struct HomeResultView: View {
                                     studioListViewModel.loadMoreStudios()
                                 }
                         }
-                        .navigationDestination(for: Studio.self) { studio in
-                            StudioDetailView(
-                                viewModel: StudioDetailViewModel(studio: studio)
-                            )
-                        }
                     }
                     .scrollIndicators(.never)
                 }
@@ -105,8 +99,6 @@ struct HomeResultView: View {
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
-            
-            tabbarManager.isHidden = false
         }
     }
     
@@ -257,6 +249,5 @@ struct HomeResultView: View {
         HomeResultView(concept: .liveliness)
     }
     .environmentObject(StudioListViewModel())
-    .environmentObject(TabbarManager())
     .environmentObject(NavigationManager())
 }

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ReservationListView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
     
@@ -52,9 +51,6 @@ struct ReservationListView: View {
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
-        }
-        .onAppear {
-            tabbarManager.isHidden = false
         }
     }
 }
@@ -142,5 +138,4 @@ fileprivate enum SegmentedTab: String, CaseIterable {
 #Preview {
     ReservationListView()
         .environmentObject(ReservationListViewModel())
-        .environmentObject(TabbarManager())
 }

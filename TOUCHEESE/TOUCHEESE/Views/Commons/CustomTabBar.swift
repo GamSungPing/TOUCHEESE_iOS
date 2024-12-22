@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Tab
+    @State private var yOffset: CGFloat = 200
     
     var body: some View {
         HStack {
@@ -28,13 +29,19 @@ struct CustomTabBar: View {
             
             Spacer()
         }
-        .frame(height: 70)
+        .frame(height: 65)
         
         .background {
             Rectangle()
                 .fill(Color.white)
                 .edgesIgnoringSafeArea(.bottom)
                 .shadow(color: .black.opacity(0.06), radius: 20, y: -12)
+        }
+        .offset(y: yOffset)
+        .onAppear {
+            withAnimation(.bouncy) {
+                yOffset = 0
+            }
         }
     }
     

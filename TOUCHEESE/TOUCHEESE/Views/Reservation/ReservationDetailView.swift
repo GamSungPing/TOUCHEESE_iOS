@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ReservationDetailView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
     @StateObject var viewModel: ReservationDetailViewModel
@@ -137,10 +136,6 @@ struct ReservationDetailView: View {
             }
         }
         .ignoresSafeArea(edges: .bottom)
-        .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
-        .onAppear {
-            tabbarManager.isHidden = true
-        }
     }
     
     private var reservationStatusInfoView: some View {
@@ -223,7 +218,6 @@ struct ReservationDetailView: View {
                 reservation: Reservation.sample
             )
         )
-        .environmentObject(TabbarManager())
         .environmentObject(NavigationManager())
     }
 }
