@@ -11,6 +11,8 @@ struct ReviewDetailView: View {
     @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject var viewModel: StudioDetailViewModel
     
+    @Environment(\.dismiss) private var dismiss
+    
     @State var carouselIndex: Int = 0
     @State var isShowingImageExtensionView: Bool = false
     
@@ -42,9 +44,14 @@ struct ReviewDetailView: View {
                 Spacer()
             }
         }
-        .toolbarRole(.editor)
-        .toolbar {
-            leadingToolbarContent(for: reviewDetail)
+        .customNavigationBar {
+            EmptyView()
+        } leftView: {
+            Button {
+                dismiss()
+            } label: {
+                NavigationBackButtonView()
+            }
         }
         .toolbar(tabbarManager.isHidden ? .hidden : .visible, for: .tabBar)
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
@@ -119,23 +126,6 @@ struct ReviewDetailView: View {
                     .padding(.horizontal)
                 }
                 .padding(.leading)
-            }
-        }
-    }
-    
-    private func leadingToolbarContent(
-        for reviewDetail: ReviewDetail
-    ) -> some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            HStack {
-                ProfileImageView(
-                    imageURL: reviewDetail.userProfileImageURL,
-                    size: 35
-                )
-                
-                Text("\(reviewDetail.userName)")
-                    .font(.headline)
-                    .foregroundColor(.primary)
             }
         }
     }
