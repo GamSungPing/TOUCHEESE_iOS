@@ -34,16 +34,20 @@ struct ImageCarouselView: View {
         .overlay(alignment: .bottomTrailing) {
             HStack {
                 Spacer()
-                Text("\(carouselIndex + 1) / \(imageURLs.count)")
-                    .foregroundStyle(Color.white)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background {
-                        RoundedRectangle(cornerRadius: 15)
-                            .foregroundStyle(Color.black.opacity(0.5))
-                    }
-                    .padding()
+                HStack(spacing: 3) {
+                    Text("\(carouselIndex + 1)")
+                        .foregroundStyle(.tcGray01)
+                    Text("/ \(imageURLs.count)")
+                        .foregroundStyle(.tcGray04)
+                }
+                .font(.pretendardMedium14)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 5)
+                .background {
+                    RoundedRectangle(cornerRadius: 15)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                }
+                .padding()
             }
         }
     }
