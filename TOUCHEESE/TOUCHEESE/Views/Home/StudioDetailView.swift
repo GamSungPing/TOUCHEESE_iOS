@@ -83,7 +83,7 @@ struct StudioDetailView: View {
                             .font(.pretendardRegular16)
                     }
                     
-                    HStack(spacing: 4) {
+                    HStack(alignment: .top, spacing: 4) {
                         Image(.tcMapPinFill)
                             .resizable()
                             .frame(width: 18, height: 18)
@@ -91,6 +91,7 @@ struct StudioDetailView: View {
                         Text(studioDetail.address)
                             .foregroundStyle(.tcGray08)
                             .font(.pretendardRegular16)
+                            .multilineTextAlignment(.leading)
                     }
                 }
                 .padding(.horizontal, 16)
