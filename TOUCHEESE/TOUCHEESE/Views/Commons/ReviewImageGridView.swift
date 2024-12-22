@@ -21,7 +21,7 @@ struct ReviewImageGridView: View {
     )
     
     private var gridSize: CGFloat {
-        (CGFloat.screenWidth - 4) / 3
+        (CGFloat.screenWidth - (32 + 16)) / 3
     }
     
     var body: some View {
@@ -47,7 +47,7 @@ struct ReviewImageGridView: View {
                             .fade(duration: 0.25)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(height: 144)
+                            .frame(width: gridSize, height: 144)
                             .clipShape(.rect(cornerRadius: 6))
                             .contentShape(Rectangle())
                             .onTapGesture {
