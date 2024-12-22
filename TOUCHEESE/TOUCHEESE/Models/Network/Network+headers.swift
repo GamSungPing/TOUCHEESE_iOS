@@ -13,6 +13,12 @@ extension Network {
         switch self {
         case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .studioReservationRequest, .reservationListRequest, .reservationDetailRequest, .reservationCancelRequest, .deviceTokenRegistrationRequest, .reservableTimeRequest:
             return ["Content-Type": "application/json"]
+        case .sendSocialIDRequest(socialID: let socialID, _:_):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["socialId"] = socialID
+            
+            return headers
         }
     }
 }

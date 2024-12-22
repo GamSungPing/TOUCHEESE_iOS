@@ -43,4 +43,7 @@ enum Network {
     
     /// Push Notification
     case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest)
+    
+    /// Login Logics
+    case sendSocialIDRequest(socialID: String, socialType: SocialType)
 }
