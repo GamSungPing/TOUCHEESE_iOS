@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct LogInView: View {
+    private let viewModel: LogInViewModel = LogInViewModel()
+    
     @Binding var isPresented: Bool
     
     var body: some View {
@@ -38,13 +41,19 @@ struct LogInView: View {
                         print("카카오 로그인")
                     }
                     
-                    // TODO: - 애플 로그인 버튼 추가
-                    FillBottomButton(
-                        isSelectable: true,
-                        title: "애플로 로그인(초안)"
-                    ) {
-                        print("애플 로그인")
+                    SignInWithAppleButton { request in
+                        request.requestedScopes = []
+                    } onCompletion: { result in
+                        switch result {
+                        case .success(let authResults):
+                            print("Apple Authorization successful.")
+                            viewModel.handleAuthorization(authResults)
+                        case .failure(let error):
+                            print("Apple Authorization failed: \(error.localizedDescription)")
+                        }
                     }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(width: 360, height: 48)
                 }
                 .padding(.vertical, 16)
             }
