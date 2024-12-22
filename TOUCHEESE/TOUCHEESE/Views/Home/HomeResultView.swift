@@ -37,9 +37,25 @@ struct HomeResultView: View {
                 } else {
                     ScrollView {
                         Color.clear
-                            .frame(height: 12)
+                            .frame(height: 5)
                         
                         LazyVStack(spacing: 20) {
+                            HStack(spacing: 0) {
+                                Text("총")
+                                    .padding(.trailing, 3)
+                                
+                                Text("\(studioListViewModel.studioCount)")
+                                    .foregroundStyle(.tcPrimary06)
+                                    .font(.pretendardMedium14)
+                                
+                                Text("개의 스튜디오가 있습니다.")
+                                
+                                Spacer()
+                            }
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardRegular14)
+                            .padding(.horizontal, 16)
+                            
                             ForEach(studioListViewModel.studios) { studio in
                                 StudioRow(studio: studio)
                                     .contentShape(.rect)

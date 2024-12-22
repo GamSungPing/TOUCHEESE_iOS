@@ -57,7 +57,7 @@ class NetworkManager {
         regionArray: [StudioRegion]? = nil,
         price: StudioPrice? = nil,
         page: Int? = nil
-    ) async throws -> [Studio] {
+    ) async throws -> (list: [Studio], count: Int) {
         let fetchRequest = Network.studioListRequest(
             concept: concept,
             isHighRating: isHighRating,
@@ -70,7 +70,7 @@ class NetworkManager {
             decodingType: StudioData.self
         )
         
-        return studioData.data.content
+        return (studioData.data.content, studioData.data.totalElementsCount)
     }
     
     /// 스튜디오의 자세한 데이터를 요청하는 함수

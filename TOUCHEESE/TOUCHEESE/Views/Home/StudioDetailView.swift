@@ -39,7 +39,7 @@ struct StudioDetailView: View {
                 .padding(.bottom, 16)
                 
                 // Studio 설명 View
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text(studio.name)
                         .foregroundStyle(.tcGray10)
                         .font(.pretendardSemiBold18)
@@ -92,7 +92,6 @@ struct StudioDetailView: View {
                             .foregroundStyle(.tcGray08)
                             .font(.pretendardRegular16)
                     }
-                    
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
