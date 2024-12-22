@@ -15,4 +15,12 @@ extension Bundle {
         
         return result
     }
+    
+    var kakaoNativeAppKey: String {
+        guard let result = infoDictionary?["KAKAO_NATIVE_APPKEY"] as? String else {
+            return "ERROR"
+        }
+        
+        return result
+    }
 }
