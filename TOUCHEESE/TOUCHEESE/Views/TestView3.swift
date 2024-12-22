@@ -8,10 +8,20 @@
 import SwiftUI
 
 struct TestView3: View {
+    private var networkManager = NetworkManager.shared
+    
     var body: some View {
         VStack {
             Spacer()
-            Text("Hello, World!")
+            
+            Button {
+                Task {
+                    await networkManager.TempKakaoLogin()
+                }
+            } label: {
+                Text("로귄로귄")
+            }
+            
             Spacer()
         }
     }

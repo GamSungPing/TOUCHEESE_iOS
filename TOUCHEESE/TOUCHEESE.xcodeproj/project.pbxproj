@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BCFFAC52D13DC74008E865E /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3BCFFAC42D13DC74008E865E /* KakaoSDKAuth */; };
+		3BCFFAC72D13DC74008E865E /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 3BCFFAC62D13DC74008E865E /* KakaoSDKCommon */; };
+		3BCFFAC92D13DC74008E865E /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 3BCFFAC82D13DC74008E865E /* KakaoSDKUser */; };
 		3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3BD321362D02D40F00C513F3 /* FirebaseCore */; };
 		3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8DE2CE47321000C30B7 /* Alamofire */; };
 		3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3BFBE8E12CE47330000C30B7 /* Kingfisher */; };
@@ -46,10 +49,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BFBE8E22CE47330000C30B7 /* Kingfisher in Frameworks */,
+				3BCFFAC72D13DC74008E865E /* KakaoSDKCommon in Frameworks */,
 				3BD321372D02D40F00C513F3 /* FirebaseCore in Frameworks */,
 				42C9AD562D0805BD00241597 /* FirebaseMessaging in Frameworks */,
+				3BCFFAC92D13DC74008E865E /* KakaoSDKUser in Frameworks */,
 				42C9AD542D0805BD00241597 /* FirebaseAnalytics in Frameworks */,
 				3BFBE8DF2CE47321000C30B7 /* Alamofire in Frameworks */,
+				3BCFFAC52D13DC74008E865E /* KakaoSDKAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +111,9 @@
 				3BD321362D02D40F00C513F3 /* FirebaseCore */,
 				42C9AD532D0805BD00241597 /* FirebaseAnalytics */,
 				42C9AD552D0805BD00241597 /* FirebaseMessaging */,
+				3BCFFAC42D13DC74008E865E /* KakaoSDKAuth */,
+				3BCFFAC62D13DC74008E865E /* KakaoSDKCommon */,
+				3BCFFAC82D13DC74008E865E /* KakaoSDKUser */,
 			);
 			productName = TOUCHEESE;
 			productReference = 3BFBE8852CE47261000C30B7 /* TOUCHEESE.app */;
@@ -138,6 +147,7 @@
 				3BFBE8DD2CE47321000C30B7 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				3BFBE8E02CE47330000C30B7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				3BCFFAC32D13DC74008E865E /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3BFBE8862CE47261000C30B7 /* Products */;
@@ -391,6 +401,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3BCFFAC32D13DC74008E865E /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.23.0;
+			};
+		};
 		3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -418,6 +436,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3BCFFAC42D13DC74008E865E /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BCFFAC32D13DC74008E865E /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		3BCFFAC62D13DC74008E865E /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BCFFAC32D13DC74008E865E /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
+		};
+		3BCFFAC82D13DC74008E865E /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BCFFAC32D13DC74008E865E /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
+		};
 		3BD321362D02D40F00C513F3 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3BD321322D02D34400C513F3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
