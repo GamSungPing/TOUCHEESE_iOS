@@ -34,6 +34,7 @@ final class KeychainManager {
             return false
         }
         
+        print("Keychain create Success")
         return true
     }
     
@@ -64,18 +65,18 @@ final class KeychainManager {
     @discardableResult
     func update(token: String, forAccount account: AccountType) -> Bool {
         let keychainQuery = [
-            kSecClass: kSecClassGenericPassword
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: account.rawValue,
+            kSecAttrService: serviceName
         ] as [String: Any]
         
-        let updateQuery = [
-            kSecAttrAccount: account.rawValue,
-            kSecAttrService: serviceName,
+        let updateAttributes = [
             kSecValueData: token.data(using: .utf8) as Any
-        ]
+        ] as [String: Any]
         
         let status = SecItemUpdate(
             keychainQuery as CFDictionary,
-            updateQuery as CFDictionary
+            updateAttributes as CFDictionary
         )
         
         guard status != errSecItemNotFound else {
@@ -84,7 +85,7 @@ final class KeychainManager {
         }
         
         guard status == errSecSuccess else {
-            print("Keychain update Error")
+            print("Keychain update error: \(status)")
             return false
         }
         
