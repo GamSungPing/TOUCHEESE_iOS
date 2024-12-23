@@ -278,10 +278,12 @@ final class NetworkManager {
     /// - Parameter deviceTokenRegistrationRequest: Device Token 등록에 필요한 정보를 담은 구조체. 구조체의 속성으로 memberId(Int)와 deviceToken(String)이 필요하다.
     @discardableResult
     func postDeviceTokenRegistrationData(
-        deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest
+        deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest,
+        accessToken: String
     ) async throws -> DeviceTokenRegistrationResponse? {
         let fetchRequest = Network.deviceTokenRegistrationRequest(
-            deviceTokenRegistrationRequest
+            deviceTokenRegistrationRequest,
+            accessToken: accessToken
         )
         let deviceTokenRegistrationResponseData = try await performRequest(
             fetchRequest,

@@ -42,7 +42,7 @@ enum Network {
     case reservableTimeRequest(studioId: Int, date: Date)
     
     /// Push Notification
-    case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest)
+    case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest, accessToken: String)
     
     /// Login Logics
     case sendSocialIDRequest(socialID: String, socialType: SocialType)

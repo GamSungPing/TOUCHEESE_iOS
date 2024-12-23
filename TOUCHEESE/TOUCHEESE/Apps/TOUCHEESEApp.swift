@@ -94,14 +94,23 @@ extension AppDelegate: MessagingDelegate {
         let deviceToken:[String: String] = ["token": fcmToken ?? ""]
         print("Device token: ", deviceToken)
         #endif
+    }
+    
+    private func postDeviceTokenRegistrationData() {
+        let authManager = AuthenticationManager.shared
         
         Task {
-            try await NetworkManager.shared.postDeviceTokenRegistrationData(
-                deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
-                    memberId: 1,
-                    deviceToken: fcmToken ?? ""
+            if let fcmToken = Messaging.messaging().fcmToken,
+               let memberId = authManager.memberId,
+               let accessToken = authManager.accessToken {
+                try await NetworkManager.shared.postDeviceTokenRegistrationData(
+                    deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
+                        memberId: memberId,
+                        deviceToken: fcmToken
+                    ),
+                    accessToken: accessToken
                 )
-            )
+            }
         }
     }
 }
@@ -133,6 +142,8 @@ extension AppDelegate {
             
             authManager.memberId = appOpenResponse.memberId
             authManager.memberNickname = appOpenResponse.memberName
+            
+            postDeviceTokenRegistrationData()
             
             return .authenticated
         } catch {
