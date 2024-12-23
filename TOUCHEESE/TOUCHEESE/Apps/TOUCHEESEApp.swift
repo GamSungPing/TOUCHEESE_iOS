@@ -97,19 +97,30 @@ extension AppDelegate: MessagingDelegate {
     }
     
     private func postDeviceTokenRegistrationData() {
+        let networkManager = NetworkManager.shared
         let authManager = AuthenticationManager.shared
         
         Task {
             if let fcmToken = Messaging.messaging().fcmToken,
-               let memberId = authManager.memberId,
-               let accessToken = authManager.accessToken {
-                try await NetworkManager.shared.postDeviceTokenRegistrationData(
-                    deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
-                        memberId: memberId,
-                        deviceToken: fcmToken
-                    ),
-                    accessToken: accessToken
-                )
+               let memberId = authManager.memberId {
+                do {
+                    try await networkManager.performWithTokenRetry(
+                        accessToken: authManager.accessToken,
+                        refreshToken: authManager.refreshToken
+                    ) { token in
+                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
+                            memberId: memberId,
+                            deviceToken: fcmToken
+                        )
+                        try await networkManager.postDeviceTokenRegistrationData(
+                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
+                            accessToken: token
+                        )
+                    }
+                } catch {
+                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
+                    authManager.failedAuthentication()
+                }
             }
         }
     }
