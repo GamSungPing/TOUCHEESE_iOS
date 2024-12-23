@@ -18,11 +18,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         
         // MARK: - 로그인 상태 확인
-        let keychainManager = KeychainManager.shared
-        let authManager = AuthenticationManager.shared
-        
-        let isExistingAccessToken = keychainManager.read(forAccount: .accessToken)
-        isExistingAccessToken == nil ? authManager.failedAuthentication() : authManager.successfulAuthentication()
+        Task {
+            switch await checkAuthentication() {
+            case .authenticated:
+                AuthenticationManager.shared.successfulAuthentication()
+            case .notAuthenticated:
+                AuthenticationManager.shared.failedAuthentication()
+            }
+        }
         
         // MARK: - Firebase 관련 설정
         FirebaseApp.configure()
@@ -99,6 +102,38 @@ extension AppDelegate: MessagingDelegate {
                     deviceToken: fcmToken ?? ""
                 )
             )
+        }
+    }
+}
+
+extension AppDelegate {
+    func checkAuthentication() async -> AuthStatus {
+        let keychainManager = KeychainManager.shared
+        let networkManager = NetworkManager.shared
+        
+        guard let accessToken = keychainManager.read(forAccount: .accessToken),
+              let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
+            return .notAuthenticated
+        }
+        
+        do {
+            let refreshAccessTokenRequest = RefreshAccessTokenRequest(
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )
+            let refreshAccessTokenResponse = try await networkManager.postRefreshAccessTokenData(
+                refreshAccessTokenRequest
+            )
+            
+            keychainManager.update(
+                token: refreshAccessTokenResponse.accessToken,
+                forAccount: .accessToken
+            )
+            
+            return .authenticated
+        } catch {
+            print("AcessToken refresh failed: \(error.localizedDescription)")
+            return .notAuthenticated
         }
     }
 }
