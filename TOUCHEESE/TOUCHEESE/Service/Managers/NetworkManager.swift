@@ -22,7 +22,6 @@ enum NetworkError: Error {
 final class NetworkManager {
     
     static let shared = NetworkManager()
-    
     private init () { }
     
     private func performRequest<T: Decodable>(
@@ -89,7 +88,9 @@ final class NetworkManager {
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let newTokenData = try await postRefreshAccessTokenData(refreshRequest)
+            let newTokenData = try await postRefreshAccessTokenData(
+                refreshRequest
+            )
             
             KeychainManager.shared.update(
                 token: newTokenData.accessToken,

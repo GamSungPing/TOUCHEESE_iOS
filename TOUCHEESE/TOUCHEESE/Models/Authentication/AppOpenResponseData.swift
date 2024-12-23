@@ -13,6 +13,7 @@ struct AppOpenResponseData: Codable {
     let data: AppOpenResponse
 }
 
+
 struct AppOpenResponse: Codable {
     let accessToken: String
     let memberName: String

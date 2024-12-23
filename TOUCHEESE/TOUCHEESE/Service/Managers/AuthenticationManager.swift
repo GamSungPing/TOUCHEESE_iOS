@@ -7,9 +7,16 @@
 
 import Foundation
 
+enum AuthStatus {
+    case notAuthenticated
+    case authenticated
+}
+
+
 final class AuthenticationManager {
     
     static let shared = AuthenticationManager()
+    private init() {}
     
     private(set) var authStatus: AuthStatus = .notAuthenticated
     
@@ -23,7 +30,6 @@ final class AuthenticationManager {
     var memberId: Int?
     var memberNickname: String?
     
-    private init() {}
     
     func successfulAuthentication() {
         authStatus = .authenticated
@@ -37,9 +43,4 @@ final class AuthenticationManager {
         authStatus = .notAuthenticated
     }
     
-}
-
-enum AuthStatus {
-    case notAuthenticated
-    case authenticated
 }

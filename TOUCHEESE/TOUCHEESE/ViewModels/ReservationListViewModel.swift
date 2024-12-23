@@ -37,6 +37,7 @@ final class ReservationListViewModel: ObservableObject {
         } catch {
             print("Reservation List Fetch Error: \(error.localizedDescription)")
             authManager.failedAuthentication()
+            print("Logout")
         }
     }
     
@@ -56,6 +57,7 @@ final class ReservationListViewModel: ObservableObject {
         } catch {
             print("Past Reservation List Fetch Error: \(error.localizedDescription)")
             authManager.failedAuthentication()
+            print("Logout")
         }
     }
     

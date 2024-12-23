@@ -11,10 +11,9 @@ import Security
 final class KeychainManager {
     
     static let shared = KeychainManager()
+    private init() {}
     
     private let serviceName = "touchcheese"
-    
-    private init() {}
     
     @discardableResult
     func create(token: String, forAccount account: AccountType) -> Bool {
