@@ -433,4 +433,18 @@ final class NetworkManager {
         return refreshTokenResponseData.data
     }
     
+    func postAppOpenData(
+        _ appOpenDataRequest: AppOpenRequest
+    ) async throws -> AppOpenResponse {
+        let fetchRequest = Network.appOpenRequest(
+            appOpenDataRequest
+        )
+        let appOpenResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: AppOpenResponseData.self
+        )
+        
+        return appOpenResponseData.data
+    }
+    
 }

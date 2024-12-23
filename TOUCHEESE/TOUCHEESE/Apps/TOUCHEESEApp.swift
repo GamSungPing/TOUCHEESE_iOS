@@ -110,6 +110,7 @@ extension AppDelegate {
     func checkAuthentication() async -> AuthStatus {
         let keychainManager = KeychainManager.shared
         let networkManager = NetworkManager.shared
+        let authManager = AuthenticationManager.shared
         
         guard let accessToken = keychainManager.read(forAccount: .accessToken),
               let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
@@ -117,22 +118,25 @@ extension AppDelegate {
         }
         
         do {
-            let refreshAccessTokenRequest = RefreshAccessTokenRequest(
+            let appOpenRequest = AppOpenRequest(
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let refreshAccessTokenResponse = try await networkManager.postRefreshAccessTokenData(
-                refreshAccessTokenRequest
+            let appOpenResponse = try await networkManager.postAppOpenData(
+                appOpenRequest
             )
             
             keychainManager.update(
-                token: refreshAccessTokenResponse.accessToken,
+                token: appOpenResponse.accessToken,
                 forAccount: .accessToken
             )
             
+            authManager.memberId = appOpenResponse.memberId
+            authManager.memberNickname = appOpenResponse.memberName
+            
             return .authenticated
         } catch {
-            print("AcessToken refresh failed: \(error.localizedDescription)")
+            print("AccessToken refresh failed: \(error.localizedDescription)")
             return .notAuthenticated
         }
     }

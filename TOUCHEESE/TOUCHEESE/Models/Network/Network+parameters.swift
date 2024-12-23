@@ -93,6 +93,13 @@ extension Network {
             params["refreshToken"] = refreshAccessTokenRequest.refreshToken
             
             return params
+        case .appOpenRequest(let appOpenRequest):
+            var params: Parameters = [:]
+            
+            params["accessToken"] = appOpenRequest.accessToken
+            params["refreshToken"] = appOpenRequest.refreshToken
+            
+            return params
         }
     }
 }

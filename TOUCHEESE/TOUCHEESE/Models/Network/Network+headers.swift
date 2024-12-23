@@ -25,6 +25,12 @@ extension Network {
             headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
+        case .appOpenRequest(let appOpenRequest):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(appOpenRequest.accessToken)"
+            
+            return headers
         }
     }
 }
