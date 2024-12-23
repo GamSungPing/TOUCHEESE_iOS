@@ -86,6 +86,13 @@ extension Network {
             params["socialType"] = socialType.rawValue
             
             return params
+        case .refreshAccessTokenRequest(let refreshAccessTokenRequest):
+            var params: Parameters = [:]
+            
+            params["accessToken"] = refreshAccessTokenRequest.accessToken
+            params["refreshToken"] = refreshAccessTokenRequest.refreshToken
+            
+            return params
         }
     }
 }

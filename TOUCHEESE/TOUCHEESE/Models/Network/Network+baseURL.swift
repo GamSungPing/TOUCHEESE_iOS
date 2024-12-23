@@ -22,7 +22,7 @@ extension Network {
             return "\(server_url)/api/v1/reservation"
         case .deviceTokenRegistrationRequest:
             return "\(server_url)/api/v1/device/register"
-        case .sendSocialIDRequest:
+        case .sendSocialIDRequest, .refreshAccessTokenRequest:
             return "\(server_url)/api/v1/auth"
         }
     }

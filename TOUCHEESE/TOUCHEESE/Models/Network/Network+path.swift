@@ -75,6 +75,8 @@ extension Network {
             return "/\(studioId)/available-slots?"
         case .sendSocialIDRequest:
             return "/login"
+        case .refreshAccessTokenRequest:
+            return "/refreshAccessToken"
         }
     }
 }

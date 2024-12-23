@@ -46,4 +46,5 @@ enum Network {
     
     /// Login Logics
     case sendSocialIDRequest(socialID: String, socialType: SocialType)
+    case refreshAccessTokenRequest(RefreshAccessTokenRequest)
 }

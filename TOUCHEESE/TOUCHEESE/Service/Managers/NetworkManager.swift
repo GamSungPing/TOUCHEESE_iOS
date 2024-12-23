@@ -359,4 +359,18 @@ class NetworkManager {
             }
         }
     }
+    
+    func postRefreshAccessTokenData(
+        _ refreshAccessTokenRequest: RefreshAccessTokenRequest
+    ) async throws -> RefreshAccessTokenResponse {
+        let fetchRequest = Network.refreshAccessTokenRequest(
+            refreshAccessTokenRequest
+        )
+        let refreshTokenResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: RefreshAccessTokenResponseData.self
+        )
+        
+        return refreshTokenResponseData.data
+    }
 }
