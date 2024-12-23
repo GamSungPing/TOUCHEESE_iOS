@@ -11,15 +11,26 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 
-class NetworkManager {
+enum NetworkError: Error {
+    case unauthorized
+    case decodingFailed(Error)
+    case requestFailed(AFError)
+    case unexpectedStatusCode(Int)
+    case unknown
+}
+
+final class NetworkManager {
+    
     static let shared = NetworkManager()
+    
+    private init () { }
     
     private func performRequest<T: Decodable>(
         _ fetchRequest: Network,
         decodingType: T.Type
     ) async throws -> T {
         let url = fetchRequest.baseURL + fetchRequest.path
-
+        
         let request = AF.request(
             url,
             method: fetchRequest.method,
@@ -31,22 +42,68 @@ class NetworkManager {
         let response = await request.validate()
             .serializingData()
             .response
+        
+        guard let statusCode = response.response?.statusCode else {
+            throw NetworkError.unknown
+        }
+        
+        switch statusCode {
+        case 200...299:
+            switch response.result {
+            case .success(let data):
+                // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
+                let decoder = JSONDecoder()
                 
-        switch response.result {
-        case .success(let data):
-            // print("네트워크 통신 결과 (JSON 문자열) ===== \(String(data: data, encoding: .utf8) ?? "nil")")
-            let decoder = JSONDecoder()
-            do {
-                return try decoder.decode(T.self, from: data)
-            } catch {
-                print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
-                throw error
+                do {
+                    return try decoder.decode(T.self, from: data)
+                } catch {
+                    print("\(decodingType) 디코딩 실패: \(error.localizedDescription)")
+                    throw NetworkError.decodingFailed(error)
+                }
+            case .failure(let error):
+                print("\(decodingType) 네트워크 요청 실패: \(error.localizedDescription)")
+                throw NetworkError.requestFailed(error)
             }
-        case .failure(let error):
-            print("\(decodingType) 네트워크 요청 실패: \(error.localizedDescription)")
-            throw error
+        case 401:
+            throw NetworkError.unauthorized
+        default:
+            throw NetworkError.unexpectedStatusCode(statusCode)
         }
     }
+    
+    /// Header에 Access Token을 보내야 하는 API 통신에 해당 메서드를 사용
+    func performWithTokenRetry<T>(
+        accessToken: String?,
+        refreshToken: String?,
+        operation: @escaping (String) async throws -> T
+    ) async throws -> T {
+        guard let accessToken = accessToken,
+              let refreshToken = refreshToken else {
+            throw NetworkError.unauthorized
+        }
+        
+        do {
+            return try await operation(accessToken)
+        } catch NetworkError.unauthorized {
+            let refreshRequest = RefreshAccessTokenRequest(
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )
+            let newTokenData = try await postRefreshAccessTokenData(refreshRequest)
+            
+            KeychainManager.shared.update(
+                token: newTokenData.accessToken,
+                forAccount: .accessToken
+            )
+            KeychainManager.shared.update(
+                token: newTokenData.refreshToken,
+                forAccount: .refreshToken
+            )
+            
+            return try await operation(newTokenData.accessToken)
+        }
+    }
+
     
     /// 스튜디오 리스트 데이터를 요청하는 함수
     /// - Parameter concept: 스튜디오 컨셉
@@ -97,7 +154,7 @@ class NetworkManager {
             fetchRequest,
             decodingType: SingleStudioData.self
         )
-      
+        
         return singleStudioData.data
     }
     
@@ -168,10 +225,12 @@ class NetworkManager {
     /// - Parameter memberID: 회원의 아이디. 아이디에 해당하는 회원의 예약 리스트를 불러온다.
     /// - Parameter isPast: true 값이면 예약 대기, 예약 확정 리스트를 불러오고, false 값이면 예약 완료, 예약 취소 리스트를 불러온다.
     func getReservationListDatas(
+        accessToken: String,
         memberID: Int,
         isPast: Bool = false
     ) async throws -> [Reservation] {
         let fetchRequest = Network.reservationListRequest(
+            accessToken: accessToken,
             memberID: memberID,
             isPast: isPast
         )
@@ -332,7 +391,7 @@ class NetworkManager {
             print("카카오 로그인 실패: \(error)")
         }
     }
-
+    
     // 로그인 Wrapping
     @MainActor
     func loginWithKakaoTalk() async throws -> OAuthToken {
@@ -346,7 +405,7 @@ class NetworkManager {
             }
         }
     }
-
+    
     // 사용자 정보 가져오기 Wrapping
     func fetchKakaoUserInfo() async throws -> User {
         return try await withCheckedThrowingContinuation { continuation in
@@ -373,4 +432,5 @@ class NetworkManager {
         
         return refreshTokenResponseData.data
     }
+    
 }

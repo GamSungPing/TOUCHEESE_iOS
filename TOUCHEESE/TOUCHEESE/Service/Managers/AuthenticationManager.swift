@@ -12,6 +12,12 @@ final class AuthenticationManager {
     static let shared = AuthenticationManager()
     
     private(set) var authStatus: AuthStatus = .notAuthenticated
+    var accessToken: String? {
+        return KeychainManager.shared.read(forAccount: .accessToken)
+    }
+    var refreshToken: String? {
+        return KeychainManager.shared.read(forAccount: .refreshToken)
+    }
     
     private init() {}
     
