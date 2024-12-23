@@ -24,15 +24,22 @@ final class ReservationListViewModel: ObservableObject {
     
     @MainActor
     func fetchReservations() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
         do {
             reservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
             ) { [self] token in
-                try await networkManager.getReservationListDatas(
-                    accessToken: token,
-                    memberID: 16
-                )
+                if let memberId = authManager.memberId {
+                    return try await networkManager.getReservationListDatas(
+                        accessToken: token,
+                        memberID: memberId
+                    )
+                } else {
+                    authManager.failedAuthentication()
+                    return []
+                }
             }
         } catch {
             print("Reservation List Fetch Error: \(error.localizedDescription)")
@@ -43,16 +50,23 @@ final class ReservationListViewModel: ObservableObject {
     
     @MainActor
     func fetchPastReservations() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
         do {
             reservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
             ) { [self] token in
-                try await networkManager.getReservationListDatas(
-                    accessToken: token,
-                    memberID: 16,
-                    isPast: true
-                )
+                if let memberId = authManager.memberId {
+                    return try await networkManager.getReservationListDatas(
+                        accessToken: token,
+                        memberID: memberId,
+                        isPast: true
+                    )
+                } else {
+                    authManager.failedAuthentication()
+                    return []
+                }
             }
         } catch {
             print("Past Reservation List Fetch Error: \(error.localizedDescription)")
