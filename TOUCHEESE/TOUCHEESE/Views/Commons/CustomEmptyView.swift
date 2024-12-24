@@ -38,6 +38,13 @@ struct CustomEmptyView: View {
                     .onTapGesture {
                         action()
                     }
+            case .requiredLogIn(let text, let action):
+                FillBottomButton(
+                    isSelectable: true,
+                    title: text,
+                    action: action
+                )
+                .frame(width: 282)
             default:
                 EmptyView()
             }
@@ -52,6 +59,7 @@ struct CustomEmptyView: View {
         case review
         case reservation
         case pastReservation
+        case requiredLogIn(buttonText: String, buttonAction: () -> Void)
         
         var description: String {
             switch self {
@@ -63,13 +71,23 @@ struct CustomEmptyView: View {
                 return "예약 내역이 없습니다."
             case .pastReservation:
                 return "이전 내역이 없습니다."
+            case .requiredLogIn:
+                return "로그인이 필요한 서비스입니다."
             }
         }
     }
 }
 
 #Preview {
-    CustomEmptyView(
-        viewType: .studio(buttonAction: {print("헬로")}, buttonText: "필터 초기화 하기")
-    )
+    VStack {
+        CustomEmptyView(
+            viewType: .studio(buttonAction: {print("헬로")}, buttonText: "필터 초기화 하기")
+        )
+        
+        CustomEmptyView(
+            viewType: .requiredLogIn(buttonText: "로그인 하기", buttonAction: {
+                print("헬로")
+            })
+        )
+    }
 }
