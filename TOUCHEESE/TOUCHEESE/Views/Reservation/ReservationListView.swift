@@ -16,6 +16,10 @@ struct ReservationListView: View {
     @State private var selectedIndex = 0
     @State private var activeTab: SegmentedTab = .reservation
     
+    @State private var isShowingLogInView = false
+    
+    private let authManager = AuthenticationManager.shared
+    
     var body: some View {
         VStack {
             ReservationCustomSegmentedControl(
@@ -26,28 +30,48 @@ struct ReservationListView: View {
             
             switch activeTab {
             case .reservation:
-                FilteredReservationListView(
-                    reservations: viewModel.reservations
-                ) {
-                    CustomEmptyView(viewType: .reservation)
-                } refreshAction: {
-                    Task {
-                        await viewModel.fetchReservations()
+                if authManager.authStatus == .notAuthenticated {
+                    CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
+                        isShowingLogInView.toggle()
+                    })
+                } else {
+                    FilteredReservationListView(
+                        reservations: viewModel.reservations
+                    ) {
+                        CustomEmptyView(viewType: .reservation)
+                    } refreshAction: {
+                        Task {
+                            await viewModel.fetchReservations()
+                        }
                     }
                 }
             case .history:
-                FilteredReservationListView(
-                    reservations: viewModel.pastReservations
-                ) {
-                    CustomEmptyView(viewType: .pastReservation)
-                } refreshAction: {
-                    Task {
-                        await viewModel.fetchPastReservations()
+                if authManager.authStatus == .notAuthenticated {
+                    CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
+                        isShowingLogInView.toggle()
+                    })
+                } else {
+                    FilteredReservationListView(
+                        reservations: viewModel.pastReservations
+                    ) {
+                        CustomEmptyView(viewType: .pastReservation)
+                    } refreshAction: {
+                        Task {
+                            await viewModel.fetchPastReservations()
+                        }
                     }
                 }
             }
         }
         .padding(.horizontal)
+        .fullScreenCover(isPresented: $isShowingLogInView) {
+            Task {
+                await viewModel.fetchReservations()
+                await viewModel.fetchPastReservations()
+            }
+        } content: {
+            LogInView(isPresented: $isShowingLogInView)
+        }
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
