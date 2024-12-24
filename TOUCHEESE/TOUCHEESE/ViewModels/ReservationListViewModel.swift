@@ -30,7 +30,7 @@ final class ReservationListViewModel: ObservableObject {
             reservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
-            ) { [self] token in
+            ) { [unowned self] token in
                 if let memberId = authManager.memberId {
                     return try await networkManager.getReservationListDatas(
                         accessToken: token,
@@ -56,7 +56,7 @@ final class ReservationListViewModel: ObservableObject {
             reservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
-            ) { [self] token in
+            ) { [unowned self] token in
                 if let memberId = authManager.memberId {
                     return try await networkManager.getReservationListDatas(
                         accessToken: token,

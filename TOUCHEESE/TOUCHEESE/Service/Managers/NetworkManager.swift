@@ -76,8 +76,7 @@ final class NetworkManager {
         refreshToken: String?,
         operation: @escaping (String) async throws -> T
     ) async throws -> T {
-        guard let accessToken = accessToken,
-              let refreshToken = refreshToken else {
+        guard let accessToken, let refreshToken else {
             throw NetworkError.unauthorized
         }
         
