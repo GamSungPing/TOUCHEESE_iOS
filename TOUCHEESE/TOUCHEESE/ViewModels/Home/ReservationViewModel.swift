@@ -107,6 +107,9 @@ final class ReservationViewModel: ObservableObject {
                     accessToken: token
                 )
             }
+        } catch NetworkError.unauthorized {
+            print("requestStudioReservation Error: AccessToken is expired")
+            authManager.failedAuthentication()
         } catch {
             print("requestStudioReservation Error: \(error.localizedDescription)")
         }
