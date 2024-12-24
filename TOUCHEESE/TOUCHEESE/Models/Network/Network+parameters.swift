@@ -50,7 +50,7 @@ extension Network {
             return params
         case .studioDetailRequest, .studioRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest:
             return [:]
-        case .studioReservationRequest(let reservationRequestType):
+        case .studioReservationRequest(let reservationRequestType, _):
             var params: Parameters = [:]
             
             params["memberId"] = reservationRequestType.memberId
@@ -65,7 +65,7 @@ extension Network {
             params["addPeopleCnt"] = reservationRequestType.addPeopleCnt
             
             return params
-        case .reservationCancelRequest(_, let memberID):
+        case .reservationCancelRequest(_, let memberID, _):
             return ["memberId": memberID]
         case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest, _):
             var params: Parameters = [:]
