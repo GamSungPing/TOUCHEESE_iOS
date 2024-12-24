@@ -16,7 +16,7 @@ struct LogInView: View {
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
-                Image(.tcLoginLogo)
+                Image(.tcLogInLogo)
                     .padding(.bottom, 20)
                 
                 Text("나에게 딱 맞는 스튜디오를\n한 눈에 살펴보세요.")
@@ -48,7 +48,10 @@ struct LogInView: View {
                         case .success(let authResults):
                             print("Apple Authorization successful.")
                             Task {
-                                await viewModel.handleAuthorizationWithApple(authResults)
+                                await viewModel.handleAuthorizationWithApple(authResults) {
+                                    isPresented.toggle()
+                                }
+                                
                             }
                         case .failure(let error):
                             print("Apple Authorization failed: \(error.localizedDescription)")
@@ -61,23 +64,18 @@ struct LogInView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            // TODO: - 임시 X 버튼
             HStack {
                 Button {
                     isPresented.toggle()
                 } label: {
-                    Image(systemName: "xmark")
+                    Image(.tcXmark)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 15)
-                        .foregroundStyle(Color.white)
+                        .frame(width: 24, height: 24)
+                        .foregroundStyle(.tcGray10)
                         .padding(10)
-                        .background {
-                            Circle()
-                                .fill(Color.gray.opacity(0.6))
-                        }
                 }
-                .padding(.leading, 20)
+                .padding(.leading, 10)
                 
                 Spacer()
             }
