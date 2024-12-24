@@ -12,10 +12,9 @@ struct TestView2: View {
     @State private var isShowingLogInView = false
     
     private let authManager = AuthenticationManager.shared
-    private let keychainManager = KeychainManager.shared
     
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             Spacer()
             
             Button {
@@ -25,9 +24,6 @@ struct TestView2: View {
             }
             
             Button {
-                keychainManager.delete(forAccount: .accessToken)
-                keychainManager.delete(forAccount: .refreshToken)
-                
                 authManager.logout()
             } label: {
                 Text("로그아웃 테스트")
