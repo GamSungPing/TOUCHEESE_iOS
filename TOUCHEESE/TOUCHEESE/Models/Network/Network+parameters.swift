@@ -67,7 +67,7 @@ extension Network {
             return params
         case .reservationCancelRequest(_, let memberID):
             return ["memberId": memberID]
-        case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest):
+        case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest, _):
             var params: Parameters = [:]
             
             params["memberId"] = deviceTokenRegistrationRequest.memberId
@@ -84,6 +84,20 @@ extension Network {
             var params: Parameters = [:]
             
             params["socialType"] = socialType.rawValue
+            
+            return params
+        case .refreshAccessTokenRequest(let refreshAccessTokenRequest):
+            var params: Parameters = [:]
+            
+            params["accessToken"] = refreshAccessTokenRequest.accessToken
+            params["refreshToken"] = refreshAccessTokenRequest.refreshToken
+            
+            return params
+        case .appOpenRequest(let appOpenRequest):
+            var params: Parameters = [:]
+            
+            params["accessToken"] = appOpenRequest.accessToken
+            params["refreshToken"] = appOpenRequest.refreshToken
             
             return params
         }

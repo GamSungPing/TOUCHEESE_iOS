@@ -36,14 +36,16 @@ enum Network {
     
     /// Reservation
     case studioReservationRequest(ReservationRequest)
-    case reservationListRequest(memberID: Int, isPast: Bool)
+    case reservationListRequest(accessToken: String, memberID: Int, isPast: Bool)
     case reservationDetailRequest(id: Int)
     case reservationCancelRequest(reservationID: Int, memberID: Int)
     case reservableTimeRequest(studioId: Int, date: Date)
     
     /// Push Notification
-    case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest)
+    case deviceTokenRegistrationRequest(DeviceTokenRegistrationRequest, accessToken: String)
     
     /// Login Logics
     case sendSocialIDRequest(socialID: String, socialType: SocialType)
+    case refreshAccessTokenRequest(RefreshAccessTokenRequest)
+    case appOpenRequest(AppOpenRequest)
 }

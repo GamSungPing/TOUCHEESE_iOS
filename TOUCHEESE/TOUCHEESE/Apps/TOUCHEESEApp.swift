@@ -16,6 +16,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
+        // MARK: - 로그인 상태 확인
+        Task {
+            switch await checkAuthentication() {
+            case .authenticated:
+                AuthenticationManager.shared.successfulAuthentication()
+            case .notAuthenticated:
+                AuthenticationManager.shared.failedAuthentication()
+            }
+        }
+        
         // MARK: - Firebase 관련 설정
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
@@ -83,14 +94,72 @@ extension AppDelegate: MessagingDelegate {
         let deviceToken:[String: String] = ["token": fcmToken ?? ""]
         print("Device token: ", deviceToken)
         #endif
+    }
+    
+    private func postDeviceTokenRegistrationData() {
+        let networkManager = NetworkManager.shared
+        let authManager = AuthenticationManager.shared
         
         Task {
-            try await NetworkManager.shared.postDeviceTokenRegistrationData(
-                deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
-                    memberId: 1,
-                    deviceToken: fcmToken ?? ""
-                )
+            if let fcmToken = Messaging.messaging().fcmToken,
+               let memberId = authManager.memberId {
+                do {
+                    try await networkManager.performWithTokenRetry(
+                        accessToken: authManager.accessToken,
+                        refreshToken: authManager.refreshToken
+                    ) { token in
+                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
+                            memberId: memberId,
+                            deviceToken: fcmToken
+                        )
+                        try await networkManager.postDeviceTokenRegistrationData(
+                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
+                            accessToken: token
+                        )
+                    }
+                } catch {
+                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
+                    authManager.failedAuthentication()
+                }
+            }
+        }
+    }
+}
+
+extension AppDelegate {
+    func checkAuthentication() async -> AuthStatus {
+        let keychainManager = KeychainManager.shared
+        let networkManager = NetworkManager.shared
+        let authManager = AuthenticationManager.shared
+        
+        guard let accessToken = keychainManager.read(forAccount: .accessToken),
+              let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
+            return .notAuthenticated
+        }
+        
+        do {
+            let appOpenRequest = AppOpenRequest(
+                accessToken: accessToken,
+                refreshToken: refreshToken
             )
+            let appOpenResponse = try await networkManager.postAppOpenData(
+                appOpenRequest
+            )
+            
+            keychainManager.update(
+                token: appOpenResponse.accessToken,
+                forAccount: .accessToken
+            )
+            
+            authManager.memberId = appOpenResponse.memberId
+            authManager.memberNickname = appOpenResponse.memberName
+            
+            postDeviceTokenRegistrationData()
+            
+            return .authenticated
+        } catch {
+            print("AccessToken refresh failed: \(error.localizedDescription)")
+            return .notAuthenticated
         }
     }
 }

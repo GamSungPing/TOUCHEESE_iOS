@@ -11,12 +11,30 @@ import Alamofire
 extension Network {
     func getHeaders() -> HTTPHeaders? {
         switch self {
-        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .studioReservationRequest, .reservationListRequest, .reservationDetailRequest, .reservationCancelRequest, .deviceTokenRegistrationRequest, .reservableTimeRequest:
+        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .studioReservationRequest, .reservationDetailRequest, .reservationCancelRequest, .reservableTimeRequest, .refreshAccessTokenRequest:
             return ["Content-Type": "application/json"]
         case .sendSocialIDRequest(socialID: let socialID, _:_):
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             headers["socialId"] = socialID
+            
+            return headers
+        case .reservationListRequest(let accessToken, _, _):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(accessToken)"
+            
+            return headers
+        case .appOpenRequest(let appOpenRequest):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(appOpenRequest.accessToken)"
+            
+            return headers
+        case .deviceTokenRegistrationRequest(_, let accessToken):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
         }
