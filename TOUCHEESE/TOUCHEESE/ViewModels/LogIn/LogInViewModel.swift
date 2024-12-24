@@ -14,11 +14,16 @@ final class LogInViewModel {
     private let keychainManager = KeychainManager.shared
     private let authManager = AuthenticationManager.shared
     
-    func handleAuthorizationWithApple(_ authResults: ASAuthorization) async {
+    func handleAuthorizationWithApple(
+        _ authResults: ASAuthorization,
+        completion: @escaping () -> Void
+    ) async {
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
             let userIdentifier = appleIDCredential.user
             
             await postSocialID(userIdentifier, socialType: .APPLE)
+            
+            completion()
         }
     }
     
@@ -35,6 +40,11 @@ final class LogInViewModel {
             saveTokensToKeychain(
                 accessToken: loginResponseData.accessToken,
                 refreshToken: loginResponseData.refreshToken
+            )
+            
+            saveMemberInfoToAuthenticationManager(
+                memberId: loginResponseData.memberId,
+                memberNickname: loginResponseData.memberName
             )
             
             authManager.successfulAuthentication()
@@ -57,6 +67,14 @@ final class LogInViewModel {
             token: refreshToken,
             forAccount: .refreshToken
         )
+    }
+    
+    private func saveMemberInfoToAuthenticationManager(
+        memberId: Int,
+        memberNickname: String
+    ) {
+        authManager.memberId = memberId
+        authManager.memberNickname = memberNickname
     }
     
 }

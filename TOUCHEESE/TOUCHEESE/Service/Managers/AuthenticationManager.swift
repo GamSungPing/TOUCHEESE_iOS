@@ -40,6 +40,12 @@ final class AuthenticationManager {
     }
     
     func logout() {
+        memberId = nil
+        memberNickname = nil
+        
+        KeychainManager.shared.delete(forAccount: .accessToken)
+        KeychainManager.shared.delete(forAccount: .refreshToken)
+        
         authStatus = .notAuthenticated
     }
     
