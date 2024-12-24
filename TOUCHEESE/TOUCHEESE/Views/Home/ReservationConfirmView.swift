@@ -144,7 +144,8 @@ struct ReservationProductView: View {
                                 .placeholder { ProgressView() }
                                 .fade(duration: 0.25)
                                 .resizable()
-                                .scaledToFit()
+                                .scaledToFill()
+                                .frame(width: 62, height: 62)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         .padding(.trailing, 12)

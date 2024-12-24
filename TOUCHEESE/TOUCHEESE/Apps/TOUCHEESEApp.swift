@@ -16,17 +16,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
-        // MARK: - 로그인 상태 확인
-        Task {
-            switch await checkAuthentication() {
-            case .authenticated:
-                AuthenticationManager.shared.successfulAuthentication()
-            case .notAuthenticated:
-                AuthenticationManager.shared.failedAuthentication()
-            }
-        }
-        
         // MARK: - Firebase 관련 설정
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
@@ -95,43 +84,56 @@ extension AppDelegate: MessagingDelegate {
         print("Device token: ", deviceToken)
         #endif
     }
+}
+
+
+@main
+struct TOUCHEESEApp: App {
+    @StateObject private var studioListViewModel = StudioListViewModel()
+    @StateObject private var reservationListViewModel = ReservationListViewModel()
+    @StateObject private var navigationManager = NavigationManager()
     
-    private func postDeviceTokenRegistrationData() {
-        let networkManager = NetworkManager.shared
-        let authManager = AuthenticationManager.shared
-        
-        Task {
-            if let fcmToken = Messaging.messaging().fcmToken,
-               let memberId = authManager.memberId {
-                do {
-                    try await networkManager.performWithTokenRetry(
-                        accessToken: authManager.accessToken,
-                        refreshToken: authManager.refreshToken
-                    ) { token in
-                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
-                            memberId: memberId,
-                            deviceToken: fcmToken
-                        )
-                        try await networkManager.postDeviceTokenRegistrationData(
-                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
-                            accessToken: token
-                        )
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    private let keychainManager = KeychainManager.shared
+    private let networkManager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
+    
+    init() {
+        CacheManager.configureKingfisherCache()
+        KakaoSDK.initSDK(appKey: Bundle.main.kakaoNativeAppKey)
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ToucheeseTabView()
+                .environmentObject(studioListViewModel)
+                .environmentObject(reservationListViewModel)
+                .environmentObject(navigationManager)
+                .preferredColorScheme(.light)
+                .onOpenURL(perform: { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
                     }
-                } catch {
-                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
-                    authManager.failedAuthentication()
+                })
+                .task {
+                    switch await checkAuthentication() {
+                    case .authenticated:
+                        AuthenticationManager.shared.successfulAuthentication()
+                        await reservationListViewModel.fetchReservations()
+                        await reservationListViewModel.fetchPastReservations()
+                    case .notAuthenticated:
+                        AuthenticationManager.shared.failedAuthentication()
+                    }
                 }
-            }
         }
     }
 }
 
-extension AppDelegate {
-    func checkAuthentication() async -> AuthStatus {
-        let keychainManager = KeychainManager.shared
-        let networkManager = NetworkManager.shared
-        let authManager = AuthenticationManager.shared
-        
+
+extension TOUCHEESEApp {
+    /// 앱을 처음 실행했을 때, 로그인 상태를 확인하는 메서드
+    private func checkAuthentication() async -> AuthStatus {
         guard let accessToken = keychainManager.read(forAccount: .accessToken),
               let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
             return .notAuthenticated
@@ -162,14 +164,6 @@ extension AppDelegate {
             return .notAuthenticated
         }
     }
-}
-
-
-@main
-struct TOUCHEESEApp: App {
-    @StateObject private var studioListViewModel = StudioListViewModel()
-    @StateObject private var reservationListViewModel = ReservationListViewModel()
-    @StateObject private var navigationManager = NavigationManager()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -193,7 +187,11 @@ struct TOUCHEESEApp: App {
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)
                     }
-                })
+                } catch {
+                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
+                    authManager.failedAuthentication()
+                }
+            }
         }
     }
 }

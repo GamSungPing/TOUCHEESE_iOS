@@ -41,10 +41,11 @@ final class ReservationListViewModel: ObservableObject {
                     return []
                 }
             }
+        } catch NetworkError.unauthorized {
+            print("Reservation List Fetch Error: Refresh Token Expired")
+            authManager.failedAuthentication()
         } catch {
             print("Reservation List Fetch Error: \(error.localizedDescription)")
-            authManager.failedAuthentication()
-            print("Logout")
         }
     }
     
@@ -53,7 +54,7 @@ final class ReservationListViewModel: ObservableObject {
         guard authManager.authStatus == .authenticated else { return }
         
         do {
-            reservations = try await networkManager.performWithTokenRetry(
+            pastReservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
             ) { [unowned self] token in
@@ -68,10 +69,11 @@ final class ReservationListViewModel: ObservableObject {
                     return []
                 }
             }
+        } catch NetworkError.unauthorized {
+            print("Past Reservation List Fetch Error: Refresh Token Expired")
+            authManager.failedAuthentication()
         } catch {
             print("Past Reservation List Fetch Error: \(error.localizedDescription)")
-            authManager.failedAuthentication()
-            print("Logout")
         }
     }
     
