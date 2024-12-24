@@ -190,7 +190,7 @@ extension TOUCHEESEApp {
                     }
                 } catch {
                     print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
-                    authManager.failedAuthentication()
+                    authManager.logout()
                 }
             }
         }
