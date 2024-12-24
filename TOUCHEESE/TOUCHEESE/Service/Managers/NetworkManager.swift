@@ -264,11 +264,13 @@ final class NetworkManager {
     @discardableResult
     func deleteReservationData(
         reservationID: Int,
-        memberID: Int
+        memberID: Int,
+        accessToken: String
     ) async throws -> ReservationCancelResponseData {
         let fetchRequest = Network.reservationCancelRequest(
             reservationID: reservationID,
-            memberID: memberID
+            memberID: memberID,
+            accessToken: accessToken
         )
         let reservationCancelResponseData = try await performRequest(fetchRequest, decodingType: ReservationCancelResponseData.self)
         

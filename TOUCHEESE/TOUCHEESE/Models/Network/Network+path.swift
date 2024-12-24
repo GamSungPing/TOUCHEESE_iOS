@@ -69,7 +69,7 @@ extension Network {
             return path
         case .reservationDetailRequest(let id):
             return "/\(id)"
-        case .reservationCancelRequest(let reservationID, _):
+        case .reservationCancelRequest(let reservationID, _, _):
             return "/\(reservationID)/cancel"
         case .reservableTimeRequest(studioId: let studioId, _):
             return "/\(studioId)/available-slots?"

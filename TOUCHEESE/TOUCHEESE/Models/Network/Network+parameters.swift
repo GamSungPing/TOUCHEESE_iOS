@@ -65,7 +65,7 @@ extension Network {
             params["addPeopleCnt"] = reservationRequestType.addPeopleCnt
             
             return params
-        case .reservationCancelRequest(_, let memberID):
+        case .reservationCancelRequest(_, let memberID, _):
             return ["memberId": memberID]
         case .deviceTokenRegistrationRequest(let deviceTokenRegistrationRequest, _):
             var params: Parameters = [:]
