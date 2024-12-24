@@ -9,6 +9,8 @@ import Foundation
 
 final class ReservationViewModel: ObservableObject {
     let networkmanager = NetworkManager.shared
+    let authManager = AuthenticationManager.shared
+    
     let studio: Studio
     let studioDetail: StudioDetail
     let product: Product
@@ -78,6 +80,11 @@ final class ReservationViewModel: ObservableObject {
     
     /// 스튜디오 예약 요청을 보내는 함수
     func requestStudioReservation() async {
+        guard let memberId = authManager.memberId else {
+            print("requestStudioReservation - memberId is nil")
+            return
+        }
+        
         let reservationRequestType = ReservationRequest(
             memberId: memberId,
             studioId: studio.id,
@@ -91,7 +98,15 @@ final class ReservationViewModel: ObservableObject {
         )
         
         do {
-            reservationResponseData = try await networkmanager.postStudioReservation(reservationRequest: reservationRequestType)
+            reservationResponseData = try await networkmanager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [unowned self] token in
+                return try await networkmanager.postStudioReservation(
+                    reservationRequest: reservationRequestType,
+                    accessToken: token
+                )
+            }
         } catch {
             print("requestStudioReservation Error: \(error.localizedDescription)")
         }

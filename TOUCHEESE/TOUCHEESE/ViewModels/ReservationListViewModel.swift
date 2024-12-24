@@ -53,7 +53,7 @@ final class ReservationListViewModel: ObservableObject {
         guard authManager.authStatus == .authenticated else { return }
         
         do {
-            reservations = try await networkManager.performWithTokenRetry(
+            pastReservations = try await networkManager.performWithTokenRetry(
                 accessToken: authManager.accessToken,
                 refreshToken: authManager.refreshToken
             ) { [unowned self] token in
