@@ -35,7 +35,7 @@ enum Network {
     case productDetailRequest(id: Int)
     
     /// Reservation
-    case studioReservationRequest(ReservationRequest)
+    case studioReservationRequest(ReservationRequest, accessToken: String)
     case reservationListRequest(accessToken: String, memberID: Int, isPast: Bool)
     case reservationDetailRequest(id: Int)
     case reservationCancelRequest(reservationID: Int, memberID: Int)

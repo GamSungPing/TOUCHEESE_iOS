@@ -207,10 +207,12 @@ final class NetworkManager {
     /// 스튜디오에 예약을 요청하는 함수
     /// - Parameter ReservationRequestType: 예약에 필요한 정보를 담은 구조체
     func postStudioReservation(
-        reservationRequest: ReservationRequest
+        reservationRequest: ReservationRequest,
+        accessToken: String
     ) async throws -> ReservationResponseData {
         let fetchRequest = Network.studioReservationRequest(
-            reservationRequest
+            reservationRequest,
+            accessToken: accessToken
         )
         
         let reservationResponseData = try await performRequest(
