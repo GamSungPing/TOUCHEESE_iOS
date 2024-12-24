@@ -453,4 +453,40 @@ final class NetworkManager {
         return appOpenResponseData.data
     }
     
+    @discardableResult
+    func postLogout(accessToken: String) async throws -> LogoutResponseData {
+        let fetchRequest = Network.logoutRequest(
+            accessToken: accessToken
+        )
+        let logoutResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: LogoutResponseData.self
+        )
+        
+        return logoutResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용
+    /*
+    func logout() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                try await networkManager.postLogout(accessToken: token)
+            }
+            
+            authManager.logout()
+        } catch NetworkError.unauthorized {
+            print("Logout Error: Refresh Token Expired.")
+            authManager.logout()
+        } catch {
+            print("Logout Error: \(error.localizedDescription)")
+        }
+    }
+     */
+    
 }

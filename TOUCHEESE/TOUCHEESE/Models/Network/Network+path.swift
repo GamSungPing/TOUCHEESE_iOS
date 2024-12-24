@@ -79,6 +79,8 @@ extension Network {
             return "/refreshAccessToken"
         case .appOpenRequest:
             return "/appOpen"
+        case .logoutRequest:
+            return "/logout"
         }
     }
 }

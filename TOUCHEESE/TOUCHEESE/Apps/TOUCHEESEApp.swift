@@ -153,6 +153,10 @@ extension TOUCHEESEApp {
                 forAccount: .accessToken
             )
             
+            #if DEBUG
+            print("New access token: \(appOpenResponse.accessToken)")
+            #endif
+            
             authManager.memberId = appOpenResponse.memberId
             authManager.memberNickname = appOpenResponse.memberName
             
