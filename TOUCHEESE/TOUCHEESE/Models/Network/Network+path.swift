@@ -57,9 +57,9 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest:
             return ""
-        case .reservationListRequest(let memberID, let isPast):
+        case .reservationListRequest(_, let memberID, let isPast):
             var path = "/member/\(memberID)"
             
             if isPast {
@@ -71,8 +71,14 @@ extension Network {
             return "/\(id)"
         case .reservationCancelRequest(let reservationID, _):
             return "/\(reservationID)/cancel"
-        case .reservableTimeRequest(studioId: let studioId, date: let date):
+        case .reservableTimeRequest(studioId: let studioId, _):
             return "/\(studioId)/available-slots?"
+        case .sendSocialIDRequest:
+            return "/login"
+        case .refreshAccessTokenRequest:
+            return "/refreshAccessToken"
+        case .appOpenRequest:
+            return "/appOpen"
         }
     }
 }
