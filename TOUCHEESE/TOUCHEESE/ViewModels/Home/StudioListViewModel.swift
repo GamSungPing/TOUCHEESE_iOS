@@ -204,7 +204,7 @@ final class StudioListViewModel: ObservableObject {
                 }
         } catch NetworkError.unauthorized {
             print("Failed to like studio: Refresh token expired")
-            authManager.logout()
+            await authManager.logout()
         } catch {
             print("Failed to like studio: \(error.localizedDescription)")
         }

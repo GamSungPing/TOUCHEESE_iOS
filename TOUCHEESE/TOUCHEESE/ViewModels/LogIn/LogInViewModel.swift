@@ -27,6 +27,20 @@ final class LogInViewModel {
         }
     }
     
+    func handleAuthorizationWithKakao() async {
+        do {
+            let user = try await networkManager.fetchKakaoUserInfo()
+            print("사용자 정보 가져오기 성공: \(user)")
+            
+            if let socialId = user.id {
+                print("사용자 정보 서버로 전송중...")
+                await postSocialID(String(socialId), socialType: .KAKAO)
+            }
+        } catch {
+            print("서버로 사용자 정보 전송 실패 \(error)")
+        }
+    }
+    
     private func postSocialID(
         _ socialID: String,
         socialType: SocialType
@@ -42,12 +56,12 @@ final class LogInViewModel {
                 refreshToken: loginResponseData.refreshToken
             )
             
-            saveMemberInfoToAuthenticationManager(
+            await saveMemberInfoToAuthenticationManager(
                 memberId: loginResponseData.memberId,
                 memberNickname: loginResponseData.memberName
             )
             
-            authManager.successfulAuthentication()
+            await authManager.successfulAuthentication()
             
             #if DEBUG
             print("New access token: \(loginResponseData.accessToken)")
@@ -55,7 +69,7 @@ final class LogInViewModel {
             #endif
         } catch {
             print("Network Error - postSocialId: \(error.localizedDescription)")
-            authManager.failedAuthentication()
+            await authManager.failedAuthentication()
         }
     }
     
@@ -74,6 +88,7 @@ final class LogInViewModel {
         )
     }
     
+    @MainActor
     private func saveMemberInfoToAuthenticationManager(
         memberId: Int,
         memberNickname: String
@@ -82,4 +97,11 @@ final class LogInViewModel {
         authManager.memberNickname = memberNickname
     }
     
+    func loginWithKakaotalk() async {
+        do {
+            _ = try await networkManager.loginWithKakaoTalk()
+        } catch {
+            print("카카오 로그인 에러 \(error)")
+        }
+    }
 }
