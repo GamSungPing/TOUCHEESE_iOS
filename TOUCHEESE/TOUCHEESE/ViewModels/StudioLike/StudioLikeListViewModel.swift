@@ -9,7 +9,11 @@ import Foundation
 
 final class StudioLikeListViewModel: ObservableObject {
     
-    @Published private(set) var likedStudios: [Studio] = []
+    @Published private(set) var likedStudios: [Studio] = [] {
+        didSet {
+            authManager.memberLikedStudios = likedStudios
+        }
+    }
     
     private let authManager = AuthenticationManager.shared
     private let networkManager = NetworkManager.shared
@@ -38,7 +42,7 @@ final class StudioLikeListViewModel: ObservableObject {
             }
         } catch NetworkError.unauthorized {
             print("Failed to fetch liked studios: Refresh token expired")
-            await authManager.logout()
+            authManager.logout()
         } catch {
             print("Failed to fetch liked studios: \(error.localizedDescription)")
         }

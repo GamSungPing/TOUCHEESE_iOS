@@ -29,6 +29,7 @@ final class AuthenticationManager: ObservableObject {
     
     var memberId: Int?
     @Published var memberNickname: String?
+    var memberLikedStudios: [Studio] = []
     
     @MainActor
     func successfulAuthentication() {
@@ -44,6 +45,7 @@ final class AuthenticationManager: ObservableObject {
     func logout() {
         memberId = nil
         memberNickname = nil
+        memberLikedStudios = []
         
         KeychainManager.shared.delete(forAccount: .accessToken)
         KeychainManager.shared.delete(forAccount: .refreshToken)
@@ -55,6 +57,7 @@ final class AuthenticationManager: ObservableObject {
     func withdrawal() {
         memberId = nil
         memberNickname = nil
+        memberLikedStudios = []
         
         KeychainManager.shared.delete(forAccount: .accessToken)
         KeychainManager.shared.delete(forAccount: .refreshToken)

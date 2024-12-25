@@ -12,6 +12,8 @@ struct StudioRow: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     
+    private let authManager = AuthenticationManager.shared
+    
     let studio: Studio
     private var portfolioImageURLs: [URL] {
         studio.portfolioImageURLs
@@ -51,28 +53,50 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-                BookmarkButton(
-                    isBookmarked: $isBookmarked,
-                    size: 30
-                ) {
-                    // TODO: - 테스트 중
-                    isBookmarked.toggle()
-                    
+//                BookmarkButton(
+//                    isBookmarked: $isBookmarked,
+//                    size: 30
+//                ) {
+//                    // TODO: - 테스트 중
+//                    isBookmarked.toggle()
+//                    
+//                    Task {
+//                        if isBookmarked {
+//                            await studioListViewModel.likeStudio(
+//                                studioId: studio.id
+//                            )
+//                        } else {
+//                            
+//                            await studioListViewModel.cancelLikeStudio(
+//                                studioId: studio.id
+//                            )
+//                        }
+//                        
+//                        await studioLikeListViewModel.fetchLikedStudios()
+//                    }
+//                }
+                
+                Button {
                     Task {
-                        if isBookmarked {
-                            await studioListViewModel.likeStudio(
+                        if authManager.memberLikedStudios.contains(studio) {
+                            await studioListViewModel.cancelLikeStudio(
                                 studioId: studio.id
                             )
                         } else {
-                            
-                            await studioListViewModel.cancelLikeStudio(
+                            await studioListViewModel.likeStudio(
                                 studioId: studio.id
                             )
                         }
                         
                         await studioLikeListViewModel.fetchLikedStudios()
                     }
+                } label: {
+                    Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
                 }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal)
             

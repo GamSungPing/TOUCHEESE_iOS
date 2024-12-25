@@ -10,6 +10,8 @@ import Kingfisher
 
 struct StudioDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
+    @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) private var isPresented
@@ -23,6 +25,8 @@ struct StudioDetailView: View {
     @State private var isExpanded = false
     @State private var isPushingReviewDetailView = false
     @State private var isBookmarked = false
+    
+    private let authManager = AuthenticationManager.shared
     
     var body: some View {
         let studio = viewModel.studio
@@ -156,10 +160,27 @@ struct StudioDetailView: View {
                 }
             },
             rightView: {
-                BookmarkButton(isBookmarked: $isBookmarked, size: 24) {
-                    // TODO: - Studio Like API 추가하기
-                    print("찜 버튼 눌림")
+                Button {
+                    Task {
+                        if authManager.memberLikedStudios.contains(studio) {
+                            await studioListViewModel.cancelLikeStudio(
+                                studioId: studio.id
+                            )
+                        } else {
+                            await studioListViewModel.likeStudio(
+                                studioId: studio.id
+                            )
+                        }
+                        
+                        await studioLikeListViewModel.fetchLikedStudios()
+                    }
+                } label: {
+                    Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
                 }
+                .buttonStyle(.plain)
             }
         )
         .animation(.easeInOut, value: isExpanded)

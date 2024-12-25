@@ -9,6 +9,7 @@ import SwiftUI
 import AuthenticationServices
 
 struct LogInView: View {
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     private let viewModel: LogInViewModel = LogInViewModel()
     
     @Binding var isPresented: Bool
@@ -36,7 +37,9 @@ struct LogInView: View {
                     Button {
                         Task {
                             await viewModel.loginWithKakaotalk()
-                            await viewModel.handleAuthorizationWithKakao()
+                            await viewModel.handleAuthorizationWithKakao {
+                                await studioLikeListViewModel.fetchLikedStudios()
+                            }
                             isPresented.toggle()
                         }
                     } label: {
@@ -54,6 +57,7 @@ struct LogInView: View {
                             print("Apple Authorization successful.")
                             Task {
                                 await viewModel.handleAuthorizationWithApple(authResults) {
+                                    await studioLikeListViewModel.fetchLikedStudios()
                                     isPresented.toggle()
                                 }
                                 
