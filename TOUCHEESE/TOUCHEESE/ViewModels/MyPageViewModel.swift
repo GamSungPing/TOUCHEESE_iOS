@@ -88,10 +88,10 @@ final class MyPageViewModel: ObservableObject {
                 try await networkManager.postLogout(accessToken: token)
             }
             
-            authManager.logout()
+            await authManager.logout()
         } catch NetworkError.unauthorized {
             print("Logout Error: Refresh Token Expired.")
-            authManager.logout()
+            await authManager.logout()
         } catch {
             print("Logout Error: \(error.localizedDescription)")
         }
@@ -109,10 +109,10 @@ final class MyPageViewModel: ObservableObject {
                 try await networkManager.postWithdrawal(accessToken: token)
             }
             
-            authManager.withdrawal()
+            await authManager.withdrawal()
         } catch NetworkError.unauthorized {
             print("Withdrawal Error: Refresh Token Expired.")
-            authManager.withdrawal()
+            await authManager.withdrawal()
         } catch {
             print("Withdrawal Error: \(error.localizedDescription)")
         }

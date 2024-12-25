@@ -56,15 +56,15 @@ final class LogInViewModel {
                 refreshToken: loginResponseData.refreshToken
             )
             
-            saveMemberInfoToAuthenticationManager(
+            await saveMemberInfoToAuthenticationManager(
                 memberId: loginResponseData.memberId,
                 memberNickname: loginResponseData.memberName
             )
             
-            authManager.successfulAuthentication()
+            await authManager.successfulAuthentication()
         } catch {
             print("Network Error - postSocialId: \(error.localizedDescription)")
-            authManager.failedAuthentication()
+            await authManager.failedAuthentication()
         }
     }
     
@@ -83,6 +83,7 @@ final class LogInViewModel {
         )
     }
     
+    @MainActor
     private func saveMemberInfoToAuthenticationManager(
         memberId: Int,
         memberNickname: String

@@ -30,15 +30,17 @@ final class AuthenticationManager: ObservableObject {
     var memberId: Int?
     @Published var memberNickname: String?
     
-    
+    @MainActor
     func successfulAuthentication() {
         authStatus = .authenticated
     }
     
+    @MainActor
     func failedAuthentication() {
         authStatus = .notAuthenticated
     }
     
+    @MainActor
     func logout() {
         memberId = nil
         memberNickname = nil
@@ -49,6 +51,7 @@ final class AuthenticationManager: ObservableObject {
         authStatus = .notAuthenticated
     }
     
+    @MainActor
     func withdrawal() {
         memberId = nil
         memberNickname = nil
