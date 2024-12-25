@@ -91,6 +91,7 @@ extension AppDelegate: MessagingDelegate {
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
     @StateObject private var reservationListViewModel = ReservationListViewModel()
+    @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -109,6 +110,7 @@ struct TOUCHEESEApp: App {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
                 .environmentObject(reservationListViewModel)
+                .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
                 .preferredColorScheme(.light)
                 .onOpenURL(perform: { url in
