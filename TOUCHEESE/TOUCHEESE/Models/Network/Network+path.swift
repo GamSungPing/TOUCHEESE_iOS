@@ -85,6 +85,8 @@ extension Network {
             return "/withdrawal"
         case .nicknameChangeRequest(let nicknameChangeRequest):
             return "/\(nicknameChangeRequest.memberId)/name"
+        case .studioLikeCancelRequest(let studioLikeRelationRequest):
+            return "/delete/\(studioLikeRelationRequest.studioId)"
         }
     }
 }

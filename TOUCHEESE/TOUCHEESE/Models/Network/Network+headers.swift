@@ -55,10 +55,10 @@ extension Network {
             headers["Authorization"] = "Bearer \(nicknameChangeRequest.accessToken)"
             
             return headers
-        case .studioLikeRequest(let studioLikeRequest):
+        case .studioLikeRequest(let studioLikeRelationRequest), .studioLikeCancelRequest(let studioLikeRelationRequest):
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
-            headers["Authorization"] = "Bearer \(studioLikeRequest.accessToken)"
+            headers["Authorization"] = "Bearer \(studioLikeRelationRequest.accessToken)"
             
             return headers
         }

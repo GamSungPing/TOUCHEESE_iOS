@@ -54,10 +54,20 @@ struct StudioRow: View {
                     isBookmarked: $isBookmarked,
                     size: 30
                 ) {
+                    // TODO: - 테스트 중
+                    isBookmarked.toggle()
+                    
                     Task {
-                        await studioListViewModel.likeStudio(
-                            studioId: studio.id
-                        )
+                        if isBookmarked {
+                            await studioListViewModel.likeStudio(
+                                studioId: studio.id
+                            )
+                        } else {
+                            
+                            await studioListViewModel.cancelLikeStudio(
+                                studioId: studio.id
+                            )
+                        }
                     }
                 }
             }
