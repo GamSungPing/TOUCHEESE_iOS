@@ -22,6 +22,7 @@ struct HomeResultView: View {
         VStack {
             filtersView
                 .padding(.horizontal)
+                .padding(.top, 11)
                 .padding(.bottom, -5)
             
             ZStack(alignment: .top) {

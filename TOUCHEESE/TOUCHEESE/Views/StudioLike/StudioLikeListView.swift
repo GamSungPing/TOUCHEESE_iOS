@@ -26,6 +26,9 @@ struct StudioLikeListView: View {
                     CustomEmptyView(viewType: .studioLike)
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
+                        Color.clear
+                            .frame(height: 11)
+                        
                         LazyVStack(spacing: 20) {
                             HStack(spacing: 0) {
                                 Text("총")
@@ -52,6 +55,11 @@ struct StudioLikeListView: View {
                             }
                         }
                     }
+                    .refreshable {
+                        Task {
+                            await viewModel.fetchLikedStudios()
+                        }
+                    }
                 }
             }
         }
@@ -64,7 +72,7 @@ struct StudioLikeListView: View {
         }
         .onChange(of: isShowingLogInView) { _ in
             Task {
-                
+                await viewModel.fetchLikedStudios()
             }
         }
     }

@@ -12,15 +12,8 @@ final class ReservationListViewModel: ObservableObject {
     @Published private(set) var reservations: [Reservation] = []
     @Published private(set) var pastReservations: [Reservation] = []
     
-    let authManager = AuthenticationManager.shared
-    let networkManager = NetworkManager.shared
-    
-    init() {
-        Task {
-            await fetchReservations()
-            await fetchPastReservations()
-        }
-    }
+    private let authManager = AuthenticationManager.shared
+    private let networkManager = NetworkManager.shared
     
     @MainActor
     func fetchReservations() async {
@@ -37,7 +30,7 @@ final class ReservationListViewModel: ObservableObject {
                         memberID: memberId
                     )
                 } else {
-                    authManager.logout()
+                    print("Reservation List Fetch Error: Member ID Not Found")
                     return []
                 }
             }

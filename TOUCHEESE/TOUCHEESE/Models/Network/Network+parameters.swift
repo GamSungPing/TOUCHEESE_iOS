@@ -119,6 +119,12 @@ extension Network {
             params["memberId"] = studioLikeRelationRequest.memberId
             
             return params
+        case .studioLikeListRequest(_, let memberId):
+            var params: Parameters = [:]
+            
+            params["memberId"] = memberId
+            
+            return params
         }
     }
 }

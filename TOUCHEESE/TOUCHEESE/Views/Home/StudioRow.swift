@@ -10,6 +10,7 @@ import Kingfisher
 
 struct StudioRow: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     
     let studio: Studio
     private var portfolioImageURLs: [URL] {
@@ -68,6 +69,8 @@ struct StudioRow: View {
                                 studioId: studio.id
                             )
                         }
+                        
+                        await studioLikeListViewModel.fetchLikedStudios()
                     }
                 }
             }

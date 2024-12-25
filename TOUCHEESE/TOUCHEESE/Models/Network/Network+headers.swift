@@ -61,6 +61,12 @@ extension Network {
             headers["Authorization"] = "Bearer \(studioLikeRelationRequest.accessToken)"
             
             return headers
+        case .studioLikeListRequest(let accessToken, _):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(accessToken)"
+            
+            return headers
         }
     }
 }

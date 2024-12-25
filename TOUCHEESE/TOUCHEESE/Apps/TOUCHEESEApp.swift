@@ -126,6 +126,7 @@ struct TOUCHEESEApp: App {
                         AuthenticationManager.shared.successfulAuthentication()
                         await reservationListViewModel.fetchReservations()
                         await reservationListViewModel.fetchPastReservations()
+                        await studioLikeListViewModel.fetchLikedStudios()
                     case .notAuthenticated:
                         AuthenticationManager.shared.failedAuthentication()
                     }

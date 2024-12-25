@@ -551,4 +551,21 @@ final class NetworkManager {
         return studioLikeRelationResponseData
     }
     
+    /// 서버로부터 사용자가 찜한 스튜디오 목록을 요청하는 메서드
+    func getStudioLikeList(
+        accessToken: String,
+        memberId: Int
+    ) async throws -> [Studio] {
+        let fetchRequest = Network.studioLikeListRequest(
+            accsessToken: accessToken,
+            memberID: memberId
+        )
+        let studioLikeListResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioLikeListResponseData.self
+        )
+        
+        return studioLikeListResponseData.data
+    }
+    
 }

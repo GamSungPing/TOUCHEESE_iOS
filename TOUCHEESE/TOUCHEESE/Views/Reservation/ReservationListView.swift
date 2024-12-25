@@ -32,6 +32,7 @@ struct ReservationListView: View {
                     activeTab: $activeTab,
                     namespace: namespace
                 )
+                .padding(.top, 11)
                 
                 switch activeTab {
                 case .reservation:

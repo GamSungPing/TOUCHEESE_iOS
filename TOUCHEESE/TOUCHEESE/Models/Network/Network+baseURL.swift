@@ -24,7 +24,7 @@ extension Network {
             return "\(server_url)/api/v1/device/register"
         case .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest, .withdrawalRequest, .nicknameChangeRequest:
             return "\(server_url)/api/v1/auth"
-        case .studioLikeRequest, .studioLikeCancelRequest:
+        case .studioLikeRequest, .studioLikeCancelRequest, .studioLikeListRequest:
             return "\(server_url)/api/v1/like"
         }
     }
