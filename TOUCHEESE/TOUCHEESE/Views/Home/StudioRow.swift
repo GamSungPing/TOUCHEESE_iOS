@@ -9,6 +9,8 @@ import SwiftUI
 import Kingfisher
 
 struct StudioRow: View {
+    @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    
     let studio: Studio
     private var portfolioImageURLs: [URL] {
         studio.portfolioImageURLs
@@ -52,8 +54,11 @@ struct StudioRow: View {
                     isBookmarked: $isBookmarked,
                     size: 30
                 ) {
-                    // TODO: - Studio Like API 추가하기
-                    print("찜 버튼 눌림")
+                    Task {
+                        await studioListViewModel.likeStudio(
+                            studioId: studio.id
+                        )
+                    }
                 }
             }
             .padding(.horizontal)

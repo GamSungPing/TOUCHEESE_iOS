@@ -40,8 +40,10 @@ final class StudioListViewModel: ObservableObject {
     
     @Published private(set) var isStudioLoading: Bool = true
     
-    private var page: Int = 1
+    private let networkManager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
     
+    private var page: Int = 1
     
     // MARK: - Intput
     func resetFilters() {
@@ -130,7 +132,7 @@ final class StudioListViewModel: ObservableObject {
                 do {
                     isStudioLoading = true
                     studios.append(
-                        contentsOf: try await NetworkManager.shared.getStudioListDatas(
+                        contentsOf: try await networkManager.getStudioListDatas(
                             concept: concept,
                             isHighRating: isHighRating,
                             regionArray: regionArray,
@@ -158,7 +160,7 @@ final class StudioListViewModel: ObservableObject {
         page = 1
         
         do {
-            let studioDatas = try await NetworkManager.shared.getStudioListDatas(
+            let studioDatas = try await networkManager.getStudioListDatas(
                 concept: concept,
                 isHighRating: isHighRating,
                 regionArray: regionArray,
@@ -176,6 +178,36 @@ final class StudioListViewModel: ObservableObject {
     
     private func resetStudios() {
         studios = []
+    }
+    
+    func likeStudio(studioId: Int) async {
+        guard authManager.authStatus == .authenticated else {
+            print("Failed to like studio: Not authenticated")
+            return
+        }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken) { [unowned self] token in
+                    if let memberId = authManager.memberId {
+                        let studioLikeRequest = StudioLikeRequest(
+                            accessToken: token,
+                            memberId: memberId,
+                            studioId: studioId
+                        )
+                        
+                        try await networkManager.postStudioLike(studioLikeRequest)
+                    } else {
+                        print("Failed to like studio: Member ID not found")
+                    }
+                }
+        } catch NetworkError.unauthorized {
+            print("Failed to like studio: Refresh token expired")
+            authManager.logout()
+        } catch {
+            print("Failed to like studio: \(error.localizedDescription)")
+        }
     }
     
 }

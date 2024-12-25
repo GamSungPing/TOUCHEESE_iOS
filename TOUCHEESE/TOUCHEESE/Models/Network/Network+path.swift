@@ -57,7 +57,7 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .studioLikeRequest:
             return ""
         case .reservationListRequest(_, let memberID, let isPast):
             var path = "/member/\(memberID)"

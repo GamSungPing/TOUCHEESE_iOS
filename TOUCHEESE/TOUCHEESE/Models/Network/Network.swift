@@ -53,4 +53,5 @@ enum Network {
     
     /// Member
     case nicknameChangeRequest(NicknameChangeRequest)
+    case studioLikeRequest(StudioLikeRequest)
 }

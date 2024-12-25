@@ -581,4 +581,20 @@ final class NetworkManager {
     }
      */
     
+    /// 서버에 사용자가 찜한 스튜디오를 등록하는 메서드
+    @discardableResult
+    func postStudioLike(
+        _ studioLikeRequest: StudioLikeRequest
+    ) async throws -> StudioLikeResponseData {
+        let fetchRequest = Network.studioLikeRequest(
+            studioLikeRequest
+        )
+        let studioLikeResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: StudioLikeResponseData.self
+        )
+        
+        return studioLikeResponseData
+    }
+    
 }
