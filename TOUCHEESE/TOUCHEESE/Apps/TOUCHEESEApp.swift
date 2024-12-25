@@ -144,7 +144,7 @@ extension TOUCHEESEApp {
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let appOpenResponse = try await networkManager.postAppOpenData(
+            let appOpenResponse = try await networkManager.postAppOpen(
                 appOpenRequest
             )
             

@@ -87,7 +87,7 @@ final class NetworkManager {
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let newTokenData = try await postRefreshAccessTokenData(
+            let newTokenData = try await postRefreshAccessToken(
                 refreshRequest
             )
             
@@ -425,7 +425,8 @@ final class NetworkManager {
         }
     }
     
-    func postRefreshAccessTokenData(
+    /// Access Token을 갱신을 서버에 요청하기 위해 사용하는 메서드
+    func postRefreshAccessToken(
         _ refreshAccessTokenRequest: RefreshAccessTokenRequest
     ) async throws -> RefreshAccessTokenResponse {
         let fetchRequest = Network.refreshAccessTokenRequest(
@@ -439,7 +440,11 @@ final class NetworkManager {
         return refreshTokenResponseData.data
     }
     
-    func postAppOpenData(
+    /// 앱을 처음 시작할 때 서버에서 다음의 정보를 가져오기 위해 사용하는 메서드
+    /// - Access Token
+    /// - Member ID
+    /// - Member Nickname
+    func postAppOpen(
         _ appOpenDataRequest: AppOpenRequest
     ) async throws -> AppOpenResponse {
         let fetchRequest = Network.appOpenRequest(
@@ -453,6 +458,7 @@ final class NetworkManager {
         return appOpenResponseData.data
     }
     
+    /// 서버에 로그아웃을 보내는 메서드
     @discardableResult
     func postLogout(accessToken: String) async throws -> LogoutResponseData {
         let fetchRequest = Network.logoutRequest(
