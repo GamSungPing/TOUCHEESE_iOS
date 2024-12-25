@@ -532,4 +532,53 @@ final class NetworkManager {
     }
      */
     
+    /// 서버에 회원의 닉네임 변경을 요청하는 메서드
+    @discardableResult
+    func putNicknameChange(
+        _ nicknameChangeRequest: NicknameChangeRequest
+    ) async throws -> NicknameChangeResponseData {
+        let fetchRequest = Network.nicknameChangeRequest(
+            nicknameChangeRequest
+        )
+        let nicknameChangeResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: NicknameChangeResponseData.self
+        )
+        
+        return nicknameChangeResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용, 서버 문제로 아직 해당 메서드 테스트가 안되어 있음
+    /*
+    func changeNickname(newName: String) async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                if let memberId = authManager.memberId {
+                    let nicknameChangeRequest = NicknameChangeRequest(
+                        accessToken: token,
+                        memberId: memberId,
+                        newName: newName
+                    )
+                    try await networkManager.putNicknameChange(nicknameChangeRequest)
+                } else {
+                    print("Nickname Change Error: memberID is nil")
+                    authManager.logout()
+                }
+            }
+            
+            authManager.logout()
+        } catch NetworkError.unauthorized {
+            print("Nickname Change Error: Refresh Token Expired.")
+            authManager.logout()
+        } catch {
+            print("Nickname Change Error: \(error.localizedDescription)")
+        }
+    }
+     */
+    
 }

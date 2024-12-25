@@ -17,6 +17,8 @@ extension Network {
             return .post
         case .reservationCancelRequest, .withdrawalRequest:
             return .delete
+        case .nicknameChangeRequest:
+            return .put
         }
     }
 }

@@ -100,6 +100,12 @@ extension Network {
             params["refreshToken"] = appOpenRequest.refreshToken
             
             return params
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            var params: Parameters = [:]
+            
+            params["newName"] = nicknameChangeRequest.newName
+            
+            return params
         }
     }
 }

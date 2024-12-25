@@ -50,4 +50,7 @@ enum Network {
     case appOpenRequest(AppOpenRequest)
     case logoutRequest(accessToken: String)
     case withdrawalRequest(accessToken: String)
+    
+    /// Member
+    case nicknameChangeRequest(NicknameChangeRequest)
 }

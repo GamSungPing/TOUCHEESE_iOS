@@ -83,6 +83,8 @@ extension Network {
             return "/logout"
         case .withdrawalRequest:
             return "/withdrawal"
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            return "/\(nicknameChangeRequest.memberId)/name"
         }
     }
 }

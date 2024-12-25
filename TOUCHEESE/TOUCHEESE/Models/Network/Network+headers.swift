@@ -49,6 +49,12 @@ extension Network {
             headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(nicknameChangeRequest.accessToken)"
+            
+            return headers
         }
     }
 }
