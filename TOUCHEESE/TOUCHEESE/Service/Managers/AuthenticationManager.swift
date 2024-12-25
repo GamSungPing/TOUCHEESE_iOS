@@ -13,12 +13,12 @@ enum AuthStatus {
 }
 
 
-final class AuthenticationManager {
+final class AuthenticationManager: ObservableObject {
     
     static let shared = AuthenticationManager()
     private init() {}
     
-    private(set) var authStatus: AuthStatus = .notAuthenticated
+    @Published private(set) var authStatus: AuthStatus = .notAuthenticated
     
     var accessToken: String? {
         return KeychainManager.shared.read(forAccount: .accessToken)
@@ -28,7 +28,7 @@ final class AuthenticationManager {
     }
     
     var memberId: Int?
-    var memberNickname: String?
+    @Published var memberNickname: String?
     
     
     func successfulAuthentication() {
