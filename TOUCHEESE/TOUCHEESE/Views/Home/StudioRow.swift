@@ -51,7 +51,10 @@ struct StudioRow: View {
                 BookmarkButton(
                     isBookmarked: $isBookmarked,
                     size: 30
-                )
+                ) {
+                    // TODO: - Studio Like API 추가하기
+                    print("찜 버튼 눌림")
+                }
             }
             .padding(.horizontal)
             

@@ -156,7 +156,10 @@ struct StudioDetailView: View {
                 }
             },
             rightView: {
-                BookmarkButton(isBookmarked: $isBookmarked, size: 24)
+                BookmarkButton(isBookmarked: $isBookmarked, size: 24) {
+                    // TODO: - Studio Like API 추가하기
+                    print("찜 버튼 눌림")
+                }
             }
         )
         .animation(.easeInOut, value: isExpanded)
