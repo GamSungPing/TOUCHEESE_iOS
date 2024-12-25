@@ -14,8 +14,11 @@ struct ProductDetailView: View {
     
     @StateObject var productDetailViewModel: ProductDetailViewModel
     
+    private let authManager = AuthenticationManager.shared
+    
     // 캘린더 시트 트리거
     @State private var isCalendarPresented = false
+    @State private var isShowingLoginView: Bool = false
     
     var body: some View {
         let product = productDetailViewModel.product
@@ -126,6 +129,9 @@ struct ProductDetailView: View {
                 .presentationDragIndicator(.hidden)
                 .environmentObject(productDetailViewModel)
         }
+        .fullScreenCover(isPresented: $isShowingLoginView, content: {
+            LogInView(isPresented: $isShowingLoginView)
+        })
     }
     
     @ViewBuilder
