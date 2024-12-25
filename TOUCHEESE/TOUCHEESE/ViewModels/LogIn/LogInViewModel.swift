@@ -48,6 +48,11 @@ final class LogInViewModel {
             )
             
             authManager.successfulAuthentication()
+            
+            #if DEBUG
+            print("New access token: \(loginResponseData.accessToken)")
+            print("member ID: \(loginResponseData.memberId)")
+            #endif
         } catch {
             print("Network Error - postSocialId: \(error.localizedDescription)")
             authManager.failedAuthentication()

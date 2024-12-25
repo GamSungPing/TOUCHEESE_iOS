@@ -155,6 +155,7 @@ extension TOUCHEESEApp {
             
             #if DEBUG
             print("New access token: \(appOpenResponse.accessToken)")
+            print("member ID: \(appOpenResponse.memberId)")
             #endif
             
             authManager.memberId = appOpenResponse.memberId
