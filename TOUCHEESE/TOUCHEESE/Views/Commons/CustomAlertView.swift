@@ -10,11 +10,15 @@ import SwiftUI
 enum AlertType {
     case reservationCancel
     case reservationCancelComplete
+    case logout
+    case withdrawal
     
     var description: String {
         switch self {
         case .reservationCancel: "정말 예약을 취소하시겠습니까?"
         case .reservationCancelComplete: "예약이 취소되었습니다."
+        case .logout: "정말 로그아웃 하시겠습니까?"
+        case .withdrawal: "정말 회원탈퇴 하시겠습니까?"
         }
     }
 }
@@ -67,6 +71,46 @@ struct CustomAlertView: View {
                         isPresented.toggle()
                         action()
                     }
+                case .logout:
+                    HStack(spacing: 12) {
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "확인",
+                            height: 48
+                        ) {
+                            isPresented.toggle()
+                            action()
+                        }
+                        
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "취소",
+                            height: 48,
+                            backgroundColor: .tcGray02
+                        ) {
+                            isPresented.toggle()
+                        }
+                    }
+                case .withdrawal:
+                    HStack(spacing: 12) {
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "확인",
+                            height: 48
+                        ) {
+                            isPresented.toggle()
+                            action()
+                        }
+                        
+                        FillBottomButton(
+                            isSelectable: true,
+                            title: "취소",
+                            height: 48,
+                            backgroundColor: .tcGray02
+                        ) {
+                            isPresented.toggle()
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -82,7 +126,7 @@ struct CustomAlertView: View {
 }
 
 #Preview {
-    VStack {
+    ScrollView(.vertical) {
         CustomAlertView(
             isPresented: .constant(true),
             alertType: .reservationCancel
@@ -93,6 +137,20 @@ struct CustomAlertView: View {
         CustomAlertView(
             isPresented: .constant(true),
             alertType: .reservationCancelComplete
+        ) {
+            print("액션")
+        }
+        
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .logout
+        ) {
+            print("액션")
+        }
+        
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .withdrawal
         ) {
             print("액션")
         }

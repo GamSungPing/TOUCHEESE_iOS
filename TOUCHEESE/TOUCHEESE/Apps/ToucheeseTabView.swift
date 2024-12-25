@@ -30,7 +30,7 @@ struct ToucheeseTabView: View {
             case .likedStudios:
                 TestView2()
             case .myPage:
-                TestView3()
+                MyPageView()
             }
             
             if !navigationManager.isTabBarHidden {
