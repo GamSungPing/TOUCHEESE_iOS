@@ -336,68 +336,6 @@ final class NetworkManager {
         return loginResponseData
     }
     
-    /// 월요일에 코드 설명을 위해 살려둔 레거시 코드
-    /// 해당 코드는 클로져 형태로 리턴받는 코드를 동기적으로 작동하게 하기 위해 코드가 지저분
-    /// 개선 코드(TempKakaoLogin)는 클로져 형태의 API 관련 함수를 Async로 Wrapping 함
-    func kakaoLogin() {
-        if (UserApi.isKakaoTalkLoginAvailable()) {
-            // 카카오 로그인 진행
-            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
-                if let error = error {
-                    print(error)
-                } else {
-                    print("======카카오톡 로그인 성공======")
-                    
-                    // 사용자정보 가져오기 진행
-                    UserApi.shared.me() { (user, error) in
-                        if let error = error {
-                            print(error)
-                        } else {
-                            print("======사용자정보 가져오기 성공======")
-                            
-                            if let socialId = user?.id {
-                                // 서버에 SocialId 전송
-                                Task {
-                                    do {
-                                        print("======사용자정보 서버에 보내기 ======")
-                                        let loginResponseData = try await self.postSocialId(socialID: String(socialId), socialType: .KAKAO)
-                                        
-                                        // MARK: - TODO: 이후 토큰 관리 로직이 필요함
-                                    } catch {
-                                        print(error)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    func TempKakaoLogin() async {
-        do {
-            // 1. 카카오톡으로 로그인
-            let oauthToken = try await loginWithKakaoTalk()
-            print("카카오톡 로그인 성공: \(oauthToken)")
-            
-            // 2. 사용자 정보 가져오기
-            let user = try await fetchKakaoUserInfo()
-            print("사용자 정보 가져오기 성공: \(user)")
-            
-            // 3. 서버로 소셜 ID 전송
-            if let socialId = user.id {
-                print("사용자 정보 서버로 전송 중...")
-                let loginResponseData = try await postSocialId(socialID: String(socialId), socialType: .KAKAO)
-                print("서버 응답: \(loginResponseData)")
-                
-                // TODO: 토큰 관리 로직 추가해야 함
-            }
-        } catch {
-            print("카카오 로그인 실패: \(error)")
-        }
-    }
-    
     // 로그인 Wrapping
     @MainActor
     func loginWithKakaoTalk() async throws -> OAuthToken {

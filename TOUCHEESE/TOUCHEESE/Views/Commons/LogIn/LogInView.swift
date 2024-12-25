@@ -33,13 +33,18 @@ struct LogInView: View {
                     .padding(.bottom, 30)
                 
                 VStack(spacing: 8) {
-                    // TODO: - 카카오 로그인 버튼 추가
-                    FillBottomButton(
-                        isSelectable: true,
-                        title: "카카오로 로그인(초안)"
-                    ) {
-                        print("카카오 로그인")
+                    Button {
+                        Task {
+                            await viewModel.loginWithKakaotalk()
+                            await viewModel.handleAuthorizationWithKakao()
+                            isPresented.toggle()
+                        }
+                    } label: {
+                        Image(.kakaoLoginButton)
+                            .resizable()
+                            .frame(width: 360, height: 48)
                     }
+                    
                     
                     SignInWithAppleButton { request in
                         request.requestedScopes = []
