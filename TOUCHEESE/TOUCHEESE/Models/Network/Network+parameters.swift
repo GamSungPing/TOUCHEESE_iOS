@@ -48,7 +48,7 @@ extension Network {
             if let page { params["page"] = page }
             
             return params
-        case .studioDetailRequest, .studioRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest:
+        case .studioDetailRequest, .studioRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .logoutRequest, .withdrawalRequest:
             return [:]
         case .studioReservationRequest(let reservationRequestType, _):
             var params: Parameters = [:]
@@ -98,6 +98,12 @@ extension Network {
             
             params["accessToken"] = appOpenRequest.accessToken
             params["refreshToken"] = appOpenRequest.refreshToken
+            
+            return params
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            var params: Parameters = [:]
+            
+            params["newName"] = nicknameChangeRequest.newName
             
             return params
         }

@@ -13,10 +13,12 @@ extension Network {
         switch self {
         case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .reservableTimeRequest:
             return .get
-        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest:
             return .post
-        case .reservationCancelRequest:
+        case .reservationCancelRequest, .withdrawalRequest:
             return .delete
+        case .nicknameChangeRequest:
+            return .put
         }
     }
 }

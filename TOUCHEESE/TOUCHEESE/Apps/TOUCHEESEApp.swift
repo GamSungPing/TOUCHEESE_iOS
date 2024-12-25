@@ -144,7 +144,7 @@ extension TOUCHEESEApp {
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let appOpenResponse = try await networkManager.postAppOpenData(
+            let appOpenResponse = try await networkManager.postAppOpen(
                 appOpenRequest
             )
             
@@ -152,6 +152,10 @@ extension TOUCHEESEApp {
                 token: appOpenResponse.accessToken,
                 forAccount: .accessToken
             )
+            
+            #if DEBUG
+            print("New access token: \(appOpenResponse.accessToken)")
+            #endif
             
             authManager.memberId = appOpenResponse.memberId
             authManager.memberNickname = appOpenResponse.memberName
@@ -189,7 +193,7 @@ extension TOUCHEESEApp {
                     }
                 } catch {
                     print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
-                    authManager.failedAuthentication()
+                    authManager.logout()
                 }
             }
         }
