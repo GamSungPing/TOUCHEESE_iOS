@@ -14,8 +14,11 @@ struct ProductDetailView: View {
     
     @StateObject var productDetailViewModel: ProductDetailViewModel
     
+    private let authManager = AuthenticationManager.shared
+    
     // 캘린더 시트 트리거
     @State private var isCalendarPresented = false
+    @State private var isShowingLoginView: Bool = false
     
     var body: some View {
         let product = productDetailViewModel.product
@@ -47,22 +50,27 @@ struct ProductDetailView: View {
                 Spacer()
                 
                 FillBottomButton(isSelectable: isBottomButtonSelectable, title: "선택 상품 주문 \(productDetailViewModel.totalPrice.moneyStringFormat)") {
-                    navigationManager
-                        .appendPath(
-                            viewType: .reservationConfirmView,
-                            viewMaterial: ReservationConfirmViewMaterial(
-                                viewModel: ReservationViewModel(
-                                    studio: productDetailViewModel.studio,
-                                    studioDetail: productDetailViewModel.studioDetail,
-                                    product: productDetailViewModel.product,
-                                    productDetail: productDetailViewModel.productDetail,
-                                    productOptions: productDetailViewModel.selectedProductOptionArray,
-                                    reservationDate: productDetailViewModel.reservationDate ?? Date(),
-                                    totalPrice: productDetailViewModel.totalPrice,
-                                    addPeopleCount: productDetailViewModel.addPeopleCount
+                    
+                    if authManager.authStatus == .authenticated {
+                        navigationManager
+                            .appendPath(
+                                viewType: .reservationConfirmView,
+                                viewMaterial: ReservationConfirmViewMaterial(
+                                    viewModel: ReservationViewModel(
+                                        studio: productDetailViewModel.studio,
+                                        studioDetail: productDetailViewModel.studioDetail,
+                                        product: productDetailViewModel.product,
+                                        productDetail: productDetailViewModel.productDetail,
+                                        productOptions: productDetailViewModel.selectedProductOptionArray,
+                                        reservationDate: productDetailViewModel.reservationDate ?? Date(),
+                                        totalPrice: productDetailViewModel.totalPrice,
+                                        addPeopleCount: productDetailViewModel.addPeopleCount
+                                    )
                                 )
                             )
-                        )
+                    } else {
+                        isShowingLoginView.toggle()
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -92,6 +100,9 @@ struct ProductDetailView: View {
                 .presentationDragIndicator(.hidden)
                 .environmentObject(productDetailViewModel)
         }
+        .fullScreenCover(isPresented: $isShowingLoginView, content: {
+            LogInView(isPresented: $isShowingLoginView)
+        })
     }
     
     @ViewBuilder

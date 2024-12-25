@@ -18,7 +18,7 @@ struct ReservationConfirmView: View {
     var body: some View {
         let studioName = reservationViewModel.studio.name
         let address = reservationViewModel.studioDetail.address
-        let userName = reservationViewModel.userName
+        let userName = reservationViewModel.userName ?? ""
         let productOptions = reservationViewModel.productOptions
         let productName = reservationViewModel.product.name
         let productPriceString = reservationViewModel.product.price.moneyStringFormat
@@ -53,7 +53,6 @@ struct ReservationConfirmView: View {
                     addPeopleCount: addPeopleCount,
                     addPeoplePriceString: addPeoplePrice?.moneyStringFormat ?? "0원"
                 )
-                
                 
                 DividerView(color: .tcGray01, height: 8)
                 
