@@ -43,7 +43,7 @@ extension Network {
             headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
-        case .logoutRequest(let accessToken):
+        case .logoutRequest(let accessToken), .withdrawalRequest(let accessToken):
             var headers: HTTPHeaders = ["Content-Type": "application/json"]
             
             headers["Authorization"] = "Bearer \(accessToken)"

@@ -15,7 +15,7 @@ extension Network {
             return .get
         case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest:
             return .post
-        case .reservationCancelRequest:
+        case .reservationCancelRequest, .withdrawalRequest:
             return .delete
         }
     }

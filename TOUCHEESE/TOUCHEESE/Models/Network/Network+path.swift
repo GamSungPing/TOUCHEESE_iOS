@@ -81,6 +81,8 @@ extension Network {
             return "/appOpen"
         case .logoutRequest:
             return "/logout"
+        case .withdrawalRequest:
+            return "/withdrawal"
         }
     }
 }

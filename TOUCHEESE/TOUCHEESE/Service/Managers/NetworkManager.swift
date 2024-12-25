@@ -458,7 +458,7 @@ final class NetworkManager {
         return appOpenResponseData.data
     }
     
-    /// 서버에 로그아웃을 보내는 메서드
+    /// 서버에 로그아웃 요청을 보내는 메서드
     @discardableResult
     func postLogout(accessToken: String) async throws -> LogoutResponseData {
         let fetchRequest = Network.logoutRequest(
@@ -491,6 +491,43 @@ final class NetworkManager {
             authManager.logout()
         } catch {
             print("Logout Error: \(error.localizedDescription)")
+        }
+    }
+     */
+    
+    /// 서버에 회원탈퇴 요청을 보내는 메서드
+    @discardableResult
+    func postWithdrawal(accessToken: String) async throws -> WithdrawalResponseData {
+        let fetchRequest = Network.withdrawalRequest(
+            accessToken: accessToken
+        )
+        let withdrawalResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: WithdrawalResponseData.self
+        )
+        
+        return withdrawalResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용
+    /*
+    func withdrawal() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                try await networkManager.postWithdrawal(accessToken: token)
+            }
+            
+            authManager.withdrawal()
+        } catch NetworkError.unauthorized {
+            print("Withdrawal Error: Refresh Token Expired.")
+            authManager.withdrawal()
+        } catch {
+            print("Withdrawal Error: \(error.localizedDescription)")
         }
     }
      */

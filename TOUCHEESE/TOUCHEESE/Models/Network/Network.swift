@@ -49,4 +49,5 @@ enum Network {
     case refreshAccessTokenRequest(RefreshAccessTokenRequest)
     case appOpenRequest(AppOpenRequest)
     case logoutRequest(accessToken: String)
+    case withdrawalRequest(accessToken: String)
 }
