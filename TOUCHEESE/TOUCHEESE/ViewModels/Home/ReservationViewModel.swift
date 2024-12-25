@@ -22,8 +22,8 @@ final class ReservationViewModel: ObservableObject {
     private(set) var isReserving: Bool = false
     
     // MARK: - 멤버 임시 데이터
-    let userName = "김마루"
-    let memberId = 1
+    lazy var userName = authManager.memberNickname
+    lazy var memberId = authManager.memberId
     
     @Published var userEmail: String = ""
     @Published var userPhone: String = ""
@@ -80,7 +80,7 @@ final class ReservationViewModel: ObservableObject {
     
     /// 스튜디오 예약 요청을 보내는 함수
     func requestStudioReservation() async {
-        guard let memberId = authManager.memberId else {
+        guard let memberId else {
             print("requestStudioReservation - memberId is nil")
             return
         }
