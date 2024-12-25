@@ -69,12 +69,12 @@ final class ReservationDetailViewModel: ObservableObject {
                     )
                 } else {
                     print("Cancel Reservation Error: Member ID Not Found")
-                    authManager.failedAuthentication()
+                    authManager.logout()
                 }
             }
         } catch NetworkError.unauthorized {
             print("Cancel Reservation Error: Refresh Token Expired")
-            authManager.failedAuthentication()
+            authManager.logout()
         } catch {
             print("Cancel Reservation Error: \(error.localizedDescription)")
         }

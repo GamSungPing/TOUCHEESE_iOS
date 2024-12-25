@@ -79,6 +79,12 @@ extension Network {
             return "/refreshAccessToken"
         case .appOpenRequest:
             return "/appOpen"
+        case .logoutRequest:
+            return "/logout"
+        case .withdrawalRequest:
+            return "/withdrawal"
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            return "/\(nicknameChangeRequest.memberId)/name"
         }
     }
 }

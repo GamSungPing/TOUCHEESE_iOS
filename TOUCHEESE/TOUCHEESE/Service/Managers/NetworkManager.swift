@@ -87,7 +87,7 @@ final class NetworkManager {
                 accessToken: accessToken,
                 refreshToken: refreshToken
             )
-            let newTokenData = try await postRefreshAccessTokenData(
+            let newTokenData = try await postRefreshAccessToken(
                 refreshRequest
             )
             
@@ -425,7 +425,8 @@ final class NetworkManager {
         }
     }
     
-    func postRefreshAccessTokenData(
+    /// Access Token을 갱신을 서버에 요청하기 위해 사용하는 메서드
+    func postRefreshAccessToken(
         _ refreshAccessTokenRequest: RefreshAccessTokenRequest
     ) async throws -> RefreshAccessTokenResponse {
         let fetchRequest = Network.refreshAccessTokenRequest(
@@ -439,7 +440,11 @@ final class NetworkManager {
         return refreshTokenResponseData.data
     }
     
-    func postAppOpenData(
+    /// 앱을 처음 시작할 때 서버에서 다음의 정보를 가져오기 위해 사용하는 메서드
+    /// - Access Token
+    /// - Member ID
+    /// - Member Nickname
+    func postAppOpen(
         _ appOpenDataRequest: AppOpenRequest
     ) async throws -> AppOpenResponse {
         let fetchRequest = Network.appOpenRequest(
@@ -452,5 +457,128 @@ final class NetworkManager {
         
         return appOpenResponseData.data
     }
+    
+    /// 서버에 로그아웃 요청을 보내는 메서드
+    @discardableResult
+    func postLogout(accessToken: String) async throws -> LogoutResponseData {
+        let fetchRequest = Network.logoutRequest(
+            accessToken: accessToken
+        )
+        let logoutResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: LogoutResponseData.self
+        )
+        
+        return logoutResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용
+    /*
+    func logout() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                try await networkManager.postLogout(accessToken: token)
+            }
+            
+            authManager.logout()
+        } catch NetworkError.unauthorized {
+            print("Logout Error: Refresh Token Expired.")
+            authManager.logout()
+        } catch {
+            print("Logout Error: \(error.localizedDescription)")
+        }
+    }
+     */
+    
+    /// 서버에 회원탈퇴 요청을 보내는 메서드
+    @discardableResult
+    func postWithdrawal(accessToken: String) async throws -> WithdrawalResponseData {
+        let fetchRequest = Network.withdrawalRequest(
+            accessToken: accessToken
+        )
+        let withdrawalResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: WithdrawalResponseData.self
+        )
+        
+        return withdrawalResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용
+    /*
+    func withdrawal() async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                try await networkManager.postWithdrawal(accessToken: token)
+            }
+            
+            authManager.withdrawal()
+        } catch NetworkError.unauthorized {
+            print("Withdrawal Error: Refresh Token Expired.")
+            authManager.withdrawal()
+        } catch {
+            print("Withdrawal Error: \(error.localizedDescription)")
+        }
+    }
+     */
+    
+    /// 서버에 회원의 닉네임 변경을 요청하는 메서드
+    @discardableResult
+    func putNicknameChange(
+        _ nicknameChangeRequest: NicknameChangeRequest
+    ) async throws -> NicknameChangeResponseData {
+        let fetchRequest = Network.nicknameChangeRequest(
+            nicknameChangeRequest
+        )
+        let nicknameChangeResponseData = try await performRequest(
+            fetchRequest,
+            decodingType: NicknameChangeResponseData.self
+        )
+        
+        return nicknameChangeResponseData
+    }
+    
+    // MARK: - 추후 ViewModel에서 아래 함수로 사용, 서버 문제로 아직 해당 메서드 테스트가 안되어 있음
+    /*
+    func changeNickname(newName: String) async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                if let memberId = authManager.memberId {
+                    let nicknameChangeRequest = NicknameChangeRequest(
+                        accessToken: token,
+                        memberId: memberId,
+                        newName: newName
+                    )
+                    try await networkManager.putNicknameChange(nicknameChangeRequest)
+                } else {
+                    print("Nickname Change Error: memberID is nil")
+                    authManager.logout()
+                }
+            }
+            
+            authManager.logout()
+        } catch NetworkError.unauthorized {
+            print("Nickname Change Error: Refresh Token Expired.")
+            authManager.logout()
+        } catch {
+            print("Nickname Change Error: \(error.localizedDescription)")
+        }
+    }
+     */
     
 }

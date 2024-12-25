@@ -37,13 +37,13 @@ final class ReservationListViewModel: ObservableObject {
                         memberID: memberId
                     )
                 } else {
-                    authManager.failedAuthentication()
+                    authManager.logout()
                     return []
                 }
             }
         } catch NetworkError.unauthorized {
             print("Reservation List Fetch Error: Refresh Token Expired")
-            authManager.failedAuthentication()
+            authManager.logout()
         } catch {
             print("Reservation List Fetch Error: \(error.localizedDescription)")
         }
@@ -65,13 +65,13 @@ final class ReservationListViewModel: ObservableObject {
                         isPast: true
                     )
                 } else {
-                    authManager.failedAuthentication()
+                    authManager.logout()
                     return []
                 }
             }
         } catch NetworkError.unauthorized {
             print("Past Reservation List Fetch Error: Refresh Token Expired")
-            authManager.failedAuthentication()
+            authManager.logout()
         } catch {
             print("Past Reservation List Fetch Error: \(error.localizedDescription)")
         }

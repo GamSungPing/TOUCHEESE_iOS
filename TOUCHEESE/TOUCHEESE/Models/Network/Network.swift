@@ -48,4 +48,9 @@ enum Network {
     case sendSocialIDRequest(socialID: String, socialType: SocialType)
     case refreshAccessTokenRequest(RefreshAccessTokenRequest)
     case appOpenRequest(AppOpenRequest)
+    case logoutRequest(accessToken: String)
+    case withdrawalRequest(accessToken: String)
+    
+    /// Member
+    case nicknameChangeRequest(NicknameChangeRequest)
 }
