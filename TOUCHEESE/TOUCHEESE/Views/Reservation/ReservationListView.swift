@@ -94,7 +94,10 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                 LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         Button {
-                            navigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
+                            navigationManager.appendPath(
+                                viewType: .reservationDetailView,
+                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation))
+                            )
                         } label: {
                             ReservationRow(reservation: reservation)
                         }

@@ -19,6 +19,12 @@ class NavigationManager: ObservableObject {
             updateTabBarVisibility()
         }
     }
+    @Published var studioLikePath: [ViewType] = [] {
+        didSet {
+            updateTabBarVisibility()
+        }
+    }
+    
     @Published var tabItem: Tab = .home
     @Published var isTabBarHidden: Bool = false
     
@@ -30,12 +36,32 @@ class NavigationManager: ObservableObject {
     private(set) var reservationDetailViewMaterial: ReservationDetailViewMaterial?
     
     func goFirstView() {
-        homePath.removeAll()
+        switch tabItem {
+        case .home:
+            homePath.removeAll()
+        case .reservation:
+            reservationPath.removeAll()
+        case .likedStudios:
+            studioLikePath.removeAll()
+        case .myPage:
+            break
+        }
     }
     
     func goFirstViewAndSecondTap() {
-        homePath.removeAll()
-        tabItem = .reservation
+        switch tabItem {
+        case .home:
+            homePath.removeAll()
+            tabItem = .reservation
+        case .reservation:
+            reservationPath.removeAll()
+            tabItem = .reservation
+        case .likedStudios:
+            studioLikePath.removeAll()
+            tabItem = .reservation
+        case .myPage:
+            break
+        }
     }
     
     @ViewBuilder
@@ -67,6 +93,7 @@ class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.studioDetailView)
             case .reservation: reservationPath.append(.studioDetailView)
+            case .likedStudios: studioLikePath.append(.studioDetailView)
             default:
                 break
             }
@@ -75,6 +102,7 @@ class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.productDetailView)
             case .reservation: reservationPath.append(.productDetailView)
+            case .likedStudios: studioLikePath.append(.productDetailView)
             default: break
             }
         case .reservationConfirmView:
@@ -82,12 +110,14 @@ class NavigationManager: ObservableObject {
             switch tabItem {
             case .home: homePath.append(.reservationConfirmView)
             case .reservation: reservationPath.append(.reservationConfirmView)
+            case .likedStudios: studioLikePath.append(.reservationConfirmView)
             default: break
             }
         case .reservationCompleteView:
             switch tabItem {
             case .home: homePath.append(.reservationCompleteView)
             case .reservation: reservationPath.append(.reservationCompleteView)
+            case .likedStudios: studioLikePath.append(.reservationCompleteView)
             default: break
             }
         case .reservationDetailView:
@@ -103,7 +133,7 @@ class NavigationManager: ObservableObject {
         case .reservation:
             isTabBarHidden = reservationPath.count >= 1
         case .likedStudios:
-            break
+            isTabBarHidden = studioLikePath.count >= 1
         case .myPage:
             break
         }

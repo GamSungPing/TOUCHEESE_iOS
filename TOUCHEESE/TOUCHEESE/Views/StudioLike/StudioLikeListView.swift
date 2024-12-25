@@ -50,7 +50,10 @@ struct StudioLikeListView: View {
                                 StudioRow(studio: studio)
                                     .contentShape(.rect)
                                     .onTapGesture {
-                                        
+                                        navigationManager.appendPath(
+                                            viewType: .studioDetailView,
+                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+                                        )
                                     }
                             }
                         }

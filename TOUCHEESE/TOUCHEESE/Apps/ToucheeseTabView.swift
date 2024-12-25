@@ -28,7 +28,12 @@ struct ToucheeseTabView: View {
                         }
                 }
             case .likedStudios:
-                StudioLikeListView()
+                NavigationStack(path: $navigationManager.studioLikePath) {
+                    StudioLikeListView()
+                        .navigationDestination(for: ViewType.self) { viewType in
+                            navigationManager.buildView(viewType: viewType)
+                        }
+                }
             case .myPage:
                 MyPageView()
             }
