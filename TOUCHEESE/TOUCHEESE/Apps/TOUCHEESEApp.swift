@@ -93,6 +93,7 @@ struct TOUCHEESEApp: App {
     @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
+    @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -112,6 +113,7 @@ struct TOUCHEESEApp: App {
                 .environmentObject(reservationListViewModel)
                 .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
+                .environmentObject(studioLikeListViewModel)
                 .preferredColorScheme(.light)
                 .onOpenURL(perform: { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {

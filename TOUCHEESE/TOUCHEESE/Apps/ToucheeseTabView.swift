@@ -28,7 +28,7 @@ struct ToucheeseTabView: View {
                         }
                 }
             case .likedStudios:
-                TestView2()
+                StudioLikeListView()
             case .myPage:
                 MyPageView()
             }

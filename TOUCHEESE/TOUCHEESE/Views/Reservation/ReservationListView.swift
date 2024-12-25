@@ -22,17 +22,17 @@ struct ReservationListView: View {
     
     var body: some View {
         VStack {
-            ReservationCustomSegmentedControl(
-                tabs: SegmentedTab.allCases,
-                activeTab: $activeTab,
-                namespace: namespace
-            )
-            
             if authManager.authStatus == .notAuthenticated {
                 CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
                     isShowingLogInView.toggle()
                 })
             } else {
+                ReservationCustomSegmentedControl(
+                    tabs: SegmentedTab.allCases,
+                    activeTab: $activeTab,
+                    namespace: namespace
+                )
+                
                 switch activeTab {
                 case .reservation:
                     FilteredReservationListView(
