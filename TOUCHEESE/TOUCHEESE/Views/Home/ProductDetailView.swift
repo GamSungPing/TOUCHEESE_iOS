@@ -419,6 +419,7 @@ fileprivate struct CalendarView: View {
                                                     }
                                             }
                                     }
+                                    .disabled(!reservableTimeSlot.isAvailable)
                                 }
                             }
                             .padding(.bottom, 20)
