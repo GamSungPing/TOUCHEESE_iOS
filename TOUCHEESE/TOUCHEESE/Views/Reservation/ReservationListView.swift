@@ -103,6 +103,9 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                         }
                     }
                 }
+                
+                Color.clear
+                    .frame(height: 25)
             }
             .refreshable {
                 refreshAction()

@@ -11,6 +11,7 @@ struct StudioLikeListView: View {
     @EnvironmentObject private var viewModel: StudioLikeListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
     
+    @State private var isShowingLoginAlert = false
     @State private var isShowingLogInView = false
     
     private let authManager = AuthenticationManager.shared
@@ -47,16 +48,22 @@ struct StudioLikeListView: View {
                             .padding(.horizontal, 16)
                             
                             ForEach(viewModel.likedStudios) { studio in
-                                StudioRow(studio: studio)
-                                    .contentShape(.rect)
-                                    .onTapGesture {
-                                        navigationManager.appendPath(
-                                            viewType: .studioDetailView,
-                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
-                                        )
-                                    }
+                                StudioRow(
+                                    studio: studio,
+                                    isShowingLoginAlert: $isShowingLoginAlert
+                                )
+                                .contentShape(.rect)
+                                .onTapGesture {
+                                    navigationManager.appendPath(
+                                        viewType: .studioDetailView,
+                                        viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+                                    )
+                                }
                             }
                         }
+                        
+                        Color.clear
+                            .frame(height: 25)
                     }
                     .refreshable {
                         Task {

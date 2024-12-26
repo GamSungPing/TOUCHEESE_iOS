@@ -19,7 +19,7 @@ struct StudioRow: View {
         studio.portfolioImageURLs
     }
     
-    @State private var isBookmarked = false
+    @Binding var isShowingLoginAlert: Bool
     
     var body: some View {
         VStack(spacing: 12) {
@@ -53,42 +53,23 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-//                BookmarkButton(
-//                    isBookmarked: $isBookmarked,
-//                    size: 30
-//                ) {
-//                    // TODO: - 테스트 중
-//                    isBookmarked.toggle()
-//                    
-//                    Task {
-//                        if isBookmarked {
-//                            await studioListViewModel.likeStudio(
-//                                studioId: studio.id
-//                            )
-//                        } else {
-//                            
-//                            await studioListViewModel.cancelLikeStudio(
-//                                studioId: studio.id
-//                            )
-//                        }
-//                        
-//                        await studioLikeListViewModel.fetchLikedStudios()
-//                    }
-//                }
-                
                 Button {
-                    Task {
-                        if authManager.memberLikedStudios.contains(studio) {
-                            await studioListViewModel.cancelLikeStudio(
-                                studioId: studio.id
-                            )
-                        } else {
-                            await studioListViewModel.likeStudio(
-                                studioId: studio.id
-                            )
+                    if authManager.authStatus == .notAuthenticated {
+                        isShowingLoginAlert.toggle()
+                    } else {
+                        Task {
+                            if authManager.memberLikedStudios.contains(studio) {
+                                await studioListViewModel.cancelLikeStudio(
+                                    studioId: studio.id
+                                )
+                            } else {
+                                await studioListViewModel.likeStudio(
+                                    studioId: studio.id
+                                )
+                            }
+                            
+                            await studioLikeListViewModel.fetchLikedStudios()
                         }
-                        
-                        await studioLikeListViewModel.fetchLikedStudios()
                     }
                 } label: {
                     Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
@@ -127,5 +108,5 @@ struct StudioRow: View {
 }
 
 #Preview {
-    StudioRow(studio: Studio.sample)
+    StudioRow(studio: Studio.sample, isShowingLoginAlert: .constant(false))
 }

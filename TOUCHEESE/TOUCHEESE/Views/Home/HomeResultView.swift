@@ -18,46 +18,53 @@ struct HomeResultView: View {
     @State private var isShowingPriceFilterOptionView: Bool = false
     @State private var isShowingRegionFilterOptionView: Bool = false
     
+    @State private var isShowingLoginAlert: Bool = false
+    @State private var isShowingLoginView: Bool = false
+    
     var body: some View {
-        VStack {
-            filtersView
-                .padding(.horizontal)
-                .padding(.top, 11)
-                .padding(.bottom, -5)
-            
-            ZStack(alignment: .top) {
-                if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
-                    CustomEmptyView(
-                        viewType: .studio(
-                            buttonAction: {
-                                studioListViewModel.resetFilters()
-                            },
-                            buttonText: "필터링 초기화 하기")
-                    )
-                } else {
-                    ScrollView {
-                        Color.clear
-                            .frame(height: 5)
-                        
-                        LazyVStack(spacing: 20) {
-                            HStack(spacing: 0) {
-                                Text("총")
-                                    .padding(.trailing, 3)
-                                
-                                Text("\(studioListViewModel.studioCount)")
-                                    .foregroundStyle(.tcPrimary06)
-                                    .font(.pretendardMedium14)
-                                
-                                Text("개의 스튜디오가 있습니다.")
-                                
-                                Spacer()
-                            }
-                            .foregroundStyle(.tcGray10)
-                            .font(.pretendardRegular14)
-                            .padding(.horizontal, 16)
+        ZStack {
+            VStack {
+                filtersView
+                    .padding(.horizontal)
+                    .padding(.top, 11)
+                    .padding(.bottom, -5)
+                
+                ZStack(alignment: .top) {
+                    if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
+                        CustomEmptyView(
+                            viewType: .studio(
+                                buttonAction: {
+                                    studioListViewModel.resetFilters()
+                                },
+                                buttonText: "필터링 초기화 하기")
+                        )
+                    } else {
+                        ScrollView {
+                            Color.clear
+                                .frame(height: 5)
                             
-                            ForEach(studioListViewModel.studios) { studio in
-                                StudioRow(studio: studio)
+                            LazyVStack(spacing: 20) {
+                                HStack(spacing: 0) {
+                                    Text("총")
+                                        .padding(.trailing, 3)
+                                    
+                                    Text("\(studioListViewModel.studioCount)")
+                                        .foregroundStyle(.tcPrimary06)
+                                        .font(.pretendardMedium14)
+                                    
+                                    Text("개의 스튜디오가 있습니다.")
+                                    
+                                    Spacer()
+                                }
+                                .foregroundStyle(.tcGray10)
+                                .font(.pretendardRegular14)
+                                .padding(.horizontal, 16)
+                                
+                                ForEach(studioListViewModel.studios) { studio in
+                                    StudioRow(
+                                        studio: studio,
+                                        isShowingLoginAlert: $isShowingLoginAlert
+                                    )
                                     .contentShape(.rect)
                                     .onTapGesture {
                                         navigationManager.appendPath(
@@ -65,28 +72,38 @@ struct HomeResultView: View {
                                             viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
                                         )
                                     }
-                            }
-                            
-                            Color.clear
-                                .onAppear {
-                                    studioListViewModel.loadMoreStudios()
                                 }
+                                
+                                Color.clear
+                                    .onAppear {
+                                        studioListViewModel.loadMoreStudios()
+                                    }
+                            }
                         }
+                        .scrollIndicators(.never)
                     }
-                    .scrollIndicators(.never)
+                }
+            }
+            .customNavigationBar(centerView: {
+                Text("\(concept.title)")
+                    .modifier(NavigationTitleModifier())
+            }, leftView: {
+                Button {
+                    dismiss()
+                } label: {
+                    NavigationBackButtonView()
+                }
+            })
+            
+            if isShowingLoginAlert {
+                CustomAlertView(
+                    isPresented: $isShowingLoginAlert,
+                    alertType: .login
+                ) {
+                    isShowingLoginView.toggle()
                 }
             }
         }
-        .customNavigationBar(centerView: {
-            Text("\(concept.title)")
-                .modifier(NavigationTitleModifier())
-        }, leftView: {
-            Button {
-                dismiss()
-            } label: {
-                NavigationBackButtonView()
-            }
-        })
         .sheet(isPresented: $isShowingPriceFilterOptionView) {
             filterOptionView(.price)
                 .presentationDetents([.fraction(0.5)])
