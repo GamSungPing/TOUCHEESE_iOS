@@ -50,9 +50,21 @@ extension Network {
             
             return headers
         case .nicknameChangeRequest(let nicknameChangeRequest):
-            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            var headers: HTTPHeaders = ["accept": "application/json"]
             
             headers["Authorization"] = "Bearer \(nicknameChangeRequest.accessToken)"
+            
+            return headers
+        case .studioLikeRequest(let studioLikeRelationRequest), .studioLikeCancelRequest(let studioLikeRelationRequest):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(studioLikeRelationRequest.accessToken)"
+            
+            return headers
+        case .studioLikeListRequest(let accessToken, _):
+            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            
+            headers["Authorization"] = "Bearer \(accessToken)"
             
             return headers
         }

@@ -22,17 +22,18 @@ struct ReservationListView: View {
     
     var body: some View {
         VStack {
-            ReservationCustomSegmentedControl(
-                tabs: SegmentedTab.allCases,
-                activeTab: $activeTab,
-                namespace: namespace
-            )
-            
             if authManager.authStatus == .notAuthenticated {
                 CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
                     isShowingLogInView.toggle()
                 })
             } else {
+                ReservationCustomSegmentedControl(
+                    tabs: SegmentedTab.allCases,
+                    activeTab: $activeTab,
+                    namespace: namespace
+                )
+                .padding(.top, 11)
+                
                 switch activeTab {
                 case .reservation:
                     FilteredReservationListView(
@@ -93,12 +94,18 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                 LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         Button {
-                            navigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
+                            navigationManager.appendPath(
+                                viewType: .reservationDetailView,
+                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation))
+                            )
                         } label: {
                             ReservationRow(reservation: reservation)
                         }
                     }
                 }
+                
+                Color.clear
+                    .frame(height: 25)
             }
             .refreshable {
                 refreshAction()

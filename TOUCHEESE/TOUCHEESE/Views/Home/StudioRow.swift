@@ -9,12 +9,17 @@ import SwiftUI
 import Kingfisher
 
 struct StudioRow: View {
+    @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
+    
+    private let authManager = AuthenticationManager.shared
+    
     let studio: Studio
     private var portfolioImageURLs: [URL] {
         studio.portfolioImageURLs
     }
     
-    @State private var isBookmarked = false
+    @Binding var isShowingLoginAlert: Bool
     
     var body: some View {
         VStack(spacing: 12) {
@@ -48,10 +53,31 @@ struct StudioRow: View {
                 
                 Spacer()
                 
-                BookmarkButton(
-                    isBookmarked: $isBookmarked,
-                    size: 30
-                )
+                Button {
+                    if authManager.authStatus == .notAuthenticated {
+                        isShowingLoginAlert.toggle()
+                    } else {
+                        Task {
+                            if authManager.memberLikedStudios.contains(studio) {
+                                await studioListViewModel.cancelLikeStudio(
+                                    studioId: studio.id
+                                )
+                            } else {
+                                await studioListViewModel.likeStudio(
+                                    studioId: studio.id
+                                )
+                            }
+                            
+                            await studioLikeListViewModel.fetchLikedStudios()
+                        }
+                    }
+                } label: {
+                    Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal)
             
@@ -82,5 +108,5 @@ struct StudioRow: View {
 }
 
 #Preview {
-    StudioRow(studio: Studio.sample)
+    StudioRow(studio: Studio.sample, isShowingLoginAlert: .constant(false))
 }

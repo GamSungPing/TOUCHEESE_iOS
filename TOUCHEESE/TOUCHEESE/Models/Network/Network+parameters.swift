@@ -106,6 +106,25 @@ extension Network {
             params["newName"] = nicknameChangeRequest.newName
             
             return params
+        case .studioLikeRequest(let studioLikeRelationRequest):
+            var params: Parameters = [:]
+            
+            params["memberId"] = studioLikeRelationRequest.memberId
+            params["studioId"] = studioLikeRelationRequest.studioId
+            
+            return params
+        case .studioLikeCancelRequest(let studioLikeRelationRequest):
+            var params: Parameters = [:]
+            
+            params["memberId"] = studioLikeRelationRequest.memberId
+            
+            return params
+        case .studioLikeListRequest(_, let memberId):
+            var params: Parameters = [:]
+            
+            params["memberId"] = memberId
+            
+            return params
         }
     }
 }

@@ -117,4 +117,36 @@ final class MyPageViewModel: ObservableObject {
             print("Withdrawal Error: \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+    func changeNickname(newName: String) async {
+        guard authManager.authStatus == .authenticated else { return }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                if let memberId = authManager.memberId {
+                    let nicknameChangeRequest = NicknameChangeRequest(
+                        accessToken: token,
+                        memberId: memberId,
+                        newName: newName
+                    )
+                    
+                    try await networkManager.putNicknameChange(nicknameChangeRequest)
+                    
+                    authManager.memberNickname = newName
+                } else {
+                    print("Nickname Change Error: memberID is nil")
+                    authManager.logout()
+                }
+            }
+        } catch NetworkError.unauthorized {
+            print("Nickname Change Error: Refresh Token Expired.")
+            authManager.logout()
+        } catch {
+            print("Nickname Change Error: \(error.localizedDescription)")
+        }
+    }
 }
