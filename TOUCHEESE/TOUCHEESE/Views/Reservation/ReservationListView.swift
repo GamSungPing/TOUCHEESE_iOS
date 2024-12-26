@@ -8,72 +8,70 @@
 import SwiftUI
 
 struct ReservationListView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var navigationManager: NavigationManager
     @EnvironmentObject private var viewModel: ReservationListViewModel
+    
+    @Namespace private var namespace
     
     @State private var selectedIndex = 0
     @State private var activeTab: SegmentedTab = .reservation
     
+    @State private var isShowingLogInView = false
+    
+    private let authManager = AuthenticationManager.shared
+    
     var body: some View {
         VStack {
-            ReservationCustomSegmentedControl(
-                tabs: SegmentedTab.allCases,
-                activeTab: $activeTab
-            )
-            
-            switch activeTab {
-            case .reservation:
-                FilteredReservationListView(
-                    reservations: viewModel.reservations
-                ) {
-                    reservationEmptyView(description: "예약 일정이 없습니다.")
-                } refreshAction: {
-                    Task {
-                        await viewModel.fetchReservations()
+            if authManager.authStatus == .notAuthenticated {
+                CustomEmptyView(viewType: .requiredLogIn(buttonText: "로그인 하기") {
+                    isShowingLogInView.toggle()
+                })
+            } else {
+                ReservationCustomSegmentedControl(
+                    tabs: SegmentedTab.allCases,
+                    activeTab: $activeTab,
+                    namespace: namespace
+                )
+                .padding(.top, 11)
+                
+                switch activeTab {
+                case .reservation:
+                    FilteredReservationListView(
+                        reservations: viewModel.reservations
+                    ) {
+                        CustomEmptyView(viewType: .reservation)
+                    } refreshAction: {
+                        Task {
+                            await viewModel.fetchReservations()
+                        }
                     }
-                }
-            case .history:
-                FilteredReservationListView(
-                    reservations: viewModel.pastReservations
-                ) {
-                    reservationEmptyView(description: "지난 내역이 없습니다.")
-                } refreshAction: {
-                    Task {
-                        await viewModel.fetchPastReservations()
+                case .history:
+                    FilteredReservationListView(
+                        reservations: viewModel.pastReservations
+                    ) {
+                        CustomEmptyView(viewType: .pastReservation)
+                    } refreshAction: {
+                        Task {
+                            await viewModel.fetchPastReservations()
+                        }
                     }
                 }
             }
         }
         .padding(.horizontal)
+        .fullScreenCover(isPresented: $isShowingLogInView) {
+            LogInView(isPresented: $isShowingLogInView)
+        }
         .customNavigationBar {
             Text("예약 내역")
                 .modifier(NavigationTitleModifier())
         }
-        .onAppear {
-            tabbarManager.isHidden = false
+        .onChange(of: isShowingLogInView) { _ in
+            Task {
+                await viewModel.fetchReservations()
+                await viewModel.fetchPastReservations()
+            }
         }
-        .background(.tcGray01)
-    }
-    
-    private func reservationEmptyView(description: String) -> some View {
-        VStack {
-            Spacer()
-            
-            Image(.tcEmptyIcon)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 84)
-                .foregroundStyle(.tcGray03)
-            
-            Text("\(description)")
-                .font(.pretendardMedium(18))
-                .foregroundStyle(.tcGray04)
-                .padding(.top, 18)
-            
-            Spacer()
-        }
-        .padding()
     }
 }
 
@@ -96,12 +94,18 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
                 LazyVStack(spacing: 8) {
                     ForEach(reservations) { reservation in
                         Button {
-                            navigationManager.appendPath(viewType: .reservationDetailView, viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation)))
+                            navigationManager.appendPath(
+                                viewType: .reservationDetailView,
+                                viewMaterial: ReservationDetailViewMaterial(viewModel: ReservationDetailViewModel(reservation: reservation))
+                            )
                         } label: {
                             ReservationRow(reservation: reservation)
                         }
                     }
                 }
+                
+                Color.clear
+                    .frame(height: 25)
             }
             .refreshable {
                 refreshAction()
@@ -115,6 +119,7 @@ fileprivate struct FilteredReservationListView<Content>: View where Content: Vie
 fileprivate struct ReservationCustomSegmentedControl: View {
     var tabs: [SegmentedTab]
     @Binding var activeTab: SegmentedTab
+    let namespace: Namespace.ID
     
     var body: some View {
         HStack(spacing: 8) {
@@ -131,8 +136,11 @@ fileprivate struct ReservationCustomSegmentedControl: View {
                         }
                     }
                     .background(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(activeTab == tab ? .white  : .tcGray02)
+                        if activeTab == tab {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(activeTab == tab ? .white  : .tcGray02)
+                                .matchedGeometryEffect(id: "rect", in: namespace)
+                        }
                     }
             }
         }
@@ -156,5 +164,4 @@ fileprivate enum SegmentedTab: String, CaseIterable {
 #Preview {
     ReservationListView()
         .environmentObject(ReservationListViewModel())
-        .environmentObject(TabbarManager())
 }

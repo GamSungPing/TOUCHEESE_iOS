@@ -8,98 +8,136 @@
 import SwiftUI
 
 struct HomeResultView: View {
-    @EnvironmentObject private var tabbarManager: TabbarManager
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var navigationManager: NavigationManager
+    
+    @Environment(\.dismiss) private var dismiss
     
     let concept: StudioConcept
     
     @State private var isShowingPriceFilterOptionView: Bool = false
     @State private var isShowingRegionFilterOptionView: Bool = false
     
+    @State private var isShowingLoginAlert: Bool = false
+    @State private var isShowingLoginView: Bool = false
+    
     var body: some View {
-        VStack {
-            filtersView
-                .padding(.horizontal)
-                .padding(.bottom, -5)
-            
-            ZStack(alignment: .top) {
-                if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
-                    studioEmptyView
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 20) {
-                            ForEach(studioListViewModel.studios) { studio in
-                                Button {
-                                    navigationManager.appendPath(viewType: .studioDetailView, viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio)))
-                                } label: {
-                                    StudioRow(studio: studio)
-                                }
-                            }
-                            
+        ZStack {
+            VStack {
+                filtersView
+                    .padding(.horizontal)
+                    .padding(.top, 11)
+                    .padding(.bottom, -5)
+                
+                ZStack(alignment: .top) {
+                    if studioListViewModel.studios.isEmpty && studioListViewModel.isStudioLoading == false {
+                        CustomEmptyView(
+                            viewType: .studio(
+                                buttonAction: {
+                                    studioListViewModel.resetFilters()
+                                },
+                                buttonText: "필터링 초기화 하기")
+                        )
+                    } else {
+                        ScrollView {
                             Color.clear
-                                .onAppear {
-                                    studioListViewModel.loadMoreStudios()
+                                .frame(height: 5)
+                            
+                            LazyVStack(spacing: 20) {
+                                HStack(spacing: 0) {
+                                    Text("총")
+                                        .padding(.trailing, 3)
+                                    
+                                    Text("\(studioListViewModel.studioCount)")
+                                        .foregroundStyle(.tcPrimary06)
+                                        .font(.pretendardMedium14)
+                                    
+                                    Text("개의 스튜디오가 있습니다.")
+                                    
+                                    Spacer()
                                 }
+                                .foregroundStyle(.tcGray10)
+                                .font(.pretendardRegular14)
+                                .padding(.horizontal, 16)
+                                
+                                ForEach(studioListViewModel.studios) { studio in
+                                    StudioRow(
+                                        studio: studio,
+                                        isShowingLoginAlert: $isShowingLoginAlert
+                                    )
+                                    .contentShape(.rect)
+                                    .onTapGesture {
+                                        navigationManager.appendPath(
+                                            viewType: .studioDetailView,
+                                            viewMaterial: StudioDetailViewMaterial(viewModel: StudioDetailViewModel(studio: studio))
+                                        )
+                                    }
+                                }
+                                
+                                Color.clear
+                                    .onAppear {
+                                        studioListViewModel.loadMoreStudios()
+                                    }
+                            }
                         }
-                        .navigationDestination(for: Studio.self) { studio in
-                            StudioDetailView(
-                                viewModel: StudioDetailViewModel(studio: studio)
-                            )
-                        }
+                        .scrollIndicators(.never)
                     }
-                    .scrollIndicators(.never)
                 }
-                
-                if isShowingPriceFilterOptionView {
-                    filterOptionView(.price)
+            }
+            .customNavigationBar(centerView: {
+                Text("\(concept.title)")
+                    .modifier(NavigationTitleModifier())
+            }, leftView: {
+                Button {
+                    dismiss()
+                } label: {
+                    NavigationBackButtonView()
                 }
-                
-                if isShowingRegionFilterOptionView {
-                    filterOptionView(.region)
+            })
+            
+            if isShowingLoginAlert {
+                CustomAlertView(
+                    isPresented: $isShowingLoginAlert,
+                    alertType: .login
+                ) {
+                    isShowingLoginView.toggle()
                 }
             }
         }
-        .navigationTitle("\(concept.title)")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarRole(.editor)
+        .sheet(isPresented: $isShowingPriceFilterOptionView) {
+            filterOptionView(.price)
+                .presentationDetents([.fraction(0.5)])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $isShowingRegionFilterOptionView) {
+            filterOptionView(.region)
+                .presentationDetents([.fraction(0.9)])
+                .presentationDragIndicator(.visible)
+        }
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
-            
-            tabbarManager.isHidden = false
         }
-    }
-    
-    private var studioEmptyView: some View {
-        VStack {
-            Spacer()
-            
-            Image(systemName: "tray")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100)
-                .foregroundStyle(Color.gray)
-            
-            Text("해당하는 스튜디오가 없습니다.")
-                .foregroundStyle(Color.gray)
-                .padding(.top, 30)
-            
-            Button {
-                studioListViewModel.resetFilters()
-            } label: {
-                Text("필터 초기화 하기")
-                    .foregroundStyle(Color.black)
-            }
-            .buttonStyle(.bordered)
-            
-            Spacer()
-        }
-        .padding()
     }
     
     private var filtersView: some View {
-        HStack {
+        HStack(spacing: 6) {
+            if studioListViewModel.isShowingResetButton {
+                Button {
+                    isShowingRegionFilterOptionView = false
+                    isShowingPriceFilterOptionView = false
+                    
+                    studioListViewModel.resetFilters()
+                } label: {
+                    Image(.tcRefresh)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 32, height: 32)
+                        .foregroundStyle(Color.black)
+                }
+                .buttonStyle(.plain)
+            }
+            
             Button {
                 toggleFilter(&isShowingPriceFilterOptionView)
             } label: {
@@ -108,6 +146,7 @@ struct HomeResultView: View {
                     isFiltering: studioListViewModel.isFilteringByPrice
                 )
             }
+            .buttonStyle(.plain)
             
             Button {
                 toggleFilter(&isShowingRegionFilterOptionView)
@@ -117,109 +156,99 @@ struct HomeResultView: View {
                     isFiltering: studioListViewModel.isFilteringByRegion
                 )
             }
+            .buttonStyle(.plain)
             
-            Button {
-                studioListViewModel.toggleStudioRatingFilter()
-                
-                isShowingPriceFilterOptionView = false
-                isShowingRegionFilterOptionView = false
-            } label: {
-                FilterButtonView(
-                    filter: .rating,
-                    isFiltering: studioListViewModel.isFilteringByRating
-                )
-            }
+            FilterButtonView(filter: .rating, isFiltering: studioListViewModel.isFilteringByRating)
+                .onTapGesture {
+                    studioListViewModel.toggleStudioRatingFilter()
+                    
+                    isShowingPriceFilterOptionView = false
+                    isShowingRegionFilterOptionView = false
+                }
             
             Spacer()
-            
-            if studioListViewModel.isShowingResetButton {
-                Button {
-                    isShowingRegionFilterOptionView = false
-                    isShowingPriceFilterOptionView = false
-                    
-                    studioListViewModel.resetFilters()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 20)
-                        .foregroundStyle(Color.black)
-                }
-            }
         }
+        .frame(height: 34)
     }
     
     @ViewBuilder
     private func filterOptionView(_ filter: StudioFilter) -> some View {
-        let columns = Array(
-            repeating: GridItem(.flexible()),
-            count: 4
-        )
-        
-        VStack {
-            LazyVGrid(columns: columns, spacing: 15) {
-                ForEach(filter.options, id: \.id) { option in
-                    if let region = option as? StudioRegion {
-                        filterButton(
-                            for: region,
-                            isSelected: studioListViewModel.tempSelectedRegions.contains(region)
-                        )
-                    } else if let price = option as? StudioPrice {
-                        filterButton(
-                            for: price,
-                            isSelected: price == studioListViewModel.selectedPrice
-                        )
+        VStack(spacing: 16) {
+            LeadingTextView(
+                text: "\(filter.title)",
+                font: .pretendardSemiBold(20)
+            )
+            
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack {
+                    ForEach(filter.options, id: \.id) { option in
+                        if let region = option as? StudioRegion {
+                            filterOptionButton(
+                                for: region,
+                                isSelected: studioListViewModel.tempSelectedRegions.contains(region)
+                            )
+                        } else if let price = option as? StudioPrice {
+                            filterOptionButton(
+                                for: price,
+                                isSelected: price == studioListViewModel.tempSelectedPrice
+                            )
+                        }
                     }
                 }
             }
             
-            if filter == .region {
-                Button {
+            FillBottomButton(isSelectable: true, title: "적용하기") {
+                switch filter {
+                case .region:
                     studioListViewModel.applyRegionOptions()
                     isShowingRegionFilterOptionView = false
-                } label: {
-                    Text("적용하기")
-                        .foregroundStyle(Color.black)
+                case .price:
+                    studioListViewModel.applyPriceOptions()
+                    isShowingPriceFilterOptionView = false
+                case .rating: break
                 }
-                .padding(.top, 5)
             }
         }
-        .padding()
-        .background {
-            RoundedRectangle(cornerRadius: 15)
-                .padding(.horizontal)
-                .foregroundStyle(Color.tcLightyellow)
-                .shadow(radius: 5, x: 2, y: 5)
-        }
+        .padding(.top, 32)
+        .padding(.horizontal, 24)
         .onAppear {
             studioListViewModel.loadRegionOptions()
+            studioListViewModel.loadPriceOptions()
         }
     }
     
-    private func filterButton<T: OptionType>(for option: T, isSelected: Bool) -> some View {
+    private func filterOptionButton<T: OptionType>(
+        for option: T,
+        isSelected: Bool
+    ) -> some View {
         Button {
             if let region = option as? StudioRegion {
                 studioListViewModel.toggleRegionFilterOption(region)
             } else if let price = option as? StudioPrice {
                 studioListViewModel.selectStudioPriceFilter(price)
-                isShowingPriceFilterOptionView = false
             }
         } label: {
-            VStack {
+            HStack {
                 Text("\(option.title)")
-                    .frame(maxHeight: 50)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(.tcGray10)
+                    .font(isSelected ? .pretendardBold(16) : .pretendardRegular16)
                 
-                Circle()
-                    .frame(width: 25)
-                    .foregroundStyle(Color.white)
-                    .overlay(
-                        Circle()
-                            .frame(width: 15)
-                            .foregroundStyle(isSelected ? Color.tcYellow : Color.clear)
-                    )
+                Spacer()
+                
+                if isSelected {
+                    Image(.tcCheckmark)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .scaledToFit()
+                }
             }
-            .frame(width: 80)
+            .padding(.horizontal)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? .tcPrimary01 : .clear)
+            )
         }
     }
     
@@ -238,6 +267,5 @@ struct HomeResultView: View {
         HomeResultView(concept: .liveliness)
     }
     .environmentObject(StudioListViewModel())
-    .environmentObject(TabbarManager())
     .environmentObject(NavigationManager())
 }

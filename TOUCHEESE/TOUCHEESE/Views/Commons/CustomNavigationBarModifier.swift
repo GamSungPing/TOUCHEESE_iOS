@@ -11,22 +11,19 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
     let centerView: (() -> C)?
     let leftView: (() -> L)?
     let rightView: (() -> R)?
-    let navigationBackgroundColor: Color
     
     init(
         centerView: (() -> C)? = nil,
         leftView: (() -> L)? = nil,
-        rightView:(() -> R)? = nil,
-        navigationBackgroundColor: Color
+        rightView:(() -> R)? = nil
     ) {
         self.centerView = centerView
         self.leftView = leftView
         self.rightView = rightView
-        self.navigationBackgroundColor = navigationBackgroundColor
     }
     
     func body(content: Content) -> some View {
-        VStack {
+        VStack(spacing: 0) {
             ZStack {
                 HStack {
                     leftView?()
@@ -35,7 +32,7 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
                     
                     rightView?()
                 }
-                .frame(height: 44)
+                .frame(height: 56)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 16)
                 
@@ -47,7 +44,6 @@ struct CustomNavigationBarModifier<C, L, R>: ViewModifier where C: View, L: View
                     Spacer()
                 }
             }
-            .background(navigationBackgroundColor.ignoresSafeArea(.all, edges: .top))
             
             content
             

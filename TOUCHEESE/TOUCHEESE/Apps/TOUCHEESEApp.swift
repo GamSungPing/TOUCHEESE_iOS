@@ -8,6 +8,8 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseMessaging
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -81,15 +83,6 @@ extension AppDelegate: MessagingDelegate {
         let deviceToken:[String: String] = ["token": fcmToken ?? ""]
         print("Device token: ", deviceToken)
         #endif
-        
-        Task {
-            try await NetworkManager.shared.postDeviceTokenRegistrationData(
-                deviceTokenRegistrationRequest: DeviceTokenRegistrationRequest(
-                    memberId: 1,
-                    deviceToken: fcmToken ?? ""
-                )
-            )
-        }
     }
 }
 
@@ -98,23 +91,114 @@ extension AppDelegate: MessagingDelegate {
 struct TOUCHEESEApp: App {
     @StateObject private var studioListViewModel = StudioListViewModel()
     @StateObject private var reservationListViewModel = ReservationListViewModel()
-    @StateObject private var tabbarManager = TabbarManager()
+    @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
+    @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    private let keychainManager = KeychainManager.shared
+    private let networkManager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
+    
     init() {
         CacheManager.configureKingfisherCache()
+        KakaoSDK.initSDK(appKey: Bundle.main.kakaoNativeAppKey)
     }
     
     var body: some Scene {
         WindowGroup {
             ToucheeseTabView()
                 .environmentObject(studioListViewModel)
-                .environmentObject(tabbarManager)
                 .environmentObject(reservationListViewModel)
+                .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
+                .environmentObject(studioLikeListViewModel)
                 .preferredColorScheme(.light)
+                .onOpenURL(perform: { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                })
+                .task {
+                    switch await checkAuthentication() {
+                    case .authenticated:
+                        AuthenticationManager.shared.successfulAuthentication()
+                        await reservationListViewModel.fetchReservations()
+                        await reservationListViewModel.fetchPastReservations()
+                        await studioLikeListViewModel.fetchLikedStudios()
+                    case .notAuthenticated:
+                        AuthenticationManager.shared.failedAuthentication()
+                    }
+                }
+        }
+    }
+}
+
+
+extension TOUCHEESEApp {
+    /// 앱을 처음 실행했을 때, 로그인 상태를 확인하는 메서드
+    private func checkAuthentication() async -> AuthStatus {
+        guard let accessToken = keychainManager.read(forAccount: .accessToken),
+              let refreshToken = keychainManager.read(forAccount: .refreshToken) else {
+            return .notAuthenticated
+        }
+        
+        do {
+            let appOpenRequest = AppOpenRequest(
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )
+            let appOpenResponse = try await networkManager.postAppOpen(
+                appOpenRequest
+            )
+            
+            keychainManager.update(
+                token: appOpenResponse.accessToken,
+                forAccount: .accessToken
+            )
+            
+            #if DEBUG
+            print("New access token: \(appOpenResponse.accessToken)")
+            print("member ID: \(appOpenResponse.memberId)")
+            #endif
+            
+            authManager.memberId = appOpenResponse.memberId
+            authManager.memberNickname = appOpenResponse.memberName
+            
+            postDeviceTokenRegistrationData()
+            
+            return .authenticated
+        } catch {
+            print("AccessToken refresh failed: \(error.localizedDescription)")
+            return .notAuthenticated
+        }
+    }
+    
+    /// FCM 토큰을 백엔드 서버에 POST 하는 메서드
+    private func postDeviceTokenRegistrationData() {
+        Task {
+            if let fcmToken = Messaging.messaging().fcmToken,
+               let memberId = authManager.memberId {
+                do {
+                    try await networkManager.performWithTokenRetry(
+                        accessToken: authManager.accessToken,
+                        refreshToken: authManager.refreshToken
+                    ) { token in
+                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
+                            memberId: memberId,
+                            deviceToken: fcmToken
+                        )
+                        try await networkManager.postDeviceTokenRegistrationData(
+                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
+                            accessToken: token
+                        )
+                    }
+                } catch {
+                    print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")
+                    authManager.logout()
+                }
+            }
         }
     }
 }

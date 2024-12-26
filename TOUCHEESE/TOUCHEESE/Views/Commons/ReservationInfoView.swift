@@ -33,8 +33,6 @@ struct ReservationInfoView: View {
                                         .foregroundStyle(.tcGray09)
                                     
                                     Spacer()
-                                    
-                                    ReservationStatusView(reservationStatus)
                                 }
                                 .padding(.bottom, 8)
                                 
@@ -74,7 +72,6 @@ struct ReservationInfoView: View {
                 .padding(.vertical, 24)
             }
             .frame(width: .screenWidth, height: 287)
-            .background(.tcGray01)
     }
     
     private func horizontalPaddingTextView(leadingText: String, trailingText: String) -> some View {

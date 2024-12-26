@@ -21,10 +21,6 @@ struct ProfileImageView: View {
             .aspectRatio(contentMode: .fill)
             .frame(width: size, height: size)
             .clipShape(.circle)
-            .overlay {
-                Circle()
-                    .stroke(Color.gray, lineWidth: 1)
-            }
     }
 }
 

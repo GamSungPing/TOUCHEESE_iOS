@@ -19,6 +19,7 @@ final class StudioListViewModel: ObservableObject {
         }
     }
     @Published private(set) var studios: [Studio] = []
+    @Published private(set) var studioCount: Int = 0
     
     @Published var isFilteringByPrice: Bool = false
     @Published var isFilteringByRegion: Bool = false
@@ -30,6 +31,8 @@ final class StudioListViewModel: ObservableObject {
     @Published private(set) var selectedPrice: StudioPrice = .all {
         didSet { isFilteringByPrice = selectedPrice != .all }
     }
+    @Published private(set) var tempSelectedPrice: StudioPrice = .all
+    
     private var selectedRegions: Set<StudioRegion> = [.all] {
         didSet { isFilteringByRegion = selectedRegions != [.all] }
     }
@@ -37,8 +40,10 @@ final class StudioListViewModel: ObservableObject {
     
     @Published private(set) var isStudioLoading: Bool = true
     
-    private var page: Int = 1
+    private let networkManager = NetworkManager.shared
+    private let authManager = AuthenticationManager.shared
     
+    private var page: Int = 1
     
     // MARK: - Intput
     func resetFilters() {
@@ -56,10 +61,10 @@ final class StudioListViewModel: ObservableObject {
         Task { await fetchStudios() }
     }
     
-    func resetTempRegionOptions() {
-        tempSelectedRegions = [.all]
+    func applyPriceOptions() {
+        selectedPrice = tempSelectedPrice
+        Task { await fetchStudios() }
     }
-    
     
     // MARK: - Output
     
@@ -74,8 +79,7 @@ final class StudioListViewModel: ObservableObject {
     }
     
     func selectStudioPriceFilter(_ price: StudioPrice) {
-        self.selectedPrice = price
-        Task { await fetchStudios() }
+        self.tempSelectedPrice = price
     }
     
     func toggleStudioRatingFilter() {
@@ -101,6 +105,10 @@ final class StudioListViewModel: ObservableObject {
         }
     }
     
+    func loadPriceOptions() {
+        tempSelectedPrice = selectedPrice
+    }
+    
     func loadRegionOptions() {
         tempSelectedRegions = selectedRegions
     }
@@ -123,13 +131,15 @@ final class StudioListViewModel: ObservableObject {
             Task {
                 do {
                     isStudioLoading = true
-                    studios.append(contentsOf: try await NetworkManager.shared.getStudioListDatas(
-                        concept: concept,
-                        isHighRating: isHighRating,
-                        regionArray: regionArray,
-                        price: price,
-                        page: page
-                    ))
+                    studios.append(
+                        contentsOf: try await networkManager.getStudioListDatas(
+                            concept: concept,
+                            isHighRating: isHighRating,
+                            regionArray: regionArray,
+                            price: price,
+                            page: page
+                        ).list
+                    )
                     
                     isStudioLoading = false
                 } catch {
@@ -150,13 +160,15 @@ final class StudioListViewModel: ObservableObject {
         page = 1
         
         do {
-            studios = try await NetworkManager.shared.getStudioListDatas(
+            let studioDatas = try await networkManager.getStudioListDatas(
                 concept: concept,
                 isHighRating: isHighRating,
                 regionArray: regionArray,
                 price: price,
                 page: page
             )
+            
+            (studios, studioCount) = (studioDatas.list, studioDatas.count)
             
             isStudioLoading = false
         } catch {
@@ -166,6 +178,67 @@ final class StudioListViewModel: ObservableObject {
     
     private func resetStudios() {
         studios = []
+    }
+    
+    func likeStudio(studioId: Int) async {
+        guard authManager.authStatus == .authenticated else {
+            print("Failed to like studio: Not authenticated")
+            return
+        }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken) { [unowned self] token in
+                    if let memberId = authManager.memberId {
+                        let studioLikeRelationRequest = StudioLikeRelationRequest(
+                            accessToken: token,
+                            memberId: memberId,
+                            studioId: studioId
+                        )
+                        
+                        try await networkManager.postStudioLike(studioLikeRelationRequest)
+                    } else {
+                        print("Failed to like studio: Member ID not found")
+                    }
+                }
+        } catch NetworkError.unauthorized {
+            print("Failed to like studio: Refresh token expired")
+            await authManager.logout()
+        } catch {
+            print("Failed to like studio: \(error.localizedDescription)")
+        }
+    }
+    
+    func cancelLikeStudio(studioId: Int) async {
+        guard authManager.authStatus == .authenticated else {
+            print("Failed to cancel like studio: Not authenticated")
+            return
+        }
+        
+        do {
+            _ = try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [unowned self] token in
+                if let memberId = authManager.memberId {
+                    let studioLikeRelationRequest = StudioLikeRelationRequest(
+                        accessToken: token,
+                        memberId: memberId,
+                        studioId: studioId
+                    )
+                    
+                    try await networkManager.deleteStudioLike(studioLikeRelationRequest)
+                } else {
+                    print("Failed to cancel like studio: Member ID not found")
+                }
+            }
+        } catch NetworkError.unauthorized {
+            print("Failed to cancel like studio: Refresh token expired")
+            await authManager.logout()
+        } catch {
+            print("Failed to cancel like studio: \(error.localizedDescription)")
+        }
     }
     
 }

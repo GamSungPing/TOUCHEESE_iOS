@@ -10,11 +10,24 @@ import SwiftUI
 enum AlertType {
     case reservationCancel
     case reservationCancelComplete
+    case login
+    case logout
+    case withdrawal
+    
+    var title: String {
+        switch self {
+        case .login: "로그인 후 이용 가능합니다."
+        default: ""
+        }
+    }
     
     var description: String {
         switch self {
         case .reservationCancel: "정말 예약을 취소하시겠습니까?"
         case .reservationCancelComplete: "예약이 취소되었습니다."
+        case .login: "로그인 하시겠습니까?"
+        case .logout: "정말 로그아웃 하시겠습니까?"
+        case .withdrawal: "정말 회원탈퇴 하시겠습니까?"
         }
     }
 }
@@ -30,14 +43,22 @@ struct CustomAlertView: View {
                 .opacity(0.3)
                 .ignoresSafeArea()
             
-            VStack(spacing: 24) {
+            VStack(spacing: 0) {
+                if !alertType.title.isEmpty {
+                    Text(alertType.title)
+                        .foregroundStyle(.tcGray09)
+                        .font(.pretendardSemiBold18)
+                        .padding(.bottom, 6)
+                }
+                
                 Text(alertType.description)
                     .foregroundStyle(.tcGray09)
                     .font(.pretendardMedium16)
+                    .padding(.bottom, 24)
                 
                 switch alertType {
-                // 버튼의 액션이 필요한 경우
-                case .reservationCancel:
+                    // 버튼의 액션이 필요한 경우
+                case .reservationCancel, .login, .logout, .withdrawal:
                     HStack(spacing: 12) {
                         FillBottomButton(
                             isSelectable: true,
@@ -57,7 +78,7 @@ struct CustomAlertView: View {
                             isPresented.toggle()
                         }
                     }
-                // Alert Dismiss만 필요한 경우
+                    // Alert Dismiss만 필요한 경우
                 case .reservationCancelComplete:
                     FillBottomButton(
                         isSelectable: true,
@@ -82,7 +103,7 @@ struct CustomAlertView: View {
 }
 
 #Preview {
-    VStack {
+    ScrollView(.vertical) {
         CustomAlertView(
             isPresented: .constant(true),
             alertType: .reservationCancel
@@ -93,6 +114,20 @@ struct CustomAlertView: View {
         CustomAlertView(
             isPresented: .constant(true),
             alertType: .reservationCancelComplete
+        ) {
+            print("액션")
+        }
+        
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .logout
+        ) {
+            print("액션")
+        }
+        
+        CustomAlertView(
+            isPresented: .constant(true),
+            alertType: .withdrawal
         ) {
             print("액션")
         }

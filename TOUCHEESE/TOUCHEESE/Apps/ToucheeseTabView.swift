@@ -11,46 +11,36 @@ struct ToucheeseTabView: View {
     @EnvironmentObject var navigationManager: NavigationManager
     
     var body: some View {
-        TabView(selection: $navigationManager.tabNumber) {
-            NavigationStack(path: $navigationManager.homePath) {
-                HomeConceptView()
-                    .navigationDestination(for: ViewType.self) { viewType in
-                        navigationManager.buildView(viewType: viewType)
-                    }
-            }
-            .tint(Color.black)
-            .tabItem {
-                Image(systemName: "house")
-                Text("홈")
-            }
-            .tag(0)
-            
-            NavigationStack(path: $navigationManager.reservationPath) {
-                ReservationListView()
-                    .navigationDestination(for: ViewType.self) { viewType in
-                        navigationManager.buildView(viewType: viewType)
-                    }
-            }
-            .tint(Color.black)
-            .tabItem {
-                Image(systemName: "calendar.badge.clock")
-                Text("예약일정")
-            }
-            .tag(1)
-            
-            TestView2()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("문의하기")
+        VStack(spacing: 0) {
+            switch navigationManager.tabItem {
+            case .home:
+                NavigationStack(path: $navigationManager.homePath) {
+                    HomeConceptView()
+                        .navigationDestination(for: ViewType.self) { viewType in
+                            navigationManager.buildView(viewType: viewType)
+                        }
                 }
-                .tag(2)
-            
-            TestView3()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("내정보")
+            case .reservation:
+                NavigationStack(path: $navigationManager.reservationPath) {
+                    ReservationListView()
+                        .navigationDestination(for: ViewType.self) { viewType in
+                            navigationManager.buildView(viewType: viewType)
+                        }
                 }
-                .tag(3)
+            case .likedStudios:
+                NavigationStack(path: $navigationManager.studioLikePath) {
+                    StudioLikeListView()
+                        .navigationDestination(for: ViewType.self) { viewType in
+                            navigationManager.buildView(viewType: viewType)
+                        }
+                }
+            case .myPage:
+                MyPageView()
+            }
+            
+            if !navigationManager.isTabBarHidden {
+                CustomTabBar(selectedTab: $navigationManager.tabItem)
+            }
         }
     }
 }

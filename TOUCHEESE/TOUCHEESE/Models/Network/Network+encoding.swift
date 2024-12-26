@@ -11,9 +11,9 @@ import Alamofire
 extension Network {
     func getEncoding() -> ParameterEncoding {
         switch self {
-        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .reservationCancelRequest:
+        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .reservationCancelRequest, .reservableTimeRequest, .studioLikeCancelRequest, .studioLikeListRequest, .nicknameChangeRequest:
             return URLEncoding.default
-        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest, .withdrawalRequest, .studioLikeRequest:
             return JSONEncoding.default
         }
     }

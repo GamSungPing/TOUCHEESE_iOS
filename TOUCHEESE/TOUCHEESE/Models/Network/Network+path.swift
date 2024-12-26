@@ -57,9 +57,9 @@ extension Network {
             
         case .productDetailRequest(let id):
             return "/\(id)"
-        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .studioLikeRequest, .studioLikeListRequest:
             return ""
-        case .reservationListRequest(let memberID, let isPast):
+        case .reservationListRequest(_, let memberID, let isPast):
             var path = "/member/\(memberID)"
             
             if isPast {
@@ -69,8 +69,24 @@ extension Network {
             return path
         case .reservationDetailRequest(let id):
             return "/\(id)"
-        case .reservationCancelRequest(let reservationID, _):
+        case .reservationCancelRequest(let reservationID, _, _):
             return "/\(reservationID)/cancel"
+        case .reservableTimeRequest(studioId: let studioId, _):
+            return "/\(studioId)/available-slots?"
+        case .sendSocialIDRequest:
+            return "/login"
+        case .refreshAccessTokenRequest:
+            return "/refreshAccessToken"
+        case .appOpenRequest:
+            return "/appOpen"
+        case .logoutRequest:
+            return "/logout"
+        case .withdrawalRequest:
+            return "/withdrawal"
+        case .nicknameChangeRequest(let nicknameChangeRequest):
+            return "/\(nicknameChangeRequest.memberId)/name"
+        case .studioLikeCancelRequest(let studioLikeRelationRequest):
+            return "/delete/\(studioLikeRelationRequest.studioId)"
         }
     }
 }

@@ -20,17 +20,28 @@ struct ImageExtensionView: View {
             VStack {
                 Spacer()
                 
-                TabView(selection: $currentIndex) {
-                    ForEach(imageURLs.indices, id:\.self) { index in
-                        KFImage(imageURLs[index])
-                            .placeholder { ProgressView() }
-                            .resizable()
-                            .fade(duration: 0.25)
-                            .scaledToFit()
-                            .tag(index)
+                ZStack(alignment: .bottom) {
+                    TabView(selection: $currentIndex) {
+                        ForEach(imageURLs.indices, id:\.self) { index in
+                            KFImage(imageURLs[index])
+                                .placeholder { ProgressView() }
+                                .resizable()
+                                .fade(duration: 0.25)
+                                .scaledToFit()
+                                .tag(index)
+                        }
                     }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    
+                    HStack(spacing: 3) {
+                        Text("\(currentIndex + 1)")
+                            .foregroundStyle(.tcGray01)
+                        Text("/ \(imageURLs.count)")
+                            .foregroundStyle(.tcGray04)
+                    }
+                    .font(.pretendardMedium18)
+                    .padding(.bottom, 20)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .always))
                 
                 Spacer()
             }

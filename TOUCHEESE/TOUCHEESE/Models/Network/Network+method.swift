@@ -11,12 +11,14 @@ import Alamofire
 extension Network {
     func getMethod() -> HTTPMethod {
         switch self {
-        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest:
+        case .studioListRequest, .studioDetailRequest, .studioRequest, .reviewListRequest, .reviewDetailRequest, .productDetailRequest, .reservationListRequest, .reservationDetailRequest, .reservableTimeRequest, .studioLikeListRequest:
             return .get
-        case .studioReservationRequest, .deviceTokenRegistrationRequest:
+        case .studioReservationRequest, .deviceTokenRegistrationRequest, .sendSocialIDRequest, .refreshAccessTokenRequest, .appOpenRequest, .logoutRequest, .studioLikeRequest:
             return .post
-        case .reservationCancelRequest:
+        case .reservationCancelRequest, .withdrawalRequest, .studioLikeCancelRequest:
             return .delete
+        case .nicknameChangeRequest:
+            return .put
         }
     }
 }

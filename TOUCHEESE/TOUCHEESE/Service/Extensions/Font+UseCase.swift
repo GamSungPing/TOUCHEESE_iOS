@@ -32,6 +32,7 @@ extension Font {
     
     // Regular
     static let pretendardRegular12: Font = .custom("Pretendard-Regular", size: 12)
+    static let pretendardRegular13: Font = .custom("Pretendard-Regular", size: 13)
     static let pretendardRegular14: Font = .custom("Pretendard-Regular", size: 14)
     static let pretendardRegular16: Font = .custom("Pretendard-Regular", size: 16)
     

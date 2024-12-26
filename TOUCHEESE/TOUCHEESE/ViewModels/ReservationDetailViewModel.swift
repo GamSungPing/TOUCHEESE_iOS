@@ -15,6 +15,7 @@ final class ReservationDetailViewModel: ObservableObject {
     @Published private(set) var reservedStudio: Studio = Studio.sample
     
     let networkManager = NetworkManager.shared
+    let authManager = AuthenticationManager.shared
     
     init(reservation: Reservation) {
         self.reservation = reservation
@@ -40,7 +41,9 @@ final class ReservationDetailViewModel: ObservableObject {
     @MainActor
     func fetchReservationDetail(reservationID: Int) async {
         do {
-            reservationDetail = try await networkManager.getReservationDetailData(reservationID: reservationID)
+            reservationDetail = try await networkManager.getReservationDetailData(
+                reservationID: reservationID
+            )
         } catch {
             print("ReservationDetail Fetch Error: \(error.localizedDescription)")
         }
@@ -48,18 +51,41 @@ final class ReservationDetailViewModel: ObservableObject {
     
     @MainActor
     func cancelReservation(reservationID: Int) async {
+        guard authManager.authStatus == .authenticated else {
+            print("Cancel Reservation Error: Not Authenticated")
+            return
+        }
+        
         do {
-            // TODO: - 추후 memberID 수정, 현재는 고정값으로 사용
-            try await networkManager.deleteReservationData(reservationID: reservationID, memberID: 1)
+            try await networkManager.performWithTokenRetry(
+                accessToken: authManager.accessToken,
+                refreshToken: authManager.refreshToken
+            ) { [self] token in
+                if let memberId = authManager.memberId {
+                    try await networkManager.deleteReservationData(
+                        reservationID: reservationID,
+                        memberID: memberId,
+                        accessToken: token
+                    )
+                } else {
+                    print("Cancel Reservation Error: Member ID Not Found")
+                    authManager.logout()
+                }
+            }
+        } catch NetworkError.unauthorized {
+            print("Cancel Reservation Error: Refresh Token Expired")
+            authManager.logout()
         } catch {
-            print("Reservation Cancel Error: \(error.localizedDescription)")
+            print("Cancel Reservation Error: \(error.localizedDescription)")
         }
     }
     
     @MainActor
     private func fetchReservedStudio() async {
         do {
-            reservedStudio = try await networkManager.getStudioData(studioID: reservationDetail.studioId)
+            reservedStudio = try await networkManager.getStudioData(
+                studioID: reservationDetail.studioId
+            )
         } catch {
             print("Reserved Studio Fetch Error: \(error.localizedDescription)")
         }

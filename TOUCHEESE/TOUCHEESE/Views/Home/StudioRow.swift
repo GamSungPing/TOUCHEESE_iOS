@@ -9,61 +9,86 @@ import SwiftUI
 import Kingfisher
 
 struct StudioRow: View {
+    @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
+    
+    private let authManager = AuthenticationManager.shared
+    
     let studio: Studio
     private var portfolioImageURLs: [URL] {
         studio.portfolioImageURLs
     }
     
-    @State private var isBookmarked = false
+    @Binding var isShowingLoginAlert: Bool
     
     var body: some View {
-        VStack {
-            HStack {
+        VStack(spacing: 12) {
+            HStack(spacing: 8) {
                 ProfileImageView(
                     imageURL: studio.profileImageURL,
-                    size: 45
+                    size: 50
                 )
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text("\(studio.name)")
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(.tcGray10)
+                        .font(.pretendardMedium(17))
                     
-                    Label {
-                        Text("\(studio.formattedRating)")
-                            .foregroundColor(.primary)
-                    } icon: {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
+                    HStack(spacing: 0) {
+                        Image(.tcStarFill)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .padding(.trailing, 3)
+                        
+                        Text(studio.formattedRating)
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardSemiBold14)
+                        
+                        Text("(\(studio.reviewCount))")
+                            .foregroundStyle(.tcGray05)
+                            .font(.pretendardRegular14)
                     }
                 }
                 
                 Spacer()
                 
-                bookmarkButton
+                Button {
+                    if authManager.authStatus == .notAuthenticated {
+                        isShowingLoginAlert.toggle()
+                    } else {
+                        Task {
+                            if authManager.memberLikedStudios.contains(studio) {
+                                await studioListViewModel.cancelLikeStudio(
+                                    studioId: studio.id
+                                )
+                            } else {
+                                await studioListViewModel.likeStudio(
+                                    studioId: studio.id
+                                )
+                            }
+                            
+                            await studioLikeListViewModel.fetchLikedStudios()
+                        }
+                    }
+                } label: {
+                    Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal)
-            .padding(.vertical, 5)
             
             portfolioImagesScrollView(portfolioImageURLs)
-        }
-    }
-    
-    private var bookmarkButton: some View {
-        Button {
-            isBookmarked.toggle()
-        } label: {
-            Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 30, height: 30)
-                .foregroundStyle(Color.yellow)
         }
     }
     
     @ViewBuilder
     private func portfolioImagesScrollView(_ imageURLs: [URL]) -> some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 10) {
+            HStack(spacing: 6.5) {
                 ForEach(imageURLs.indices, id: \.self) { index in
                     KFImage(imageURLs[index])
                         .placeholder { ProgressView() }
@@ -72,8 +97,7 @@ struct StudioRow: View {
                         .cancelOnDisappear(true)
                         .fade(duration: 0.25)
                         .aspectRatio(contentMode: .fill)
-                        .foregroundStyle(Color.black)
-                        .frame(width: 130, height: 130)
+                        .frame(width: 116, height: 116)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
@@ -84,5 +108,5 @@ struct StudioRow: View {
 }
 
 #Preview {
-    StudioRow(studio: Studio.sample)
+    StudioRow(studio: Studio.sample, isShowingLoginAlert: .constant(false))
 }
