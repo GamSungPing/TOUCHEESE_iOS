@@ -15,7 +15,7 @@ final class MyPageViewModel: ObservableObject {
     
     @Published private(set) var imageCacheUse: String = ""
     @Published private(set) var appVersionString: String = ""
-    private(set) var contactEmailString: String = "toucheese@gmail.com"
+    private(set) var contactEmailString: String = "toucheese.official@gmail.com"
     
     init() {
         getAppVersionString()

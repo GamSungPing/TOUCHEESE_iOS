@@ -10,6 +10,8 @@ import AuthenticationServices
 
 struct LogInView: View {
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
+    @EnvironmentObject private var reservationListViewModel: ReservationListViewModel
+    
     private let viewModel: LogInViewModel = LogInViewModel()
     
     @Binding var isPresented: Bool
@@ -39,7 +41,10 @@ struct LogInView: View {
                             await viewModel.loginWithKakaotalk()
                             await viewModel.handleAuthorizationWithKakao {
                                 await studioLikeListViewModel.fetchLikedStudios()
+                                await reservationListViewModel.fetchReservations()
+                                await reservationListViewModel.fetchPastReservations()
                             }
+                            
                             isPresented.toggle()
                         }
                     } label: {
@@ -58,9 +63,11 @@ struct LogInView: View {
                             Task {
                                 await viewModel.handleAuthorizationWithApple(authResults) {
                                     await studioLikeListViewModel.fetchLikedStudios()
+                                    await reservationListViewModel.fetchReservations()
+                                    await reservationListViewModel.fetchPastReservations()
+                                    
                                     isPresented.toggle()
                                 }
-                                
                             }
                         case .failure(let error):
                             print("Apple Authorization failed: \(error.localizedDescription)")

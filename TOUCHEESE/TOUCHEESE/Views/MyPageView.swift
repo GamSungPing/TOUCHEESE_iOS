@@ -123,15 +123,10 @@ fileprivate struct LoginView: View {
                     .foregroundStyle(.tcPrimary06)
                     .frame(height: 48)
                     .overlay {
-                        HStack {
-                            Text("로그인하러 가기")
-                                .font(.pretendardSemiBold(18))
-                                .foregroundStyle(.tcGray10)
-                                .padding(.trailing, 8)
-                            
-                            Image(.tcRightChevron)
-                                .frame(width: 24, height: 24)
-                        }
+                        Text("로그인 하기")
+                            .font(.pretendardSemiBold(18))
+                            .foregroundStyle(.tcGray10)
+                            .padding(.trailing, 8)
                     }
             }
             .padding(.vertical, 10)
