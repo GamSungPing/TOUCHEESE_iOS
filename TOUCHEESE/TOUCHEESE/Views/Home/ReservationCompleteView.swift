@@ -82,7 +82,7 @@ struct ReservationCompleteView: View {
             .padding(.horizontal, 55.5)
         }
         .customNavigationBar(centerView: {
-            Text("예약 확정")
+            Text("예약 신청 완료")
                 .modifier(NavigationTitleModifier())
         })
     }
