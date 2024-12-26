@@ -11,7 +11,6 @@ struct MyPageView: View {
     @EnvironmentObject private var myPageViewModel: MyPageViewModel
     @ObservedObject private var authenticationManager = AuthenticationManager.shared
     
-    @State private var memberName: String = "김마루"
     @State private var isNicknameEditing: Bool = false
     @State private var isLogin = true
     @State private var isShowingLogoutAlert: Bool = false
@@ -335,6 +334,10 @@ fileprivate struct NickNameEditView: View {
                     
                     Button {
                         isNicknameEditing.toggle()
+                        
+                        Task {
+                            await myPageViewModel.changeNickname(newName: newName)
+                        }
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundStyle(isNewNameValid ? .tcPrimary06 : .tcGray03)
@@ -356,7 +359,6 @@ fileprivate struct NickNameEditView: View {
                 }
                 
                 calIsNewNameValid()
-                print("VALID ========= \(isNewNameValid)")
             }
     }
     

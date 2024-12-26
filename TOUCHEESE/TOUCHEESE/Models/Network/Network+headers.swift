@@ -50,7 +50,7 @@ extension Network {
             
             return headers
         case .nicknameChangeRequest(let nicknameChangeRequest):
-            var headers: HTTPHeaders = ["Content-Type": "application/json"]
+            var headers: HTTPHeaders = ["accept": "application/json"]
             
             headers["Authorization"] = "Bearer \(nicknameChangeRequest.accessToken)"
             
