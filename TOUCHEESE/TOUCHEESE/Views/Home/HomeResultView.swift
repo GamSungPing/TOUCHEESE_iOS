@@ -114,6 +114,9 @@ struct HomeResultView: View {
                 .presentationDetents([.fraction(0.9)])
                 .presentationDragIndicator(.visible)
         }
+        .fullScreenCover(isPresented: $isShowingLoginView) {
+            LogInView(isPresented: $isShowingLoginView)
+        }
         .onAppear {
             studioListViewModel.selectStudioConcept(concept)
             studioListViewModel.completeLoding()
