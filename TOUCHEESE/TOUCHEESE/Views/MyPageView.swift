@@ -59,7 +59,6 @@ struct MyPageView: View {
                 CustomAlertView(
                     isPresented: $isShowingLogoutAlert,
                     alertType: .logout) {
-                        //isShowingLogoutAlert.toggle()
                        
                         Task {
                             await myPageViewModel.logout()
@@ -88,7 +87,7 @@ struct MyPageView: View {
 
 fileprivate struct GreetingView: View {
     @Binding var isNicknameEditing: Bool
-    private let authenticationManager = AuthenticationManager.shared
+    @ObservedObject private var authenticationManager = AuthenticationManager.shared
     
     var body: some View {
         let nickName = authenticationManager.memberNickname ?? ""
