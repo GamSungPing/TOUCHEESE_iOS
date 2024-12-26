@@ -16,25 +16,25 @@ final class LogInViewModel {
     
     func handleAuthorizationWithApple(
         _ authResults: ASAuthorization,
-        completion: @escaping () -> Void
+        completion: @escaping () async -> Void
     ) async {
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
             let userIdentifier = appleIDCredential.user
             
-            await postSocialID(userIdentifier, socialType: .APPLE)
-            
-            completion()
+            await postSocialID(userIdentifier, socialType: .APPLE, completion: completion)
         }
     }
     
-    func handleAuthorizationWithKakao() async {
+    func handleAuthorizationWithKakao(
+        completion: @escaping () async -> Void
+    ) async {
         do {
             let user = try await networkManager.fetchKakaoUserInfo()
             print("사용자 정보 가져오기 성공: \(user)")
             
             if let socialId = user.id {
                 print("사용자 정보 서버로 전송중...")
-                await postSocialID(String(socialId), socialType: .KAKAO)
+                await postSocialID(String(socialId), socialType: .KAKAO, completion: completion)
             }
         } catch {
             print("서버로 사용자 정보 전송 실패 \(error)")
@@ -43,7 +43,8 @@ final class LogInViewModel {
     
     private func postSocialID(
         _ socialID: String,
-        socialType: SocialType
+        socialType: SocialType,
+        completion: @escaping () async -> Void
     ) async {
         do {
             let loginResponseData = try await networkManager.postSocialId(
@@ -62,6 +63,13 @@ final class LogInViewModel {
             )
             
             await authManager.successfulAuthentication()
+            
+            await completion()
+            
+            #if DEBUG
+            print("New access token: \(loginResponseData.accessToken)")
+            print("member ID: \(loginResponseData.memberId)")
+            #endif
         } catch {
             print("Network Error - postSocialId: \(error.localizedDescription)")
             await authManager.failedAuthentication()

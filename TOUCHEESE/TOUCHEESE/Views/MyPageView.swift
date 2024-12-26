@@ -11,7 +11,6 @@ struct MyPageView: View {
     @EnvironmentObject private var myPageViewModel: MyPageViewModel
     @ObservedObject private var authenticationManager = AuthenticationManager.shared
     
-    @State private var memberName: String = "김마루"
     @State private var isNicknameEditing: Bool = false
     @State private var isLogin = true
     @State private var isShowingLogoutAlert: Bool = false
@@ -60,7 +59,6 @@ struct MyPageView: View {
                 CustomAlertView(
                     isPresented: $isShowingLogoutAlert,
                     alertType: .logout) {
-                        //isShowingLogoutAlert.toggle()
                        
                         Task {
                             await myPageViewModel.logout()
@@ -89,7 +87,7 @@ struct MyPageView: View {
 
 fileprivate struct GreetingView: View {
     @Binding var isNicknameEditing: Bool
-    private let authenticationManager = AuthenticationManager.shared
+    @ObservedObject private var authenticationManager = AuthenticationManager.shared
     
     var body: some View {
         let nickName = authenticationManager.memberNickname ?? ""
@@ -335,6 +333,10 @@ fileprivate struct NickNameEditView: View {
                     
                     Button {
                         isNicknameEditing.toggle()
+                        
+                        Task {
+                            await myPageViewModel.changeNickname(newName: newName)
+                        }
                     } label: {
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundStyle(isNewNameValid ? .tcPrimary06 : .tcGray03)
@@ -356,7 +358,6 @@ fileprivate struct NickNameEditView: View {
                 }
                 
                 calIsNewNameValid()
-                print("VALID ========= \(isNewNameValid)")
             }
     }
     

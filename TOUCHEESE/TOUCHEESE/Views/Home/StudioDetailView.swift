@@ -10,6 +10,8 @@ import Kingfisher
 
 struct StudioDetailView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
+    @EnvironmentObject private var studioListViewModel: StudioListViewModel
+    @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
     @StateObject var viewModel: StudioDetailViewModel
     
     @Environment(\.isPresented) private var isPresented
@@ -24,142 +26,184 @@ struct StudioDetailView: View {
     @State private var isPushingReviewDetailView = false
     @State private var isBookmarked = false
     
+    @State private var isShowingLoginAlert: Bool = false
+    @State private var isShowingLoginView: Bool = false
+    
+    private let authManager = AuthenticationManager.shared
+    
     var body: some View {
         let studio = viewModel.studio
         let studioDetail = viewModel.studioDetail
         
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack(alignment: .leading, spacing: 0) {
-                ImageCarouselView(
-                    imageURLs: studioDetail.detailImageURLs,
-                    carouselIndex: $carouselIndex,
-                    isShowingImageExtensionView: $isShowingImageExtensionView,
-                    height: 280
-                )
-                .padding(.bottom, 16)
-                
-                // Studio 설명 View
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(studio.name)
-                        .foregroundStyle(.tcGray10)
-                        .font(.pretendardSemiBold18)
-                        .padding(.bottom, 4)
+        ZStack {
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ImageCarouselView(
+                        imageURLs: studioDetail.detailImageURLs,
+                        carouselIndex: $carouselIndex,
+                        isShowingImageExtensionView: $isShowingImageExtensionView,
+                        height: 280
+                    )
+                    .padding(.bottom, 16)
                     
-                    HStack(spacing: 4) {
-                        Image(.tcStarFill)
+                    // Studio 설명 View
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(studio.name)
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardSemiBold18)
+                            .padding(.bottom, 4)
+                        
+                        HStack(spacing: 4) {
+                            Image(.tcStarFill)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 18, height: 18)
+                            
+                            Text(studio.formattedRating)
+                                .foregroundStyle(.tcGray10)
+                                .font(.pretendardSemiBold16)
+                            
+                            Text("(\(studio.reviewCount))")
+                                .foregroundStyle(.tcGray10)
+                                .font(.pretendardRegular16)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(.tcGray01)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .stroke(.tcGray02, lineWidth: 1)
+                                }
+                        )
+                        .onTapGesture {
+                            selectedSegmentedControlIndex = 1
+                        }
+                        
+                        HStack(spacing: 4) {
+                            Image(.tcClock)
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                            
+                            Text(viewModel.businessHourString)
+                                .foregroundStyle(.tcGray08)
+                                .font(.pretendardRegular16)
+                        }
+                        
+                        HStack(alignment: .top, spacing: 4) {
+                            Image(.tcMapPinFill)
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                            
+                            Text(studioDetail.address)
+                                .foregroundStyle(.tcGray08)
+                                .font(.pretendardRegular16)
+                                .multilineTextAlignment(.leading)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 24)
+                    
+                    // Studio 공지 View
+                    if let notice = studioDetail.notice, notice != "" {
+                        NoticeView(notice: notice, isExpanded: $isExpanded)
+                            .padding(.bottom, 24)
+                            .padding(.horizontal, 16)
+                    }
+                    
+                    CustomSegmentedControl(
+                        selectedIndex: $selectedSegmentedControlIndex,
+                        namespace: namespace,
+                        options: ["상품", "리뷰(\(studioDetail.reviewCount))"]
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 24)
+                    
+                    // 상품 또는 리뷰 View
+                    if selectedSegmentedControlIndex == 0 {
+                        ProductListView(
+                            studioDetail: studioDetail,
+                            studio: studio
+                        )
+                        .environmentObject(viewModel)
+                        .padding(.horizontal, 16)
+                    } else {
+                        ReviewImageGridView(
+                            reviews: studioDetail.reviews.content,
+                            reviewsCount: studioDetail.reviewCount,
+                            isPushingDetailView: $isPushingReviewDetailView
+                        )
+                        .environmentObject(viewModel)
+                        .padding(.horizontal, 16)
+                    }
+                }
+            }
+            .customNavigationBar(
+                centerView: {
+                    EmptyView()
+                },
+                leftView: {
+                    HStack(spacing: 0) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            NavigationBackButtonView()
+                        }
+                        .padding(.trailing, 11)
+                        
+                        ProfileImageView(
+                            imageURL: studio.profileImageURL,
+                            size: 36
+                        )
+                        .padding(.trailing, 8)
+                        
+                        Text(studio.name)
+                            .foregroundStyle(.tcGray10)
+                            .font(.pretendardBold20)
+                    }
+                },
+                rightView: {
+                    Button {
+                        if authManager.authStatus == .notAuthenticated {
+                            isShowingLoginAlert.toggle()
+                        }
+                        Task {
+                            if authManager.memberLikedStudios.contains(studio) {
+                                await studioListViewModel.cancelLikeStudio(
+                                    studioId: studio.id
+                                )
+                            } else {
+                                await studioListViewModel.likeStudio(
+                                    studioId: studio.id
+                                )
+                            }
+                            
+                            await studioLikeListViewModel.fetchLikedStudios()
+                        }
+                    } label: {
+                        Image(authManager.memberLikedStudios.contains(studio) ? .tcBookmarkFill : .tcBookmark)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 18, height: 18)
-                        
-                        Text(studio.formattedRating)
-                            .foregroundStyle(.tcGray10)
-                            .font(.pretendardSemiBold16)
-                        
-                        Text("(\(studio.reviewCount))")
-                            .foregroundStyle(.tcGray10)
-                            .font(.pretendardRegular16)
+                            .frame(width: 30, height: 30)
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(.tcGray01)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 4)
-                                    .stroke(.tcGray02, lineWidth: 1)
-                            }
-                    )
-                    .onTapGesture {
-                        selectedSegmentedControlIndex = 1
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Image(.tcClock)
-                            .resizable()
-                            .frame(width: 18, height: 18)
-                        
-                        Text(viewModel.businessHourString)
-                            .foregroundStyle(.tcGray08)
-                            .font(.pretendardRegular16)
-                    }
-                    
-                    HStack(alignment: .top, spacing: 4) {
-                        Image(.tcMapPinFill)
-                            .resizable()
-                            .frame(width: 18, height: 18)
-                        
-                        Text(studioDetail.address)
-                            .foregroundStyle(.tcGray08)
-                            .font(.pretendardRegular16)
-                            .multilineTextAlignment(.leading)
-                    }
+                    .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
-                
-                // Studio 공지 View
-                if let notice = studioDetail.notice, notice != "" {
-                    NoticeView(notice: notice, isExpanded: $isExpanded)
-                        .padding(.bottom, 24)
-                        .padding(.horizontal, 16)
-                }
-                
-                CustomSegmentedControl(
-                    selectedIndex: $selectedSegmentedControlIndex,
-                    namespace: namespace,
-                    options: ["상품", "리뷰(\(studioDetail.reviewCount))"]
-                )
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
-                
-                // 상품 또는 리뷰 View
-                if selectedSegmentedControlIndex == 0 {
-                    ProductListView(
-                        studioDetail: studioDetail,
-                        studio: studio
-                    )
-                    .environmentObject(viewModel)
-                    .padding(.horizontal, 16)
-                } else {
-                    ReviewImageGridView(
-                        reviews: studioDetail.reviews.content,
-                        reviewsCount: studioDetail.reviewCount,
-                        isPushingDetailView: $isPushingReviewDetailView
-                    )
-                    .environmentObject(viewModel)
-                    .padding(.horizontal, 16)
+            )
+            
+            if isShowingLoginAlert {
+                CustomAlertView(
+                    isPresented: $isShowingLoginAlert,
+                    alertType: .login
+                ) {
+                    isShowingLoginView.toggle()
                 }
             }
         }
-        .customNavigationBar(
-            centerView: {
-                EmptyView()
-            },
-            leftView: {
-                HStack(spacing: 0) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        NavigationBackButtonView()
-                    }
-                    .padding(.trailing, 11)
-                    
-                    ProfileImageView(
-                        imageURL: studio.profileImageURL,
-                        size: 36
-                    )
-                    .padding(.trailing, 8)
-                    
-                    Text(studio.name)
-                        .foregroundStyle(.tcGray10)
-                        .font(.pretendardBold20)
-                }
-            },
-            rightView: {
-                BookmarkButton(isBookmarked: $isBookmarked, size: 24)
-            }
-        )
         .animation(.easeInOut, value: isExpanded)
+        .fullScreenCover(isPresented: $isShowingLoginView) {
+            LogInView(isPresented: $isShowingLoginView)
+        }
         .fullScreenCover(isPresented: $isShowingImageExtensionView) {
             ImageExtensionView(
                 imageURLs: studioDetail.detailImageURLs,
@@ -249,22 +293,6 @@ fileprivate struct CustomSegmentedControl: View {
                 .fill(.tcGray04)
                 .frame(height: 1.5)
         }
-    }
-}
-
-
-fileprivate struct RoundedCornersShape: Shape {
-    var corners: UIRectCorner
-    var radius: CGFloat
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: radius, height: radius)
-        )
-        
-        return Path(path.cgPath)
     }
 }
 

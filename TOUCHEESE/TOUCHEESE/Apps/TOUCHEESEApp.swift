@@ -93,6 +93,7 @@ struct TOUCHEESEApp: App {
     @StateObject private var reservationListViewModel = ReservationListViewModel()
     @StateObject private var mypageViewModel = MyPageViewModel()
     @StateObject private var navigationManager = NavigationManager()
+    @StateObject private var studioLikeListViewModel = StudioLikeListViewModel()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -112,6 +113,7 @@ struct TOUCHEESEApp: App {
                 .environmentObject(reservationListViewModel)
                 .environmentObject(mypageViewModel)
                 .environmentObject(navigationManager)
+                .environmentObject(studioLikeListViewModel)
                 .preferredColorScheme(.light)
                 .onOpenURL(perform: { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
@@ -124,6 +126,7 @@ struct TOUCHEESEApp: App {
                         AuthenticationManager.shared.successfulAuthentication()
                         await reservationListViewModel.fetchReservations()
                         await reservationListViewModel.fetchPastReservations()
+                        await studioLikeListViewModel.fetchLikedStudios()
                     case .notAuthenticated:
                         AuthenticationManager.shared.failedAuthentication()
                     }
@@ -157,6 +160,7 @@ extension TOUCHEESEApp {
             
             #if DEBUG
             print("New access token: \(appOpenResponse.accessToken)")
+            print("member ID: \(appOpenResponse.memberId)")
             #endif
             
             authManager.memberId = appOpenResponse.memberId

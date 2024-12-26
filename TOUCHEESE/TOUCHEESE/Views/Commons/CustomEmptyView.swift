@@ -60,6 +60,7 @@ struct CustomEmptyView: View {
         case reservation
         case pastReservation
         case requiredLogIn(buttonText: String, buttonAction: () -> Void)
+        case studioLike
         
         var description: String {
             switch self {
@@ -73,6 +74,8 @@ struct CustomEmptyView: View {
                 return "이전 내역이 없습니다."
             case .requiredLogIn:
                 return "로그인이 필요한 서비스입니다."
+            case .studioLike:
+                return "찜한 스튜디오가 없습니다."
             }
         }
     }
