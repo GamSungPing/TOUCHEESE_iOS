@@ -215,12 +215,6 @@ struct StudioDetailView: View {
             ReviewDetailView()
                 .environmentObject(viewModel)
         }
-        .onAppear {
-            tabbarManager.isHidden = true
-        }
-        .onAppear {
-            tabbarManager.isHidden = true
-        }
     }
     
     private func leadingToolbarContent(

@@ -175,27 +175,24 @@ extension TOUCHEESEApp {
         }
     }
     
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    init() {
-        CacheManager.configureKingfisherCache()
-        KakaoSDK.initSDK(appKey: Bundle.main.kakaoNativeAppKey)
-    }
-    
-    init() {
-        CacheManager.configureKingfisherCache()
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            ToucheeseTabView()
-                .environmentObject(studioListViewModel)
-                .environmentObject(reservationListViewModel)
-                .environmentObject(navigationManager)
-                .preferredColorScheme(.light)
-                .onOpenURL(perform: { url in
-                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
-                        _ = AuthController.handleOpenUrl(url: url)
+    /// FCM 토큰을 백엔드 서버에 POST 하는 메서드
+    private func postDeviceTokenRegistrationData() {
+        Task {
+            if let fcmToken = Messaging.messaging().fcmToken,
+               let memberId = authManager.memberId {
+                do {
+                    try await networkManager.performWithTokenRetry(
+                        accessToken: authManager.accessToken,
+                        refreshToken: authManager.refreshToken
+                    ) { token in
+                        let deviceTokenRegistrationRequest = DeviceTokenRegistrationRequest(
+                            memberId: memberId,
+                            deviceToken: fcmToken
+                        )
+                        try await networkManager.postDeviceTokenRegistrationData(
+                            deviceTokenRegistrationRequest: deviceTokenRegistrationRequest,
+                            accessToken: token
+                        )
                     }
                 } catch {
                     print("Post DeviceTokenRegistrationData failed: \(error.localizedDescription)")

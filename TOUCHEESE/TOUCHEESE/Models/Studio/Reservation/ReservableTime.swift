@@ -34,7 +34,6 @@ struct ReservableTimeSlot: Hashable {
 
 extension ReservableTime {
     var usableReservableTimeArray: [String] {
-        print("!!!!!!!==================== \(reservableTimeArray)")
         return reservableTimeArray.map { String($0.dropLast(3))}
     }
 }
