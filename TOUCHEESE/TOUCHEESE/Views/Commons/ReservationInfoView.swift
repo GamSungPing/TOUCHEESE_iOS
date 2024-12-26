@@ -33,8 +33,6 @@ struct ReservationInfoView: View {
                                         .foregroundStyle(.tcGray09)
                                     
                                     Spacer()
-                                    
-                                    ReservationStatusView(reservationStatus)
                                 }
                                 .padding(.bottom, 8)
                                 
