@@ -11,6 +11,7 @@ import Kingfisher
 struct StudioRow: View {
     @EnvironmentObject private var studioListViewModel: StudioListViewModel
     @EnvironmentObject private var studioLikeListViewModel: StudioLikeListViewModel
+    @EnvironmentObject private var navigationManager: NavigationManager
     
     private let authManager = AuthenticationManager.shared
     
@@ -56,6 +57,7 @@ struct StudioRow: View {
                 Button {
                     if authManager.authStatus == .notAuthenticated {
                         isShowingLoginAlert.toggle()
+                        navigationManager.isShowingAlert = true
                     } else {
                         Task {
                             if authManager.memberLikedStudios.contains(studio) {

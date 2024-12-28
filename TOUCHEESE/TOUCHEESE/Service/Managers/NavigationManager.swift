@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class NavigationManager: ObservableObject {
+final class NavigationManager: ObservableObject {
     @Published var homePath: [ViewType] = [] {
         didSet {
             updateTabBarVisibility()
@@ -27,6 +27,9 @@ class NavigationManager: ObservableObject {
     
     @Published var tabItem: Tab = .home
     @Published var isTabBarHidden: Bool = false
+    
+    @Published var isShowingAlert: Bool = false
+    @Published var isShowingNicknameView: Bool = false
     
     private(set) var homeResultViewMaterial: HomeResultViewMaterial?
     private(set) var studioDetailViewMaterial: StudioDetailViewMaterial?
