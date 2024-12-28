@@ -263,11 +263,17 @@ fileprivate struct MyPageHorizontalView<RightView: View>: View {
 }
 
 fileprivate struct NickNameEditView: View {
+    enum FocusedField {
+        case nickname
+    }
+    
     @EnvironmentObject private var myPageViewModel: MyPageViewModel
     
     @Binding var isNicknameEditing: Bool
     @State var newName: String = ""
     @State var isNewNameValid: Bool = false
+    
+    @FocusState private var focusedField: FocusedField?
     
     var body: some View {
         Color.black.opacity(0.33)
@@ -304,6 +310,7 @@ fileprivate struct NickNameEditView: View {
                                         .padding(.leading, 16)
                                         .padding(.trailing, newName.isEmpty ? 16 : 4)
                                         .padding(.vertical, 12)
+                                        .focused($focusedField, equals: .nickname)
                                     
                                     if !newName.isEmpty {
                                         Spacer()
@@ -346,6 +353,9 @@ fileprivate struct NickNameEditView: View {
                     .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 16)
+            }
+            .onAppear {
+                focusedField = .nickname
             }
             .onChange(of: newName) { newValue in
                 if newValue.count > 10 {
