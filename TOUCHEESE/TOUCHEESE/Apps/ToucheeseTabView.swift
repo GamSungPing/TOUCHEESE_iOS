@@ -38,8 +38,11 @@ struct ToucheeseTabView: View {
                 MyPageView()
             }
             
-            if !navigationManager.isTabBarHidden {
-                CustomTabBar(selectedTab: $navigationManager.tabItem)
+            if !navigationManager.isTabBarHidden, !navigationManager.isShowingNicknameView {
+                CustomTabBar(
+                    selectedTab: $navigationManager.tabItem,
+                    isShowingAlert: $navigationManager.isShowingAlert
+                )
             }
         }
     }

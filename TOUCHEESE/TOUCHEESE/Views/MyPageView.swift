@@ -86,6 +86,8 @@ struct MyPageView: View {
 }
 
 fileprivate struct GreetingView: View {
+    @EnvironmentObject private var navigationManager: NavigationManager
+    
     @Binding var isNicknameEditing: Bool
     @ObservedObject private var authenticationManager = AuthenticationManager.shared
     
@@ -104,6 +106,7 @@ fileprivate struct GreetingView: View {
                     .frame(width: 24, height: 24),
                 action: {
                     isNicknameEditing.toggle()
+                    navigationManager.isShowingNicknameView = true
                 }
             )
         }
@@ -208,6 +211,8 @@ fileprivate struct InfoView: View {
 
 fileprivate struct LoginChangeView: View {
     @EnvironmentObject private var myPageViewModel: MyPageViewModel
+    @EnvironmentObject private var navigationManager: NavigationManager
+    
     @Binding var isShowingLogoutAlert: Bool
     @Binding var isShowingWithdrawalAlert: Bool
     
@@ -218,6 +223,7 @@ fileprivate struct LoginChangeView: View {
                 rightView: EmptyView(),
                 action: {
                     isShowingLogoutAlert.toggle()
+                    navigationManager.isShowingAlert = true
                 }
             )
             
@@ -226,6 +232,7 @@ fileprivate struct LoginChangeView: View {
                 rightView: EmptyView(),
                 action: {
                     isShowingWithdrawalAlert.toggle()
+                    navigationManager.isShowingAlert = true
                 }
             )
         }
@@ -268,6 +275,7 @@ fileprivate struct NickNameEditView: View {
     }
     
     @EnvironmentObject private var myPageViewModel: MyPageViewModel
+    @EnvironmentObject private var navigationManager: NavigationManager
     
     @Binding var isNicknameEditing: Bool
     @State var newName: String = ""
@@ -280,6 +288,7 @@ fileprivate struct NickNameEditView: View {
             .ignoresSafeArea()
             .onTapGesture {
                 isNicknameEditing = false
+                navigationManager.isShowingNicknameView = false
             }
         
         RoundedRectangle(cornerRadius: 16)
@@ -335,6 +344,7 @@ fileprivate struct NickNameEditView: View {
                     
                     Button {
                         isNicknameEditing.toggle()
+                        navigationManager.isShowingNicknameView = false
                         
                         Task {
                             await myPageViewModel.changeNickname(newName: newName)
