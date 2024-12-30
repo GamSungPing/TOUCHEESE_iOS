@@ -12,6 +12,7 @@ struct TextFieldView: View {
     let placeHolder: String
     var isError: Bool = false
     var keyboardType: UIKeyboardType = .default
+    var submitAction: () -> Void = { }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +24,12 @@ struct TextFieldView: View {
                         TextField("", text: $inputValue, prompt: Text(placeHolder).foregroundColor(.tcGray04))
                             .font(.pretendardMedium14)
                             .foregroundStyle(.tcGray08)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled(true)
                             .keyboardType(keyboardType)
+                            .onSubmit {
+                                submitAction()
+                            }
                             .lineLimit(1)
                             .padding(.leading, 16.5)
                             .padding(.trailing, inputValue.isEmpty ? 16.5 : 4)
@@ -48,5 +54,9 @@ struct TextFieldView: View {
 }
 
 #Preview {
-    TextFieldView(inputValue: .constant(""), placeHolder: "이메일을 입력해주세요", isError: false)
+    TextFieldView(
+        inputValue: .constant(""),
+        placeHolder: "이메일을 입력해주세요",
+        isError: false
+    )
 }

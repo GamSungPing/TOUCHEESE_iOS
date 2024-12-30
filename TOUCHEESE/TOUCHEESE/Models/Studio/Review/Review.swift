@@ -55,31 +55,31 @@ struct Reply: Identifiable, Codable {
 extension Review {
     static let sample = Review(
         id: 0,
-        imageString: "https://i.imgur.com/Uw5nNHQ.png"
+        imageString: "https://imgur.com/YJaYOeA.png"
     )
     
     static let samples: [Review] = (0..<17).map { index in
         Review(
             id: index,
-            imageString: "https://i.imgur.com/Uw5nNHQ.png"
+            imageString: "https://imgur.com/YJaYOeA.png"
         )
     }
     
     var imageURL: URL {
-        URL(string: imageString ?? "https://i.imgur.com/Uw5nNHQ.png") ?? .defaultImageURL
+        URL(string: imageString ?? "https://imgur.com/YJaYOeA.png") ?? .defaultImageURL
     }
 }
 
 
 extension ReviewDetail {
     static let sample = ReviewDetail(
-        userProfileImageString: "https://i.imgur.com/Uw5nNHQ.png",
+        userProfileImageString: "https://imgur.com/YJaYOeA.png",
         userName: "김마루",
         dateString: "2024-9-02T10:12:30",
         imageStrings: [
-            "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png",
-            "https://i.imgur.com/Uw5nNHQ.png"
+            "https://imgur.com/YJaYOeA.png",
+            "https://imgur.com/YJaYOeA.png",
+            "https://imgur.com/YJaYOeA.png"
         ],
         content: "인생샷을 건졌습니다, 감사합니다!!",
         rating: 4.9,

@@ -97,6 +97,8 @@ struct ReservationConfirmView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                
+                Color.clear.frame(height: 25)
             }
         }
         .onAppear(perform : UIApplication.shared.hideKeyboard)
@@ -219,6 +221,8 @@ fileprivate struct UserInfoInputView: View {
     @Binding var userEmail: String
     @Binding var userPhone: String
     
+    @FocusState private var focusedField: FocusedField?
+    
     var isEmailFormat: Bool
     var isPhoneLength: Bool
     
@@ -253,8 +257,10 @@ fileprivate struct UserInfoInputView: View {
                     TextFieldView(
                         inputValue: $userEmail,
                         placeHolder: "이메일을 입력해주세요.",
-                        keyboardType: .emailAddress
+                        keyboardType: .emailAddress,
+                        submitAction: { focusedField = .phoneNumber }
                     )
+                    .focused($focusedField, equals: .email)
                 }
                 
                 if !userEmail.isEmpty && !isEmailFormat {
@@ -291,6 +297,7 @@ fileprivate struct UserInfoInputView: View {
                         isError: !isUserPhoneCorrect,
                         keyboardType: .numberPad
                     )
+                    .focused($focusedField, equals: .phoneNumber)
                 }
                 
                 if !userPhone.isEmpty && !isPhoneLength {
@@ -315,6 +322,13 @@ fileprivate struct UserInfoInputView: View {
     }
 }
 
+extension UserInfoInputView {
+    enum FocusedField: Hashable {
+        case email
+        case phoneNumber
+    }
+}
+
 struct PayInfoView: View {
     let productName: String
     let productPrice: String
@@ -326,8 +340,12 @@ struct PayInfoView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            LeadingTextView(text: "결제 정보", font: .pretendardSemiBold18, textColor: .tcGray10)
-                .padding(.bottom, 16)
+            LeadingTextView(
+                text: "결제 정보",
+                font: .pretendardSemiBold18,
+                textColor: .tcGray10
+            )
+            .padding(.bottom, 16)
             
             HStack {
                 Text(productName)

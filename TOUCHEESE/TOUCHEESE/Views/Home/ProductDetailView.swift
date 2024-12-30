@@ -74,6 +74,8 @@ struct ProductDetailView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
+                
+                Color.clear.frame(height: 25)
             }
         }
         .environmentObject(productDetailViewModel)
@@ -446,6 +448,8 @@ fileprivate struct CalendarView: View {
                     }
                     .disabled(displayTime == "" ? true : false)
                     .padding(.horizontal, 20)
+                    
+                    Color.clear.frame(height: 25)
                 }
             }
         }

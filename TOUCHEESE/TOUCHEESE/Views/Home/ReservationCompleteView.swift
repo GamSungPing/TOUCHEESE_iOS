@@ -16,6 +16,8 @@ struct ReservationCompleteView: View {
         let attributeTarget = "확정되거나 취소"
         
         VStack {
+            Spacer()
+            
             VStack {
                 Image(.tcConfirm)
                     .frame(width: 80, height: 80)
@@ -80,6 +82,8 @@ struct ReservationCompleteView: View {
             }
             .padding(.vertical, 8)
             .padding(.horizontal, 55.5)
+            
+            Spacer()
         }
         .customNavigationBar(centerView: {
             Text("예약 신청 완료")
