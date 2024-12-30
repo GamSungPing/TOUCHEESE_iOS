@@ -24,6 +24,8 @@ struct TextFieldView: View {
                         TextField("", text: $inputValue, prompt: Text(placeHolder).foregroundColor(.tcGray04))
                             .font(.pretendardMedium14)
                             .foregroundStyle(.tcGray08)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled(true)
                             .keyboardType(keyboardType)
                             .onSubmit {
                                 submitAction()
