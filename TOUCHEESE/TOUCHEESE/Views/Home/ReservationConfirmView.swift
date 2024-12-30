@@ -322,6 +322,13 @@ fileprivate struct UserInfoInputView: View {
     }
 }
 
+extension UserInfoInputView {
+    enum FocusedField: Hashable {
+        case email
+        case phoneNumber
+    }
+}
+
 struct PayInfoView: View {
     let productName: String
     let productPrice: String
@@ -410,11 +417,6 @@ struct PayInfoView: View {
         .padding(.horizontal, 16)
         .background(.white)
     }
-}
-
-enum FocusedField: Hashable {
-    case email
-    case phoneNumber
 }
 
 #Preview {
