@@ -73,8 +73,8 @@ extension Studio {
         profilePrice: 99_000,
         rating: 3.2,
         reviewCount: 0,
-        profileImageString: "https://i.imgur.com/Uw5nNHQ.png",
-        portfolioImageStrings: ["https://i.imgur.com/Uw5nNHQ.png", "https://i.imgur.com/Uw5nNHQ.png"]
+        profileImageString: "https://imgur.com/YJaYOeA.png",
+        portfolioImageStrings: ["https://imgur.com/YJaYOeA.png", "https://imgur.com/YJaYOeA.png"]
     )
     
     var formattedRating: String {
