@@ -97,6 +97,8 @@ struct ReservationConfirmView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                
+                Color.clear.frame(height: 25)
             }
         }
         .onAppear(perform : UIApplication.shared.hideKeyboard)
