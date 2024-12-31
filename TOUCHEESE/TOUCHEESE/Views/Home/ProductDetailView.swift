@@ -374,9 +374,7 @@ fileprivate struct CalendarView: View {
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
                                 ForEach(productDetailViewModel.businessHourAM, id: \.self) { reservableTimeSlot in
                                     Button {
-                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                            displayTime = reservableTimeSlot.reservableTime
-                                        }
+                                        displayTime = reservableTimeSlot.reservableTime
                                     } label: {
                                         RoundedRectangle(cornerRadius: 12)
                                             .strokeBorder(getStrokeBorderColor(reservableTimeSlot: reservableTimeSlot), lineWidth: 1)
@@ -405,9 +403,7 @@ fileprivate struct CalendarView: View {
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
                                 ForEach(productDetailViewModel.businessHourPM, id: \.self) { reservableTimeSlot in
                                     Button {
-                                        if !productDetailViewModel.selectedDate.isHoliday(holidays: productDetailViewModel.studioDetail.holidays) {
-                                            displayTime = reservableTimeSlot.reservableTime
-                                        }
+                                        displayTime = reservableTimeSlot.reservableTime
                                     } label: {
                                         RoundedRectangle(cornerRadius: 12)
                                             .strokeBorder(getStrokeBorderColor(reservableTimeSlot: reservableTimeSlot), lineWidth: 1)
