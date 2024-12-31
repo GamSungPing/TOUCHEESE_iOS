@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Tab
+    @Binding var isShowingAlert: Bool
+    
     @State private var yOffset: CGFloat = 200
     
     var body: some View {
@@ -23,6 +25,7 @@ struct CustomTabBar: View {
                 } label: {
                     tabButtonView(tab, isSelected: selectedTab == tab)
                 }
+                .disabled(isShowingAlert)
                 
                 Spacer()
             }
@@ -30,12 +33,17 @@ struct CustomTabBar: View {
             Spacer()
         }
         .frame(height: 65)
-        
         .background {
             Rectangle()
                 .fill(Color.white)
                 .edgesIgnoringSafeArea(.bottom)
                 .shadow(color: .black.opacity(0.06), radius: 20, y: -12)
+        }
+        .overlay {
+            Rectangle()
+                .fill(Color.tcGray09)
+                .opacity(isShowingAlert ? 0.3 : 0)
+                .edgesIgnoringSafeArea(.bottom)
         }
         .offset(y: yOffset)
         .onAppear {
@@ -59,5 +67,8 @@ struct CustomTabBar: View {
 }
 
 #Preview {
-    CustomTabBar(selectedTab: .constant(.home))
+    CustomTabBar(
+        selectedTab: .constant(.home),
+        isShowingAlert: .constant(false)
+    )
 }

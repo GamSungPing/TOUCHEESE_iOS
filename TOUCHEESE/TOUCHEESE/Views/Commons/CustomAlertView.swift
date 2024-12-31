@@ -33,6 +33,8 @@ enum AlertType {
 }
 
 struct CustomAlertView: View {
+    @EnvironmentObject private var navigationManager: NavigationManager
+    
     @Binding var isPresented: Bool
     let alertType: AlertType
     let action: () -> Void
@@ -66,6 +68,8 @@ struct CustomAlertView: View {
                             height: 48
                         ) {
                             isPresented.toggle()
+                            navigationManager.isShowingAlert = false
+                            
                             action()
                         }
                         
@@ -76,6 +80,7 @@ struct CustomAlertView: View {
                             backgroundColor: .tcGray02
                         ) {
                             isPresented.toggle()
+                            navigationManager.isShowingAlert = false
                         }
                     }
                     // Alert Dismiss만 필요한 경우
@@ -86,6 +91,8 @@ struct CustomAlertView: View {
                         height: 48
                     ) {
                         isPresented.toggle()
+                        navigationManager.isShowingAlert = false
+                        
                         action()
                     }
                 }

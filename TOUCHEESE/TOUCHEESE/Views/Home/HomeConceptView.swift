@@ -18,14 +18,20 @@ struct HomeConceptView: View {
         ConceptCard(imageString: "waterColor", concept: .waterColor),
         ConceptCard(imageString: "clarityDoll", concept: .gorgeous)
     ]
+    
     private let columns = [
-        GridItem(.flexible(), spacing: -20),
-        GridItem(.flexible(), spacing: 0)
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
     ]
+    private var gridWidthSize: CGFloat {
+        (CGFloat.screenWidth - (44 + 12)) / 2
+    }
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            LazyVGrid(columns: columns, spacing: 20) {
+            Color.clear.frame(height: 8)
+            
+            LazyVGrid(columns: columns, spacing:12) {
                 ForEach(conceptCards) { conceptCard in
                     Button {
                         navigationManager.appendPath(viewType: .homeResultView, viewMaterial: HomeResultViewMaterial(concept: conceptCard.concept))
@@ -34,31 +40,48 @@ struct HomeConceptView: View {
                     }
                 }
             }
-            .padding(.vertical, 5)
+            
+            Color.clear.frame(height: 25)
         }
-        .background(.tcLightyellow)
-        .navigationTitle("TOUCHEESE")
-        .navigationBarTitleDisplayMode(.inline)
+        .padding(.horizontal, 22)
+        .background(.white)
+        .customNavigationBar {
+            Image(.homeLogo)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 325)
+        }
     }
     
     @ViewBuilder
     private func conceptCardView(_ conceptCard: ConceptCard) -> some View {
-        VStack(spacing: 8) {
+        ZStack(alignment: .bottom) {
             Image(conceptCard.imageString)
                 .resizable()
-                .scaledToFit()
-                .frame(maxWidth: .infinity, maxHeight: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .aspectRatio(contentMode: .fill)
+                .frame(width: gridWidthSize, height: 232)
+                .clipShape(.rect(cornerRadius: 16))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(
+                                    colors: [
+                                        Color.black.opacity(0.68),
+                                        Color.clear
+                                    ]
+                                ),
+                                startPoint: .bottom,
+                                endPoint: .center
+                            )
+                        )
+                }
             
             Text(conceptCard.title)
-                .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundStyle(.white)
+                .font(.pretendardSemiBold16)
+                .padding(.bottom, 15)
         }
-        .frame(width: 160, height: 190)
-        .padding(.vertical, 10)
-        .background(Color.white.opacity(0.6))
-        .cornerRadius(15)
-        .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 5)
     }
 }
 
