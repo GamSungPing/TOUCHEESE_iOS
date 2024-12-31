@@ -320,6 +320,7 @@ fileprivate struct NickNameEditView: View {
                                         .padding(.trailing, newName.isEmpty ? 16 : 4)
                                         .padding(.vertical, 12)
                                         .focused($focusedField, equals: .nickname)
+
                                     
                                     if !newName.isEmpty {
                                         Spacer()
