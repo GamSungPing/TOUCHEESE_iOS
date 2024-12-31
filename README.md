@@ -21,6 +21,12 @@
   
 ### 개발 및 테스트 환경
 
+- **프로젝트 실행 방법**
+```
+프로젝트 빌드 시 GoogleService-Info.plist, Secrets.configs 파일이 필요합니다.
+위의 두 파일은 본 프로젝트 실행 시 spdlqjrkdrjs@naver.com으로 요청해주세요.
+```
+
 - **Client**
   - Xcode 16.0
   - Swift 6.0
