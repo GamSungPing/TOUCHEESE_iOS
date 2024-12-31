@@ -49,9 +49,10 @@
   - Kakao 로그인
   - 이미지 캐싱 처리
 - **Library**
-  - KakaoSDK
+  - KakaoOpenSDK
   - Alamofire
   - Kingfisher
+  - Firebase
 <br>
 
 ## 🧀 앱 특징
